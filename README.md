@@ -2,6 +2,8 @@
 
 **A working system for AI-driven consulting that prevents hallucinations through systematic methodology.**
 
+> 📋 **Current Status**: This repository is undergoing systematic reorganization. See **[CURRENT_STATUS.md](CURRENT_STATUS.md)** for latest updates and **[PROJECT_ANALYSIS.md](PROJECT_ANALYSIS.md)** for detailed analysis.
+
 ---
 
 ## What Is This?
