@@ -279,8 +279,46 @@ For detailed information about each component:
 - ✅ Meta-Audit Integration: Live
 - ✅ Agency-Toolkit Integration: Live
 - ✅ Monorepo Structure: Configured
+- ✅ Quality Measurement Layer: Implemented (Option C)
 - ⏳ CLI Wrapper: Planned
 - ⏳ Web Dashboard: Planned
+
+---
+
+## Quality Assurance
+
+This monorepo implements a **Quality Measurement Layer** that automatically enforces quality standards.
+
+### Objective Quality Metrics
+
+All code is measured using industry-standard tools:
+- **Radon** - Cyclomatic complexity and maintainability
+- **Bandit** - Security vulnerability scanning  
+- **Pylint** - Code quality and style analysis
+- **Pytest** - Test coverage and pass rate
+
+### Quality Gate (80/100 minimum)
+
+The CI/CD pipeline automatically:
+- Collects quality metrics for all components
+- Calculates a comprehensive quality score (0-100)
+- **Blocks merges if quality standards aren't met**
+- Posts detailed reports to pull requests
+
+### Run Quality Checks
+
+```bash
+# Check a specific component
+python quality_gate.py agency-toolkit
+
+# Check all components
+python quality_gate.py --all
+
+# CI mode (strict enforcement)
+python quality_gate.py agency-toolkit --ci
+```
+
+See `QUALITY_MEASUREMENT_LAYER.md` for detailed documentation.
 
 ---
 

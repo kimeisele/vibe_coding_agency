@@ -101,3 +101,11 @@ yarn.lock
 
 # Local project artifacts
 kdaf_projects/  # Test outputs
+
+# Quality measurement outputs
+quality_reports/
+quality_summary.md
+coverage.json
+quality_score.json
+*.coverage
+bandit-report.csv
