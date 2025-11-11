@@ -1,0 +1,54 @@
+{
+  "id": "SIMPLE",
+  "name": "Simple Social Campaign",
+  "archetype_id": "I",
+  "description": "A straightforward 3-task workflow demonstrating basic task chaining and output passing",
+  "modules": [
+    {
+      "id": "SIMPLE_M1",
+      "title": "Create Social Media Campaign",
+      "description": "Generate a catchy tagline and create social media content",
+      "tasks": [
+        {
+          "tool": "ai",
+          "output_key": "tagline",
+          "on_error": "stop",
+          "params": {
+            "prompt": "You are a creative copywriter for {archetype_name}. Create ONE catchy, memorable tagline for {project_name}. The tagline should address these pain points: {pain_points}. Keep it to max 8 words. Your response should ONLY be the tagline, nothing else.",
+            "provider": "{ai_provider}",
+            "temperature": 0.8,
+            "max_tokens": 50
+          }
+        },
+        {
+          "tool": "social",
+          "on_error": "continue",
+          "params": {
+            "text": "{tagline}",
+            "style": "bold",
+            "color": "blue",
+            "format": "story",
+            "output_dir": "./output/{project_name_safe}/social"
+          }
+        },
+        {
+          "tool": "briefing",
+          "on_error": "continue",
+          "params": {
+            "type": "Social",
+            "client_name": "{project_name_safe}",
+            "project_name": "Social Campaign Brief",
+            "output_format": "pdf"
+          }
+        }
+      ],
+      "dependencies": [],
+      "context_variables": [
+        "project_name",
+        "archetype_name",
+        "pain_points",
+        "ai_provider"
+      ]
+    }
+  ]
+}

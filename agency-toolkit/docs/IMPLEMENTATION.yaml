@@ -1,0 +1,1714 @@
+# ============================================================================
+# ⚠️ CRITICAL WARNING - DOCUMENTATION STATUS (2025-11-09)
+# ============================================================================
+#
+# This document assumes "Epics 1-14 COMPLETE" status, which is INCORRECT.
+#
+# CURRENT STATUS: 🔴 BLOCKIERT
+#   - Epic 2.5 PARTIALLY COMPLETE (Stories 2.5.1-2.5.5 done, 2.5.6 blocked)
+#   - Epic 4.0 PARTIALLY COMPLETE (Tests deleted, SLOs unvalidated)
+#   - Critical UAT tests were DELETED to achieve "green" signal
+#   - Performance SLO ("100 posts < 5 min") is UNVERIFIED
+#
+# RECOVERY PLAN: See docs/agency_toolkit_roadmap.md for:
+#   - Epic 2.5.7: Restore deleted tests (4 hours)
+#   - Epic 4.0.2: Validate SLOs (2 hours)
+#
+# DO NOT RELY on this document for current state. Read BLUEPRINT.yaml
+# and agency_toolkit_roadmap.md first.
+#
+# ============================================================================
+# AGENCY TOOLKIT - Implementation Guide (Module Details)
+# ============================================================================
+# Reference: docs/BLUEPRINT.yaml for architecture
+# This file: Module-specific implementation details, testing, validation
+# Version: v0.2.0 (Epics 1-6 refactored structure)
+# ⚠️ NOTE: Assumes Epic completion status that requires verification
+# ============================================================================
+
+# ============================================================================
+# ARCHITECTURE OVERVIEW: CORE/ + PROVIDERS/ + TASKS/ STRUCTURE
+# ============================================================================
+#
+# After Epics 1-14, the codebase has been refactored into:
+#
+#   agency_toolkit/
+#   ├── core/                    # Modular business logic (e.g., image rendering)
+#   ├── providers/               # Plugin architecture for external APIs (Text & Image)
+#   ├── commands/                # CLI handlers (user-facing Typer commands)
+#   ├── tasks/                   # Orchestrator task handlers (the "verbs" of the OS)
+#   ├── models.py                # Pydantic models (validation)
+#   └── ... (other utility modules)
+#
+# Philosophy:
+#   - The `os` command uses an orchestrator that calls `Task Handlers` in the `tasks/` dir.
+#   - Task Handlers are adapters that call the pure logic in `core/`.
+#   - Standalone commands (`social`, `briefing`) can also call `core/` logic directly.
+#
+# ============================================================================
+
+# ============================================================================
+# MODULE 1: SOCIAL MEDIA (Refactored - Modular Structure)
+# ============================================================================
+
+social:
+  command: "social"
+  files:
+    - "agency_toolkit/social.py (backward-compat wrapper)"
+    - "agency_toolkit/core/social/generator.py (main logic)"
+    - "agency_toolkit/core/social/layout.py (layout calculations)"
+    - "agency_toolkit/core/social/rendering.py (PIL rendering)"
+    - "agency_toolkit/core/social/validators.py (validation)"
+    - "agency_toolkit/commands/social.py (CLI command with batch support - v1.1)"
+
+  responsibility: "Generate branded social media posts (single or batch)"
+
+  epic_9_enhancements:
+    batch_processing:
+      description: "Generate multiple posts from CSV or JSON files"
+      cli_flags:
+        - "--from-csv FILE_PATH: Process CSV file"
+        - "--from-json FILE_PATH: Process JSON file"
+      validation:
+        - "Mutually exclusive with --text argument"
+        - "Cannot use both --from-csv and --from-json"
+        - "CSV must have 'text' column (case-insensitive)"
+        - "JSON must be array of objects"
+      csv_format:
+        required_headers: ["text"]
+        optional_headers: ["style", "color", "format", "bg_concept"]
+      json_format:
+        structure: "Array of objects with 'text' (required) + optional keys"
+      error_handling:
+        - "Skip rows with empty text, log warning"
+        - "Continue processing on individual failures"
+        - "Report summary: 'Generated X/Y posts. N failed.'"
+      implementation:
+        - "_process_batch_csv() helper in commands/social.py"
+        - "_process_batch_json() helper in commands/social.py"
+        - "_process_single_post() extracted for reuse"
+        - "Filename collision fix: Use microsecond timestamps in generator.py"
+
+  input_handling:
+    modes:
+      argument: "toolkit social generate 'Your query'"
+      stdin: "cat file.txt | toolkit social generate -"
+      batch_csv: "toolkit social generate --from-csv campaign.csv"
+      batch_json: "toolkit social generate --from-json posts.json"
+
+    priority: "batch > stdin > argument"
+    validation: "Text must be non-empty string"
+
+  function_structure:
+    # Location: agency_toolkit/core/social/generator.py
+    public:
+      - "generate_social_post(text, style, color, format, background_image_path=None, config) -> dict"
+
+    # Location: agency_toolkit/core/social/layout.py
+    layout_module:
+      - "calculate_text_position(format, template) -> tuple[int, int]"
+      - "calculate_font_size(template, available_space) -> int"
+      - "wrap_text(text, font, max_width) -> list[str]"
+
+    # Location: agency_toolkit/core/social/rendering.py
+    rendering_module:
+      - "load_template(style: str) -> SocialTemplate"
+      - "create_base_image(format: str, color: str, template) -> PIL.Image"
+      - "load_background_image(path: Path, format: str) -> PIL.Image"
+      - "render_text(image, text, template) -> PIL.Image"
+      - "save_image(image, output_dir) -> Path"
+
+    # Location: agency_toolkit/core/social/validators.py
+    validation_module:
+      - "validate_style(style: str) -> bool"
+      - "validate_color(color: str) -> bool"
+      - "validate_format(format: str) -> bool"
+
+  validation_model:
+    location: "models.py"
+    class: "SocialTemplate"
+    fields:
+      font_face: str
+      font_size: int
+      text_position_xy: tuple[int, int]
+      text_fill: str
+      background_type: str # 'solid' or 'gradient'
+      gradient_colors: list[str] | None
+      max_chars_per_line: int | None
+      v_align: str # 'top', 'middle', 'bottom'
+      h_align: str # 'left', 'center', 'right'
+
+    rationale: "Fail fast on template errors (not KeyError at runtime)"
+
+  error_handling:
+    template_not_found:
+      action: "Fallback to 'modern.json' + log warning"
+      message: "Template '{style}' not found, using 'modern'"
+
+    font_missing:
+      action: "Use Pillow default font + log warning"
+      message: "Font '{font_face}' not found, using default"
+
+    invalid_color:
+      action: "Raise ValueError with suggestion"
+      message: "Invalid color '{color}'. Use: blue, red, green, purple, or hex (#RRGGBB)"
+
+  template_reference:
+    location: "templates/social/"
+    available:
+      - "modern.json: Clean, tech-forward, gradient background"
+      - "bold.json: High-impact, solid color, large font"
+      - "minimal.json: Whitespace, small font, elegant"
+
+  testing:
+    unit:
+      - "test_load_valid_template"
+      - "test_load_invalid_template_fallback"
+      - "test_text_wrapping_edge_cases"
+
+    integration:
+      - "test_generate_post_all_styles"
+      - "test_custom_hex_color"
+      - "test_output_file_created"
+      - "test_social_stdin_pipe"
+
+# ============================================================================
+# MODULE 2: BRIEFING (Refactored - Modular Structure)
+# ============================================================================
+
+briefing:
+  command: "briefing"
+  files:
+    - "agency_toolkit/briefing.py (backward-compat wrapper)"
+    - "agency_toolkit/core/briefing/generator.py (main logic)"
+    - "agency_toolkit/core/briefing/template_loader.py (template handling)"
+    - "agency_toolkit/core/briefing/pdf_builder.py (PDF generation)"
+    - "agency_toolkit/core/briefing/validators.py (validation)"
+
+  responsibility: "Generate project briefing PDFs from dynamic templates"
+
+  function_structure:
+    # Location: agency_toolkit/core/briefing/generator.py
+    public:
+      - "generate_briefing(type, mode, data_source, config) -> dict"
+
+    # Location: agency_toolkit/core/briefing/template_loader.py
+    template_module:
+      - "load_briefing_questions(type: str) -> dict"
+      - "get_available_templates() -> list[str]"
+
+    # Location: agency_toolkit/core/briefing/generators.py
+    collection_module:
+      - "collect_interactive(questions: dict) -> BriefingData"
+      - "load_from_json(path: Path) -> BriefingData"
+
+    # Location: agency_toolkit/core/briefing/pdf_builder.py
+    pdf_module:
+      - "generate_pdf(data: BriefingData, output_dir) -> Path"
+      - "generate_markdown(data: BriefingData, output_dir) -> Path"
+
+  template_definition:
+    location: "templates/briefing/"
+    rationale: "JSON files define the *questions* asked"
+    structure: |
+      {
+        "rationale": "Brief explanation of template purpose",
+        "required": [
+          {"key": "client_name", "prompt": "Client Name"},
+          {"key": "project_name", "prompt": "Project Name"}
+        ],
+        "optional": [
+          {"key": "budget", "prompt": "Budget"},
+          {"key": "hosting_provider", "prompt": "Hosting Provider"}
+        ]
+      }
+    logic: "_collect_interactive() uses this JSON to build prompts"
+
+  validation_model:
+    location: "models.py"
+    class: "BriefingData"
+    fields:
+      client_name: str
+      project_name: str
+      project_type: str
+      deadline: date
+      budget: float | None
+      objectives: str | None
+      target_audience: str | None
+      deliverables: list[str]
+      notes: str | None
+      # (Pydantic model remains a superset of all possible fields)
+
+    rationale: "Type safety for all possible fields; template defines what's *required* at runtime"
+
+  error_handling:
+    template_not_found:
+      action: "Fallback to default.json + log warning"
+      message: "Briefing template '{type}' not found, using 'default'"
+
+    invalid_date:
+      action: "Re-prompt with example"
+      message: "Invalid date format. Use: YYYY-MM-DD (e.g., 2024-12-31)"
+
+    missing_required:
+      action: "Re-prompt with hint (from template)"
+      message: "Field '{field}' is required. Please provide a value."
+
+    json_parse_error:
+      action: "Show line number + suggestion"
+      message: "JSON error at line {line}: {error}. Check commas and quotes."
+
+  template_reference:
+    location: "templates/briefing/"
+    available:
+      - "default.json: Generic 5 W's (Who, What, When, Where, Why)"
+      - "web.json: Web project specific (CMS, hosting, SEO)"
+      - "video.json: Video production specific (format, duration, style)"
+
+  testing:
+    unit:
+      - "test_validate_briefing_data"
+      - "test_invalid_date_format"
+      - "test_json_loading"
+      - "test_load_briefing_template"
+
+    integration:
+      - "test_interactive_mode_flow (default)"
+      - "test_interactive_mode_web_type"
+      - "test_json_mode_end_to_end"
+      - "test_pdf_file_created"
+
+# ============================================================================
+# MODULE 3: STRUCTURE (Refactored - Modular Structure)
+# ============================================================================
+
+structure:
+  command: "structure"
+  files:
+    - "agency_toolkit/structure.py (backward-compat wrapper)"
+    - "agency_toolkit/core/structure/generator.py (main logic)"
+    - "agency_toolkit/core/structure/template_loader.py (template handling)"
+    - "agency_toolkit/core/structure/folder_builder.py (folder creation)"
+    - "agency_toolkit/core/structure/validators.py (validation)"
+
+  responsibility: "Create standardized project folder structures"
+
+  function_structure:
+    # Location: agency_toolkit/core/structure/generator.py
+    public:
+      - "create_structure(client, project, type, base_path, config) -> dict"
+
+    # Location: agency_toolkit/core/structure/template_loader.py
+    template_module:
+      - "load_template(type: str) -> list[str]"
+      - "get_available_templates() -> list[str]"
+
+    # Location: agency_toolkit/core/structure/folder_builder.py
+    builder_module:
+      - "sanitize_name(name: str) -> str"
+      - "create_folders(root: Path, folders: list[str]) -> None"
+      - "create_readme(root: Path, metadata: dict) -> None"
+
+  template_definition:
+    location: "templates/folders/"
+    rationale: "JSON files define the folder tree"
+    structure: |
+      {
+        "rationale": "Brief explanation of structure purpose",
+        "tree": [
+          "src/components",
+          "src/pages",
+          "docs"
+        ]
+      }
+
+  validation:
+    sanitization:
+      method: "python-slugify"
+      example: "'Client XY & Co!' -> 'client-xy-co'"
+
+    path_check:
+      action: "Error if exists (no --force in v1)"
+      message: "Path {path} already exists. Delete manually or choose different name."
+
+  error_handling:
+    template_not_found:
+      action: "Fallback to default.json + log warning"
+      message: "Template '{type}' not found, using 'default'"
+
+    permission_error:
+      action: "Raise OSError with clear message"
+      message: "Cannot create folders in {path}. Check permissions."
+
+  template_reference:
+    location: "templates/folders/"
+    available:
+      - "default.json: Simple generic structure (src, docs, data, tests)"
+      - "web.json: Modern frontend project (components, pages, styles)"
+      - "video.json: Video editing structure (source, footage, renders)"
+
+  testing:
+    unit:
+      - "test_sanitize_special_chars"
+      - "test_load_template"
+      - "test_path_collision"
+
+    integration:
+      - "test_create_web_structure"
+      - "test_readme_generation"
+      - "test_custom_base_path"
+
+# ============================================================================
+# MODULE 4: AI & PROVIDERS (Refactored - Modular Structure)
+# ============================================================================
+
+ai_and_providers:
+  command: "ai"
+  aliases: ["mistral"]
+  files:
+    - "agency_toolkit/providers/ (all provider logic)"
+    - "agency_toolkit/tasks/ai_handler.py (handler for orchestrator)"
+    - "agency_toolkit/commands/ai.py (direct CLI command)"
+
+  responsibility: "Terminal-based AI interface with profiles, using the TextProvider plugin system."
+  orchestrator_role: "The `AITaskHandler` is the orchestrator's entry point for any AI task. It dynamically loads the correct TextProvider (Mistral, Google, Ollama) and executes the text generation."
+
+  risk_assessment:
+    severity: "HIGH (external API, user-facing)"
+    failure_modes:
+      - "Missing API_KEY for a given provider"
+      - "Network timeouts"
+      - "API rate limits"
+      - "500-series server errors"
+      - "Invalid model name"
+      - "Invalid profile name"
+
+  function_structure:
+    # Location: agency_toolkit/providers/base.py
+    public:
+      - "TextProvider.generate(prompt, model, temperature, max_tokens, system_prompt) -> dict"
+
+    # Location: agency_toolkit/commands/ai.py
+    profile_module:
+      - "load_profile(profile_name: str, config) -> dict"
+      - "get_available_profiles() -> list[str]"
+      - "merge_profile_config(profile: dict, config: dict) -> dict"
+
+  input_handling:
+    modes:
+      prompt_flag: "--prompt 'Your query'"
+      prompt_file: "--prompt-file query.txt"
+      stdin: "cat file.txt | toolkit ai"
+
+    priority: "stdin > --prompt-file > --prompt"
+    validation: "Prompt must be non-empty string"
+
+  error_handling_protocol:
+    missing_api_key:
+      check: "os.getenv('{PROVIDER}_API_KEY')"
+      action: "Raise typer.Exit(1)"
+      message: |
+        {PROVIDER}_API_KEY not found.
+        Set it with: export {PROVIDER}_API_KEY='your-key-here'
+
+    connection_timeout:
+      exception: "httpx.TimeoutException"
+      action: "Log + retry once + fail"
+      message: "API timeout. Check your internet connection."
+
+    rate_limit:
+      exception: "Provider-specific RateLimitError"
+      action: "Log + fail (no retry)"
+      message: "Rate limit exceeded. Wait {retry_after} seconds or upgrade your plan."
+
+    server_error:
+      exception: "Provider-specific APIError (status >= 500)"
+      action: "Log full error + fail"
+      message: "API error: {error}. Try again later."
+
+    invalid_model:
+      exception: "Provider-specific InvalidRequestError"
+      action: "List valid models + fail"
+      message: "Invalid model '{model}'. Valid: {valid_models}"
+
+    invalid_profile:
+      check: "If profile name not in config keys"
+      action: "Raise typer.Exit(1)"
+      message: "Profile '{profile}' not found in config.toml"
+
+  testing:
+    unit:
+      - "test_get_api_key_missing"
+      - "test_load_prompt_from_file"
+      - "test_load_prompt_from_stdin"
+
+    integration:
+      - "test_ai_query_success (mock API)"
+      - "test_ai_timeout (mock timeout)"
+      - "test_ai_rate_limit (mock error)"
+      - "test_ai_profile_loading"
+
+    mocking:
+      library: "pytest-mock or unittest.mock"
+      mock_target: "provider's generate method"
+
+# ============================================================================
+# MODULE 5: GRAND AGENCY OS (Orchestration & Task Handler System)
+# ============================================================================
+
+grand_agency_os:
+  command: "os"
+  purpose: "Orchestrated project workflows via registry-based solution modules"
+  files:
+    - "agency_toolkit/commands/os.py (CLI interface for OS workflows)"
+    - "agency_toolkit/core/orchestrator.py (Task execution engine)"
+    - "agency_toolkit/core/workflow_loader.py (Loads definitions from registry)"
+    - "agency_toolkit/tasks/ (Directory for all task handlers)"
+    - "registry/seeds/solutions.json (Workflow definitions)"
+
+  architecture:
+    pattern: "Workflow Engine with Strategy Pattern for tasks"
+    description: "The 'os' command initiates a workflow. The orchestrator reads a workflow definition from solutions.json, which contains a list of tasks. For each task, the orchestrator uses the Task Registry to find the correct Task Handler based on the task's 'tool' name. It then executes that handler, passing it the required parameters and context. This decouples the orchestration logic from the actual task implementation."
+
+    components:
+      workflow_loader:
+        file: "agency_toolkit/core/workflow_loader.py"
+        responsibility: "Loads and validates `archetypes.json` and `solutions.json` from the `registry/seeds/` directory."
+      orchestrator:
+        file: "agency_toolkit/core/orchestrator.py"
+        responsibility: "The core execution engine. It iterates through tasks, manages the `step_context` for passing data between tasks, resolves `{placeholder}` variables, and calls the appropriate task handler."
+      task_handler_base:
+        file: "agency_toolkit/tasks/base.py"
+        responsibility: "Defines the `TaskHandler` abstract base class (interface) and the `TaskContext` data class. Every task handler must implement this interface."
+      task_registry:
+        file: "agency_toolkit/tasks/registry.py"
+        responsibility: "Maintains a global registry of all available task handlers. The orchestrator uses `get_task_handler(name)` to dynamically dispatch tasks."
+      task_handlers:
+        directory: "agency_toolkit/tasks/"
+        responsibility: "Contains concrete implementations of `TaskHandler` for each tool type (e.g., `ai`, `social`, `briefing`). Each handler contains the logic for one specific type of task."
+
+  workflow_execution_flow:
+    step_1: "User runs `toolkit os init`."
+    step_2: "`commands/os.py` handles interactive selection of archetype and solution."
+    step_3: "`core/workflow_loader.py` loads the selected solution from `solutions.json`."
+    step_4: "`commands/os.py` calls `core/orchestrator.py:execute_module` with the list of tasks."
+    step_5: "Orchestrator loops through each task in the module."
+    step_6: "For a task (e.g., `tool: 'ai'`), it calls `tasks/registry.py:get_task_handler('ai')`."
+    step_7: "It receives an instance of `AITaskHandler`."
+    step_8: "It calls `handler.execute(params, context)`."
+    step_9: "The handler performs the actual work (e.g., calls an AI provider)."
+    step_10: "The result is stored in `step_context` if `output_key` is defined, ready for the next task."
+
+  task_handler_implementations:
+    AITaskHandler:
+      file: "tasks/ai_handler.py"
+      tool_name: "ai"
+      responsibility: "Generates text using a configured AI provider. Acts as an adapter to the `providers` module."
+    SocialTaskHandler:
+      file: "tasks/social_handler.py"
+      tool_name: "social"
+      responsibility: "Generates a social media post by calling the `core/social/generator.py` module."
+    BriefingTaskHandler:
+      file: "tasks/briefing_handler.py"
+      tool_name: "briefing"
+      responsibility: "Generates a briefing document by calling the `core/briefing/generator.py` module."
+    StructureTaskHandler:
+      file: "tasks/structure_handler.py"
+      tool_name: "structure"
+      responsibility: "Creates a folder structure by calling the `core/structure/generator.py` module."
+
+  context_and_data_passing:
+    TaskContext:
+      description: "A dataclass (`tasks/base.py`) passed to every `execute` method. It contains the global config, project metadata, and the `step_context`."
+    step_context:
+      description: "A dictionary within `TaskContext` that holds the outputs of previous tasks. This is the primary mechanism for inter-task communication."
+    output_key:
+      description: "A parameter in a task definition in `solutions.json`. If a task has `\"output_key\": \"my_var\"`, its return value is stored in `step_context['my_var']`."
+    placeholder_resolution:
+      description: "The orchestrator uses `format_task_params` to replace placeholders like `{my_var}` in a task's parameters with values from the `step_context` before execution."
+      example: "An 'ai' task saves its output to `recruiting_slogan`. A subsequent 'social' task can have `\"text\": \"{recruiting_slogan}\"` to use that output."
+
+# ============================================================================
+# PLUGIN ARCHITECTURE: IMAGE PROVIDERS (Epic 2 Implementation)
+# ============================================================================
+
+providers:
+  responsibility: "Flexible, multi-provider image generation with plugin system"
+
+  architecture:
+    pattern: "Abstract Base Class + Registry + Concrete Implementations"
+    location: "agency_toolkit/providers/"
+
+    components:
+      base:
+        file: "agency_toolkit/providers/base.py"
+        description: "Abstract base class defining provider interfaces"
+        exports:
+          - "class ImageProvider(ABC)"
+          - "class TextProvider(ABC) - NEW in Epic 11"
+          - "class ImageProviderError(Exception)"
+
+      registry:
+        file: "agency_toolkit/providers/provider_loader.py"
+        description: "Provider discovery and factory pattern (image + text)"
+        exports:
+          - "class ProviderRegistry"
+          - "get_provider(name: str) -> ImageProvider"
+          - "list_providers() -> dict[str, Type[ImageProvider]]"
+          - "get_text_provider(name: str) -> TextProvider - NEW in Epic 11"
+          - "list_text_providers() -> list[str] - NEW in Epic 11"
+
+      replicate:
+        file: "agency_toolkit/providers/replicate.py"
+        description: "Replicate provider (paid, optional)"
+        exports:
+          - "class ReplicateProvider(ImageProvider)"
+        requirements:
+          - "Requires: REPLICATE_API_TOKEN environment variable"
+          - "Models: stability-ai/sdxl, flux-schnell, etc."
+          - "Cost: $0.0023-0.0055 per image"
+
+      pollinations:
+        file: "agency_toolkit/providers/pollinations.py"
+        description: "Pollinations.ai provider (FREE - default)"
+        exports:
+          - "class PollinationsProvider(ImageProvider)"
+        features:
+          - "No API token required"
+          - "Free tier available"
+          - "Default provider for all image generation"
+          - "Models: Flux, SDXL"
+
+      mistral_provider:
+        file: "agency_toolkit/providers/mistral_provider.py"
+        description: "Mistral AI text generation provider (Epic 11)"
+        exports:
+          - "class MistralProvider(TextProvider)"
+        requirements:
+          - "Requires: MISTRAL_API_KEY environment variable"
+          - "Models: mistral-tiny, mistral-small-latest, mistral-medium, mistral-large-latest"
+          - "Cost: ~$0.001/1K input, $0.003/1K output tokens"
+        features:
+          - "Cloud-based, high quality"
+          - "Rate limiting and retry logic"
+          - "Profile support (code, creative, debug, agency_comms)"
+
+      ollama_provider:
+        file: "agency_toolkit/providers/ollama_provider.py"
+        description: "Ollama local text generation provider (FREE - Epic 11)"
+        exports:
+          - "class OllamaProvider(TextProvider)"
+        requirements:
+          - "Requires: Ollama installed locally (ollama.ai)"
+          - "Models: llama3.2, llama3.1, mistral, codellama, phi3"
+          - "Cost: FREE (runs locally)"
+        features:
+          - "Zero cost, privacy-focused"
+          - "No API tokens required"
+          - "Runs on local hardware"
+
+      google_provider:
+        file: "agency_toolkit/providers/google_provider.py"
+        description: "Google GenAI text generation provider (Epic 12)"
+        exports:
+          - "class GoogleProvider(TextProvider)"
+        requirements:
+          - "Requires: GOOGLE_API_KEY environment variable"
+          - "Models: gemini-pro, gemini-1.5-pro, gemini-1.5-flash"
+          - "Cost: Free tier available, then ~$0.00025/1K input tokens"
+        features:
+          - "Cloud-based, fast and efficient"
+          - "Generous free tier (2M tokens/min)"
+          - "Error handling for quota, timeout, server errors"
+        status: "✅ VALIDATED (Epic 14 testing)"
+
+  interface:
+    abstract_methods:
+      - "async generate(prompt: str, seed: int, width: int, height: int) -> dict"
+      - "get_cost() -> float"
+      - "validate_api_credentials() -> bool"
+      - "get_supported_models() -> list[str]"
+
+  configuration:
+    config_section: "[image_generation]"
+    settings:
+      - "provider: str = 'pollinations' (default)"
+      - "model: str = 'flux' (provider-specific)"
+      - "width: int = 1024"
+      - "height: int = 1024"
+      - "enable_cost_tracking: bool = true"
+      - "daily_budget: float = 50.0"
+
+  testing:
+    unit:
+      - "test_base_provider_abstract_methods"
+      - "test_registry_loading_all_providers"
+      - "test_replicate_api_error_handling"
+      - "test_pollinations_free_generation"
+      - "test_provider_cost_calculation"
+
+    integration:
+      - "test_switch_providers_mid_workflow"
+      - "test_pollinations_vs_replicate_same_prompt"
+      - "test_provider_fallback_on_api_error"
+
+# ============================================================================
+# SHARED UTILITIES (Keep Minimal)
+# ============================================================================
+
+config:
+  file: "agency_toolkit/config.py"
+
+  epic_9_updates:
+    load_config:
+      signature: "load_config(config_path: Path | None = None) -> Config"
+      priority_chain:
+        - "1. Project config (./config.toml in CWD) - highest"
+        - "2. User config (~/.config/agency-toolkit/config.toml)"
+        - "3. Explicit config_path parameter"
+        - "4. Application defaults - lowest"
+      merge_logic: "Higher-priority configs override, non-conflicting settings merge"
+      implementation: "Path.cwd() for project, Path.home() for user, dict.update() for merge"
+
+  allowed_functions:
+    - "load_config() -> Config"
+    - "get_logger(name: str) -> logging.Logger"
+    - "ensure_output_dir(path: Path) -> None"
+    - "load_template(template_dir: str, template_name: str, fallback: str) -> dict | list"
+    - "get_dynamic_choices_from_path(path: Path, suffix: str) -> list[str]"
+    - "get_dynamic_choices_from_config(config: Config, section: str) -> list[str]"
+
+  forbidden:
+    - "Business logic (belongs in modules)"
+    - "CLI argument parsing (belongs in cli_app.py)"
+    - "Module-specific helpers (keep in module)"
+
+  rationale: "Utils should be boring infrastructure, not a dumping ground"
+
+# ============================================================================
+# VALIDATION MODELS (Pydantic)
+# ============================================================================
+
+models:
+  file: "agency_toolkit/models.py"
+
+  purpose: "Fail fast with clear errors, not KeyError at runtime"
+
+  classes:
+    Config:
+      fields:
+        - "output_dir: Path"
+        - "social_style: str"
+        - "social_color: str"
+        - "briefing_type: str"
+        - "mistral_model: str"
+        - "mistral_profiles: dict"
+        - "json_output: bool"
+
+    SocialTemplate:
+      class: "SocialTemplate (v5.0 - Responsive)"
+      fields:
+        font_face: str
+        font_size_ratio: float | None  # e.g., 0.06 = 6% of image height
+        padding_ratio: float         # e.g., 0.1 = 10% margin
+        text_x_ratio: float          # e.g., 0.5 = center
+        text_y_ratio: float          # e.g., 0.5 = center
+        text_fill: str
+        v_align: str                 # 'top', 'middle', 'bottom'
+        h_align: str                 # 'left', 'center', 'right'
+        background_type: str         # 'solid' or 'gradient'
+        font_size: int | None        # DEPRECATED
+        text_position_xy: tuple | None # DEPRECATED
+      rationale: "Responsive layouts that adapt to different aspect ratios (square, story, landscape) instead of fixed pixel values. Fail fast on template errors."
+
+    BriefingData: # (Superset of all possible fields)
+      fields:
+        - "client_name: str"
+        - "project_name: str"
+        - "deadline: date"
+        - ... (all other fields as optional)
+
+  validation_strategy:
+    when: "At data load time (template, user input)"
+    how: "Pydantic parse_file / parse_obj"
+    error: "ValidationError → formatted for user"
+
+# ============================================================================
+# TESTING STRATEGY (AI-Slop Aligned)
+# ============================================================================
+
+testing:
+  framework: "pytest"
+  coverage_target: "70% (pragmatic)"
+
+  principles:
+    from_ai_slop:
+      - "Test real workflows, not framework internals"
+      - "Mock external dependencies (Mistral API)"
+      - "Focus on error cases (that's where AI fails)"
+
+  categories:
+    unit:
+      focus: "Individual functions, validation, error handling"
+      examples:
+        - "test_social_template_validation"
+        - "test_briefing_invalid_date"
+        - "test_mistral_missing_api_key"
+
+    integration:
+      focus: "End-to-end command flows"
+      examples:
+        - "test_social_command_creates_file"
+        - "test_briefing_interactive_mode"
+        - "test_mistral_with_prompt_file"
+        - "test_json_output_success"
+        - "test_json_output_error"
+
+  fixtures:
+    location: "tests/conftest.py"
+    examples:
+      - "tmp_output_dir: Temporary directory for output"
+      - "mock_config: Config object with test values"
+      - "mock_mistral_client: Mocked Mistral API"
+
+  critical_tests:
+    mistral:
+      - "test_query_success (mock API response)"
+      - "test_missing_api_key (exit code 1)"
+      - "test_timeout (clear error message)"
+      - "test_rate_limit (no retry loop)"
+      - "test_profile_loading_merges_config"
+      - "test_profile_invalid_name"
+
+    social:
+      - "test_all_styles_generate"
+      - "test_invalid_template_fallback"
+      - "test_custom_hex_color"
+      - "test_stdin_pipe"
+      - "test_dynamic_style_choice"
+
+    briefing:
+      - "test_interactive_validation (default)"
+      - "test_interactive_validation_web_type"
+      - "test_json_parse_error"
+      - "test_pdf_created"
+
+    structure:
+      - "test_folder_tree_created"
+      - "test_name_sanitization"
+      - "test_path_collision"
+
+# ============================================================================
+# END OF IMPLEMENTATION GUIDE
+# ============================================================================
+# ============================================================================
+# IMPLEMENTATION.yaml - Image Generation Section (Append after mistral:)
+# ============================================================================
+
+image_generation:
+  command: "image"
+  file: "agency_toolkit/image_gen.py"
+
+  responsibility: "Generate AI images via providers (NO orchestration)"
+
+  critical_constraints:
+    no_imports: "NEVER import mistral.py or social.py"
+    no_orchestration: "Does NOT chain other modules"
+    pure_function: "Input: prompt → Output: image path + metadata"
+
+  function_structure:
+    public:
+      - "generate_image(prompt, seed, width, height, provider, model, output_path, config) -> dict"
+
+    private:
+      - "_generate_replicate(prompt, seed, ...) -> dict"
+      - "_generate_stability(prompt, seed, ...) -> dict (Phase 4)"
+      - "_generate_dalle(prompt, seed, ...) -> dict (Phase 4)"
+      - "_generate_seed(content: str) -> int"
+      - "_download_image(url: str, path: Path) -> Path"
+      - "_get_api_token(provider: ImageProvider) -> str"
+
+  return_value:
+    type: "dict"
+    required_keys:
+      - "path: str (absolute path to saved image)"
+      - "cost: float (estimated USD)"
+      - "seed: int (used seed)"
+      - "model: str (model identifier)"
+    optional_keys:
+      - "url: str (original URL if applicable)"
+
+  validation_model:
+    location: "models.py"
+    class: "ImageGenerationConfig"
+    fields:
+      provider: ImageProvider
+      model: str
+      default_width: int
+      default_height: int
+      seed_strategy: str  # "hash_content" | "fixed" | "random"
+      default_seed: int | None
+      enable_cost_tracking: bool
+      daily_budget: float
+
+  error_handling:
+    missing_token:
+      check: "os.getenv('{PROVIDER}_API_TOKEN')"
+      action: "Raise ValueError (NOT typer.Exit - not in CLI context)"
+      message: |
+        {PROVIDER}_API_TOKEN not set.
+
+        Setup instructions:
+        1. Get token: {PROVIDER_URL}
+        2. Export: export {PROVIDER}_API_TOKEN='...'
+
+      example: |
+        REPLICATE_API_TOKEN not set.
+
+        Get your free token: https://replicate.com/account/api-tokens
+        Set it: export REPLICATE_API_TOKEN='r8_...'
+
+    api_timeout:
+      exception: "httpx.TimeoutException or requests.Timeout"
+      action: "Raise RuntimeError (cli_app.py handles display)"
+      message: "{provider} API timeout. Check internet connection."
+
+    rate_limit:
+      exception: "Provider-specific rate limit error"
+      action: "Raise RuntimeError"
+      message: "Rate limit exceeded. Wait {retry_after}s or upgrade plan."
+
+    server_error:
+      exception: "HTTP 5xx"
+      action: "Raise RuntimeError"
+      message: "{provider} server error: {error}. Try again later."
+
+    invalid_model:
+      check: "Model name validation"
+      action: "Raise ValueError"
+      message: "Invalid model '{model}' for provider '{provider}'. Valid: {valid_models}"
+
+  provider_implementations:
+    pollinations:
+      phase: "Phase 1 (MVP - CURRENT DEFAULT)"
+      package: "Built-in (no additional dependencies)"
+      env_var: "None (completely FREE)"
+
+      supported_models:
+        - "flux (default, fast, FREE)"
+        - "flux-pro (higher quality)"
+        - "sdxl (stable, FREE)"
+
+      api_call_pattern: |
+        import requests
+        response = requests.get(
+            "https://image.pollinations.ai/prompt/...",
+            params={"prompt": prompt, "seed": seed, "width": width, "height": height, "model": model}
+        )
+        image_data = response.content
+
+      cost_estimation:
+        all_models: 0.0  # USD per image (COMPLETELY FREE)
+
+      determinism: "✅ Full support via seed parameter"
+
+      notes:
+        - "Default provider changed from Replicate → Pollinations (Epic 2.4)"
+        - "Removes barrier to entry (no API token needed)"
+        - "Provides unlimited free tier"
+
+    replicate:
+      phase: "Phase 1 (MVP - OPTIONAL)"
+      package: "replicate (pip install replicate)"
+      env_var: "REPLICATE_API_TOKEN (optional)"
+      status: "Maintained for power users, not default"
+
+      supported_models:
+        - "stability-ai/sdxl"
+        - "stability-ai/stable-diffusion"
+        - "black-forest-labs/flux-schnell"
+
+      api_call_pattern: |
+        import replicate
+        client = replicate.Client(api_token=token)
+        output = client.run(
+            model,
+            input={"prompt": prompt, "seed": seed, "width": width, "height": height}
+        )
+
+      cost_estimation:
+        sdxl: 0.0032  # USD per image
+        sd_15: 0.0023
+        flux: 0.0055
+
+      determinism: "✅ Full support via seed parameter"
+
+    stability:
+      phase: "Phase 4 (Future)"
+      package: "stability-sdk"
+      env_var: "STABILITY_API_KEY"
+      note: "Implementation deferred - extensible via provider plugin system"
+
+    dalle:
+      phase: "Phase 4 (Future)"
+      package: "openai"
+      env_var: "OPENAI_API_KEY"
+      note: "Implementation deferred - seed support limited"
+
+  seed_generation:
+    strategy: "hash_content (default from config)"
+
+    implementations:
+      hash_content:
+        logic: "hash(prompt) % (2^32)"
+        code: |
+          import hashlib
+          hash_digest = hashlib.sha256(prompt.encode()).hexdigest()
+          return int(hash_digest[:8], 16)
+
+        rationale: "Same prompt → same seed → same image (deterministic)"
+
+      fixed:
+        logic: "config.default_seed"
+        rationale: "All images identical (for testing)"
+
+      random:
+        logic: "None (provider generates random)"
+        rationale: "Maximum variety (not deterministic)"
+
+  testing:
+    unit:
+      - "test_generate_seed_consistent"
+      - "test_generate_seed_different_prompts"
+      - "test_missing_replicate_token"
+      - "test_provider_enum_validation"
+      - "test_cost_in_return_value"
+
+    integration:
+      - "test_generate_image_replicate_mock"
+      - "test_download_image_mock"
+      - "test_api_error_handling"
+
+    mocking:
+      library: "pytest-mock or unittest.mock"
+      mock_targets:
+        - "replicate.Client.run"
+        - "requests.get (for image download)"
+
+# ============================================================================
+# MISTRAL MODULE - Image Prompt Enhancement (Add to existing mistral:)
+# ============================================================================
+
+mistral:
+  # ... existing content ...
+
+  profiles:
+    # ... existing profiles ...
+
+    image_prompt_enhancer:
+      name: "image_prompt_enhancer"
+      system_prompt: |
+        You are an expert at Stable Diffusion prompts.
+
+        Given a concept or brief description, create a detailed, professional prompt optimized for
+        image generation. Include:
+        - Art style and medium (photorealistic, minimalist, illustration, etc.)
+        - Lighting and mood (golden hour, studio lighting, dramatic, soft)
+        - Composition details (centered, rule of thirds, close-up, wide angle)
+        - Quality tags (4k, professional photography, detailed, high resolution)
+
+        Output ONLY the enhanced prompt, no explanation or preamble.
+
+      temperature: 0.3  # Lower for consistency
+      max_tokens: 150
+
+      usage: "Called by cli_app.py before image_gen.generate_image()"
+
+      examples:
+        input: "Concept: tech startup office"
+        output: "modern minimalist tech startup office, large windows with city view, natural sunlight streaming in, green plants, collaborative workspace with standing desks, professional photography, 4k, clean aesthetic, bright and airy"
+
+  function_structure:
+    # ... existing functions ...
+
+    enhance_image_prompt:
+      signature: "enhance_image_prompt(concept: str, config) -> str"
+
+      responsibility: "Convert brief concept into optimized image prompt"
+
+      critical_constraint: "Does NOT call image_gen.py - pure prompt transformation"
+
+      implementation: |
+        def enhance_image_prompt(concept: str, config) -> str:
+            response = query_mistral(
+                prompt=f"Concept: {concept}",
+                profile="image_prompt_enhancer",
+                config=config
+            )
+            return response["response"].strip()
+
+      error_handling: "Same as query_mistral() - no special handling"
+
+  testing:
+    # ... existing tests ...
+
+    unit:
+      - "test_enhance_image_prompt_output_format"
+      - "test_enhance_image_prompt_no_preamble"
+
+    integration:
+      - "test_enhance_image_prompt_mock_api"
+
+# ============================================================================
+# SOCIAL MODULE - Background Image Support (Add to existing social:)
+# ============================================================================
+
+social:
+  # ... existing content ...
+
+  function_structure:
+    public:
+      # Enhanced signature
+      - "generate_social_post(text, style, color, format, background_image_path, config) -> dict"
+
+    private:
+      # ... existing functions ...
+      - "_load_background_image(path: Path, format: str) -> PIL.Image"
+      - "_overlay_text_on_image(image: PIL.Image, text: str, template) -> PIL.Image"
+
+  input_handling:
+    background_image_path:
+      type: "Path | None"
+      default: "None (use gradient/solid)"
+
+      logic: |
+        if background_image_path:
+            base_image = _load_background_image(background_image_path, format)
+        else:
+            base_image = _create_base_image(format, color, template)  # Existing logic
+
+  critical_constraint:
+    no_image_generation: "social.py does NOT generate AI images"
+    receives_path: "cli_app.py passes pre-generated image path"
+    no_imports: "Does NOT import image_gen.py or mistral.py"
+
+  testing:
+    # ... existing tests ...
+
+    unit:
+      - "test_load_background_image"
+      - "test_overlay_text_on_custom_background"
+
+    integration:
+      - "test_social_with_ai_background_mock"
+
+# ============================================================================
+# CLI ORCHESTRATION (Add to existing cli: section in BLUEPRINT.yaml)
+# ============================================================================
+
+cli:
+  # ... existing content ...
+
+  orchestration_patterns:
+    social_with_ai_background:
+      command: "toolkit social 'text' --bg-concept 'concept'"
+
+      flow:
+        step_1: "cli_app.py receives --bg-concept"
+        step_2: "If registry: prefix → load from registry, else continue"
+        step_3: "cli_app.py calls mistral.enhance_image_prompt(concept)"
+        step_4: "cli_app.py calls image_gen.generate_image(enhanced_prompt)"
+        step_5: "cli_app.py calls social.generate_social_post(text, background_image_path=...)"
+        step_6: "cli_app.py displays cost + paths"
+
+      implementation: |
+        @app.command()
+        def social_cmd(..., bg_concept: Optional[str] = None, bg_seed: Optional[int] = None):
+            config = ctx.obj
+            background_image_path = None
+            total_cost = 0.0
+
+            if bg_concept:
+                # Step 2: Registry check
+                if bg_concept.startswith("registry:"):
+                    concept_id = bg_concept.replace("registry:", "")
+                    actual_prompt = _load_from_registry("image-concepts", concept_id)
+                else:
+                    # Step 3: Mistral enhancement
+                    actual_prompt = mistral.enhance_image_prompt(bg_concept, config)
+
+                # Step 4: Image generation
+                img_result = image_gen.generate_image(
+                    prompt=actual_prompt,
+                    seed=bg_seed,
+                    config=config
+                )
+                background_image_path = Path(img_result["path"])
+                total_cost = img_result["cost"]
+
+            # Step 5: Social post generation
+            result = social.generate_social_post(
+                text=text,
+                ...,
+                background_image_path=background_image_path,
+                config=config
+            )
+
+            # Step 6: Display
+            typer.secho(f"✅ Social post: {result['path']}", fg="green")
+            if total_cost > 0:
+                typer.secho(f"💰 Cost: ${total_cost:.4f}", fg="cyan")
+
+  error_display:
+    api_errors:
+      pattern: "Catch exceptions from modules, display user-friendly"
+      example: |
+        try:
+            result = image_gen.generate_image(...)
+        except ValueError as e:
+            # Missing token, invalid params
+            typer.secho(f"❌ Configuration error: {e}", fg="red")
+            raise typer.Exit(1)
+        except RuntimeError as e:
+            # API errors, timeouts
+            typer.secho(f"❌ API error: {e}", fg="red")
+            raise typer.Exit(1)
+
+# ============================================================================
+# REGISTRY STRUCTURE (Add to existing registry: section)
+# ============================================================================
+
+registry:
+  # ... existing content ...
+
+  image_concepts:
+    file: "registry/prompts/image-concepts.json"
+
+    structure:
+      metadata:
+        id: "image-concepts"
+        name: "AI Image Concepts Library"
+        description: "Pre-optimized prompts for image generation"
+        version: "1.0"
+        type: "prompts"
+
+      entries:
+        format: "{ 'concept-id': { 'name', 'prompt', 'tags' } }"
+
+        example: |
+          "tech-startup": {
+            "name": "Tech Startup Office",
+            "prompt": "modern minimalist tech startup office, large windows...",
+            "tags": ["tech", "office", "professional"]
+          }
+
+    usage:
+      cli: "toolkit social 'text' --bg-concept registry:tech-startup"
+
+      loading_logic: |
+        def _load_from_registry(registry_type: str, entry_id: str) -> str:
+            path = Path(f"registry/prompts/{registry_type}.json")
+            data = json.loads(path.read_text())
+            return data["entries"][entry_id]["prompt"]
+
+    initial_entries:
+      - "tech-startup"
+      - "abstract-gradient"
+      - "celebration"
+      - "nature-calm"
+      - "product-minimal"
+
+    extensibility:
+      user_override: "~/.config/agency-toolkit/registry/prompts/image-concepts.json"
+      merge_strategy: "User entries override built-in if same ID"
+
+# ============================================================================
+# COST TRACKING (Add new section or append to quality:)
+# ============================================================================
+
+cost_tracking:
+  philosophy: "Transparent, user-controlled, no surprises"
+
+  phase_1_mvp:
+    scope: "Per-request cost estimation + display"
+
+    implementation:
+      return_value: "All generate_image() calls return {'cost': float}"
+      display: "cli_app.py shows cost after each generation"
+      config: "[image_generation] enable_cost_tracking = true"
+
+    no_persistence: "MVP does not store costs (Phase 4 feature)"
+
+  phase_4_future:
+    scope: "Daily/monthly tracking, budget alerts"
+
+    features:
+      - "Store costs in ~/.config/agency-toolkit/costs.json"
+      - "toolkit costs today/week/month"
+      - "Hard budget limits (block if exceeded)"
+      - "Cost analytics dashboard"
+
+# ============================================================================
+# END OF IMAGE GENERATION IMPLEMENTATION
+# ============================================================================
+
+# ============================================================================
+# BACKWARD COMPATIBILITY LAYER (Epic 3 Implementation)
+# ============================================================================
+
+backward_compatibility:
+  philosophy: "Old code should work without changes"
+
+  wrapper_files:
+    - "agency_toolkit/social.py"
+    - "agency_toolkit/briefing.py"
+    - "agency_toolkit/structure.py"
+    - "agency_toolkit/mistral.py"
+
+  wrapper_pattern: |
+    # OLD: from agency_toolkit.social import generate_social_post
+    # NEW: from agency_toolkit.core.social.generator import generate_social_post
+    # BOTH work via wrapper!
+
+    # agency_toolkit/social.py (wrapper)
+    from agency_toolkit.core.social.generator import generate_social_post
+    __all__ = ["generate_social_post"]
+
+  verification:
+    test_location: "tests/integration/"
+    test_patterns:
+      - "test_old_import_path_works.py (verify old imports still work)"
+      - "test_new_import_path_works.py (verify new imports work)"
+      - "test_mixed_imports_compatible.py (verify both can coexist)"
+
+  migration_path:
+    phase_1: "Old code works unchanged (via wrappers)"
+    phase_2: "New code uses core/ imports directly"
+    phase_3: "Eventually deprecate old imports (future version)"
+
+# ============================================================================
+# TESTING STRATEGY SUMMARY (Epic 4 Implementation)
+# ============================================================================
+
+testing_summary:
+  status: "166 passing tests (was 103), 0 failures, >80% coverage"
+
+  test_breakdown:
+    unit: "77 tests - individual functions, validation, error handling"
+    integration: "32 tests - end-to-end CLI commands"
+    provider: "57 tests - NEW plugin architecture tests"
+
+  test_categories:
+    old_imports:
+      tests:
+        - "test_social_backward_compat.py (old import path)"
+        - "test_briefing_backward_compat.py (old import path)"
+        - "test_structure_backward_compat.py (old import path)"
+      purpose: "Verify backward compatibility layer works"
+
+    new_modular:
+      tests:
+        - "tests/unit/core/social/ (modular structure)"
+        - "tests/unit/core/briefing/ (modular structure)"
+        - "tests/unit/core/structure/ (modular structure)"
+        - "tests/unit/core/mistral/ (modular structure)"
+      purpose: "Verify new modular code is correct"
+
+    providers:
+      tests:
+        - "tests/unit/providers/test_base.py (15 tests)"
+        - "tests/unit/providers/test_pollinations.py (20 tests - FREE provider)"
+        - "tests/unit/providers/test_replicate.py (22 tests - optional provider)"
+      purpose: "Verify plugin architecture and all providers"
+
+    cli_integration:
+      tests:
+        - "tests/integration/test_social_cli.py"
+        - "tests/integration/test_briefing_cli.py"
+        - "tests/integration/test_structure_cli.py"
+        - "tests/integration/test_mistral_cli.py"
+        - "tests/integration/test_image_generation_cli.py"
+      purpose: "Verify end-to-end CLI workflows"
+
+  removed_tests: "17 false positive tests removed (testing removed internal functions)"
+
+# ============================================================================
+# EPIC 8: PRODUCTION HARDENING (v1.0.0)
+# ============================================================================
+
+resilience:
+  module: "agency_toolkit/core/resilience.py"
+  purpose: "Error recovery, graceful degradation, offline support"
+
+  classes:
+    RateLimiter:
+      purpose: "Rate limit API calls (1 req/sec default)"
+      methods:
+        - "wait() -> None"
+
+    FontFallbackHandler:
+      purpose: "Handle font loading with cascade"
+      methods:
+        - "get_font(preferred: str | None) -> str"
+        - "_is_font_available(font_name: str) -> bool"
+
+    OfflineMode:
+      purpose: "Context manager for offline operations"
+      methods:
+        - "is_offline() -> bool"
+        - "enable() -> None"
+        - "disable() -> None"
+        - "check_network_allowed() -> None"
+
+  decorators:
+    - "@with_retry(max_attempts, backoff_factor, exceptions)"
+    - "@with_fallback(fallback_value, fallback_fn, log_error)"
+    - "@require_network"
+    - "rate_limit_mistral()"
+
+  integration:
+    - "mistral.py: API calls wrapped with retry + rate limit"
+    - "image_gen.py: Image generation with retry + network check"
+    - "cli_app.py: --offline flag enables OfflineMode"
+
+discovery:
+  module: "agency_toolkit/core/discovery.py"
+  purpose: "Dynamic option discovery for zero-guesswork UX"
+
+  functions:
+    - "get_available_seeds() -> dict[str, dict]"
+    - "get_available_social_styles() -> dict[str, str]"
+    - "get_available_social_formats() -> dict[str, str]"
+    - "get_available_briefing_types() -> dict[str, str]"
+    - "get_available_structure_types() -> dict[str, str]"
+    - "get_choice_list(choices_dict) -> list[dict]"
+    - "get_seed_choice_list() -> list[dict]"
+
+  integration:
+    - "commands/interactive_utils.py: All prompts use discovery"
+    - "Registry templates loaded dynamically"
+    - "Descriptions shown inline in prompts"
+
+validate_command:
+  module: "agency_toolkit/commands/validate.py"
+  command: "toolkit validate snapshot"
+  purpose: "Snapshot-based regression testing"
+
+  structure:
+    snapshots_dir: "snapshots/"
+    approved: "snapshots/approved/ (golden masters, in git)"
+    current: "snapshots/current/ (test runs, gitignored)"
+
+  functions:
+    - "_hash_file(file_path) -> str"
+    - "_extract_pdf_text(pdf_path) -> str"
+    - "_compare_snapshots(current, approved) -> dict"
+
+  commands:
+    validate: "toolkit validate snapshot (compare current vs approved)"
+    approve: "toolkit validate snapshot --approve (promote current)"
+
+  comparison_types:
+    pdf: "Text extraction comparison (layout-agnostic)"
+    images: "SHA-256 hash comparison (pixel-perfect)"
+    json: "Content comparison (structure + values)"
+
+quality_tests:
+  location: "tests/quality/"
+  purpose: "Semantic validation and AI slop prevention"
+
+  test_suites:
+    test_semantic_quality.py:
+      classes:
+        TestTemplateQuality:
+          - "test_all_templates_have_required_fields"
+          - "test_prompts_contain_quality_indicators"
+          - "test_prompts_avoid_lazy_words"
+          - "test_templates_have_valid_color_palettes"
+
+        TestOutputContracts:
+          - "test_pdf_structure_contract"
+          - "test_json_structure_contract"
+
+# ============================================================================
+# MODULE 5: GRAND AGENCY OS (Epic 10 - Orchestration Layer)
+# ============================================================================
+
+grand_agency_os:
+  command: "os"
+  purpose: "Orchestrated project workflows via registry-based solution modules"
+  files:
+    - "agency_toolkit/commands/os.py (CLI interface for OS workflows)"
+    - "agency_toolkit/core/orchestrator.py (Task execution engine with dynamic prompts)"
+    - "agency_toolkit/core/dependency_resolver.py (Module dependency resolution)"
+    - "agency_toolkit/core/grand_agency_registry.py (Registry loader & validator)"
+    - "registry/seeds/archetypes.json (Client archetype definitions)"
+    - "registry/seeds/solutions.json (Solution module definitions with dependencies)"
+
+  responsibility: "Guide users through multi-tool workflows based on archetypes and solutions"
+
+  architecture:
+    registry_layer:
+      archetypes: "Define client personas (e.g., 'Local Craftsman', 'B2B SaaS')"
+      solutions: "Define workflow templates linked to archetypes"
+      modules: "Define task sequences within solutions (with optional dependencies)"
+      tasks: "Individual tool invocations with parameters (supports dynamic prompts)"
+
+    dependency_layer:
+      location: "core/dependency_resolver.py"
+      components:
+        resolve_module_dependencies: "Main entry point - resolves dependency tree"
+        _resolve_recursive: "Recursive DFS for dependency traversal"
+        _validate_no_circular: "Circular dependency detection"
+
+      features:
+        - "Automatic resolution of module dependencies from solutions.json"
+        - "Topological ordering for correct execution sequence"
+        - "Circular dependency detection with clear error messages"
+        - "Support for complex dependency graphs (linear, tree, diamond)"
+
+      dependency_format:
+        description: "Modules declare dependencies via 'dependencies' array in solutions.json"
+        example: |
+          {
+            "id": "module-c",
+            "title": "Advanced Module",
+            "dependencies": ["module-a", "module-b"]
+          }
+
+    orchestration_layer:
+      location: "core/orchestrator.py"
+      components:
+        execute_module: "Main entry point - loops through tasks, handles errors"
+        _execute_task: "Tool dispatcher - maps tool names to core functions"
+        _format_task_params: "Dynamic prompt templating with context substitution"
+
+      tool_mapping:
+        structure: "Calls core/structure/generator.py::generate()"
+        briefing: "Calls briefing.py::generate_briefing()"
+        social: "Calls core/social/generator.py::generate()"
+
+      dynamic_prompts:
+        description: "Task params support {placeholder} syntax for context injection"
+        supported_placeholders:
+          - "{project_name}: User-provided project name"
+          - "{archetype_name}: Selected archetype display name"
+          - "{solution_name}: Selected solution display name"
+          - "{pain_points}: Archetype pain points (comma-separated)"
+          - "{goals}: Archetype goals (comma-separated)"
+
+        example: |
+          params: {
+            "text": "Create a post for {archetype_name} about {project_name}"
+          }
+          → becomes: "Create a post for Local Craftsman about My Bakery"
+
+      error_handling:
+        - "Per-task try/catch with TaskResult tracking"
+        - "stop_on_error flag for fail-fast behavior"
+        - "Detailed error logging with exc_info=True"
+        - "Dependency chain stops if upstream module fails"
+
+    cli_layer:
+      location: "commands/os.py"
+      command: "os init --name 'Project Name'"
+      workflow:
+        - "Step 1: Validate registry (archetypes + solutions)"
+        - "Step 2: Interactive archetype selection"
+        - "Step 3: Interactive solution selection (filtered by archetype)"
+        - "Step 4: Interactive module selection"
+        - "Step 5: Resolve module dependencies (if any)"
+        - "Step 6: Build execution context"
+        - "Step 7: Execute all modules in dependency order"
+
+  context_variables:
+    description: "Data passed from CLI through orchestrator to core functions"
+    structure:
+      project_name: "User-provided project name"
+      archetype_id: "Selected archetype ID (e.g., 'I', 'II')"
+      archetype_name: "Selected archetype display name"
+      solution_id: "Selected solution ID (e.g., 'A1', 'B2')"
+      solution_name: "Selected solution display name"
+      pain_points: "List of archetype pain points"
+      goals: "List of archetype goals"
+      stop_on_error: "Boolean - whether to halt on first error"
+
+  task_execution:
+    structure_task:
+      tool: "structure"
+      params:
+        structure_type: "Type of project (web, print, video, social)"
+        base_path: "Base output directory (default: ./output)"
+        dry_run: "Boolean - preview without creating"
+        force: "Boolean - overwrite existing structure"
+
+      context_mapping:
+        client: "context['archetype_name']"
+        project: "context['project_name']"
+
+    briefing_task:
+      tool: "briefing"
+      params:
+        format_type: "Output format (pdf, md)"
+        output_dir: "Output directory (default: ./output/briefings)"
+        target_audience: "Target audience description"
+        deliverables: "List of deliverables"
+        deadline: "Project deadline (YYYY-MM-DD)"
+        budget: "Project budget"
+        notes: "Additional notes"
+
+      context_mapping:
+        client_name: "context['archetype_name']"
+        project_name: "context['project_name']"
+        project_type: "context['solution_name']"
+        objectives: "context['goals']"
+
+    social_task:
+      tool: "social"
+      params:
+        text: "Post text content"
+        style: "Template style (modern, minimal, bold)"
+        color: "Color name or 'custom'"
+        format: "Image format (square, story, landscape)"
+        output_dir: "Output directory (default: ./output/social)"
+        dry_run: "Boolean - preview without creating"
+
+  validation:
+    registry_validation:
+      location: "core/grand_agency_registry.py::validate_registry()"
+      checks:
+        - "archetypes.json exists and is valid JSON"
+        - "solutions.json exists and is valid JSON"
+        - "All solutions reference valid archetype_ids"
+        - "All modules have required fields (id, title, description)"
+
+      error_handling:
+        - "Raises ValueError with descriptive message"
+        - "Fails fast during 'os init' command"
+
+  testing:
+    unit:
+      registry_tests:
+        location: "tests/unit/test_grand_agency_registry.py"
+        tests:
+          - "test_load_archetypes_success"
+          - "test_load_solutions_success"
+          - "test_validate_registry_success"
+          - "test_registry_missing_file"
+          - "test_registry_invalid_json"
+
+      dependency_tests:
+        location: "tests/unit/test_dependency_resolver.py"
+        tests:
+          - "test_single_module_no_dependencies"
+          - "test_linear_dependency_chain"
+          - "test_multiple_dependencies"
+          - "test_circular_dependency_detection"
+          - "test_self_circular_dependency"
+          - "test_missing_dependency"
+          - "test_realistic_agency_workflow"
+
+    integration:
+      location: "tests/integration/test_grand_agency_integration.py"
+      tests:
+        - "test_os_init_workflow (CLI + orchestrator + core functions)"
+        - "test_execute_module_real_structure_task (creates actual folders)"
+        - "test_execute_module_real_briefing_task (creates actual PDF)"
+        - "test_execute_module_real_social_task (creates actual image)"
+        - "test_execute_module_error_handling"
+        - "test_dependency_resolution_executes_in_order"
+
+      validation:
+        - "Verify actual output files are created (not placeholders)"
+        - "Verify TaskResult success/failure tracking"
+        - "Verify stop_on_error behavior"
+        - "Verify dependency chain execution order"
+        - "Verify dynamic prompt substitution"
+
+  phase_status:
+    phase_1_complete: true
+    phase_1_scope:
+      - "✅ CLI workflow (os init command)"
+      - "✅ Registry loading and validation"
+      - "✅ Interactive selection prompts"
+      - "✅ Orchestrator with real core function integration"
+      - "✅ Error handling and result tracking"
+
+    phase_2_complete: true
+    phase_2_scope:
+      - "✅ Dependency resolution (dependency_resolver.py)"
+      - "✅ Automatic module ordering via topological sort"
+      - "✅ Circular dependency detection"
+      - "✅ Dynamic prompt templating with context injection"
+      - "✅ Multi-module execution chain support"
+      - "✅ Full integration and unit test coverage"
+
+    phase_3_complete: true
+    phase_3_scope_epic_13:
+      description: "AI Task Integration (Epic 13 / WU 14.1-14.2)"
+      achievements:
+        - "✅ AI tool in orchestrator (_execute_task handles 'ai' tool)"
+        - "✅ Inter-task context passing (step_context dictionary)"
+        - "✅ Output key mechanism (tasks can declare output_key)"
+        - "✅ Placeholder resolution in params ({variable} syntax)"
+        - "✅ Provider-agnostic AI generation (uses get_text_provider)"
+      implementation_details:
+        ai_tool_execution: |
+          When tool_name == "ai":
+          1. Extract prompt, provider, model, temperature from params
+          2. Get TextProvider via get_text_provider(provider_name)
+          3. Call provider.generate(prompt, model, temperature, max_tokens)
+          4. Return response text (not full result dict)
+        inter_task_context: |
+          - execute_module maintains step_context = {}
+          - If task has "output_key": "my_var", result stored in step_context['my_var']
+          - _format_task_params resolves {my_var} placeholders from context
+          - Allows chaining: AI generates text → Social uses {generated_text}
+
+    phase_4_complete: true
+    phase_4_scope_epic_14:
+      description: "Production AI Workflows (Epic 14 / WU 14.3-14.4)"
+      achievements:
+        - "✅ 4 real-world AI modules in solutions.json"
+        - "✅ A1_M4: Social Recruiting (AI → Social pipeline)"
+        - "✅ A2_M4: Tourism Social Media (AI → Social pipeline)"
+        - "✅ B1_M3: B2B Lead Content (AI → Briefing pipeline)"
+        - "✅ C1_M3: Local Retail Campaign (AI → Social pipeline)"
+        - "✅ Comprehensive batch test (4/4 scenarios, 21/21 tasks)"
+        - "✅ Mistral API integration validated"
+        - "✅ Google API integration validated"
+        - "⏳ WU 14.4: Manual quality review (IN PROGRESS)"
+      test_results:
+        date: "2025-11-07"
+        scenarios_passed: "4/4"
+        tasks_executed: "21/21"
+        artifacts_generated:
+          social_images: 3
+          briefing_pdfs: 6
+        api_providers_tested:
+          - "Mistral (working)"
+          - "Google (working)"
+      known_issues:
+        artifact_quality:
+          description: "Generated artifacts exist but quality needs review"
+          symptoms:
+            - "PDF files are small (~4KB) - may be missing content"
+            - "AI-generated text may contain 'AI slop'"
+            - "Text length warnings (1686 chars vs 280 max for social)"
+          next_steps:
+            - "WU 14.4: Manual inspection of PNGs and PDFs"
+            - "WU 14.5: Refine AI prompts for better output quality"
+            - "Fix text length constraints in social tool"
+
+    future_phases:
+      phase_5_quality_refinement:
+        description: "AI Output Quality Improvement (WU 14.5+)"
+        scope:
+          - "Prompt engineering for concise, high-quality output"
+          - "Content validation (length, tone, formatting)"
+          - "Anti-AI-slop detection and filtering"
+          - "User feedback integration for prompt refinement"
+
+# ============================================================================
+# END OF IMPLEMENTATION GUIDE
+# ============================================================================

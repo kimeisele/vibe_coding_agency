@@ -1,0 +1,61 @@
+# Test Configuration
+# Optimized for fast test execution with minimal external dependencies
+
+environment: test
+project_root: "."
+
+database:
+  url: "sqlite:///:memory:"
+  echo: false
+  pool_size: 5
+  max_overflow: 10
+  pool_timeout: 30
+  pool_recycle: 3600
+  auto_create_tables: true
+
+api:
+  host: "127.0.0.1"
+  port: 8001
+  debug: false
+  workers: 1
+  reload: false
+  access_log: false
+  cors_origins:
+    - "*"
+
+shell:
+  timeout: 60
+  max_output_lines: 1000
+  respect_gitignore: true
+  retry_on_timeout: false
+  max_retries: 1
+
+logging:
+  level: "WARNING"
+  format: "console"
+  log_file: null
+  max_file_size: 10485760
+  backup_count: 1
+
+security:
+  enable_constitutional_validation: false
+  audit_log_retention_days: 1
+  max_session_duration_hours: 1
+
+performance:
+  enable_caching: false
+  max_concurrent_operations: 5
+  max_worker_threads: 2
+
+cache:
+  backend: "memory"
+  ttl_seconds: 60
+  max_size: 100
+  prefix: "test_"
+
+task:
+  max_workers: 1
+  queue_size: 50
+  retry_attempts: 0
+  retry_delay_seconds: 1
+  timeout_seconds: 120

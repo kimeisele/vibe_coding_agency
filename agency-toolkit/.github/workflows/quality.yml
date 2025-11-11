@@ -1,0 +1,103 @@
+name: Quality Dashboard
+
+on:
+  push:
+    branches: [ master, main, develop ]
+  pull_request:
+    branches: [ master, main, develop ]
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    name: Calculate Quality Score
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+          pip install pytest-html coverage[toml] mypy ruff bandit
+
+      - name: Run tests with coverage
+        run: |
+          python -m pytest tests/ --cov=agency_toolkit --cov-report=json --cov-report=term-missing -v --tb=short 2>&1 | tee test_output.log
+
+      - name: Generate HTML coverage report
+        run: |
+          python -m coverage html
+          python -m pytest tests/ --html=pytest_report.html --self-contained-html 2>&1 || true
+
+      - name: Calculate quality score
+        run: python scripts/calculate_quality_score.py
+
+      - name: Check quality threshold
+        run: |
+          SCORE=$(python -c "import json; print(json.load(open('quality_score.json'))['total'])")
+          echo "Quality Score: $SCORE/100"
+          THRESHOLD=80
+          if (( $(echo "$SCORE < $THRESHOLD" | bc -l) )); then
+            echo "❌ Quality score $SCORE below threshold $THRESHOLD"
+            exit 1
+          fi
+          echo "✅ Quality score $SCORE meets threshold $THRESHOLD"
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: |
+            pytest_report.html
+            htmlcov/
+            quality_score.json
+            .coverage
+
+      - name: Comment PR with quality score
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            try {
+              const scoreData = JSON.parse(fs.readFileSync('quality_score.json', 'utf8'));
+              const status = scoreData.passed ? '✅' : '⚠️';
+
+              const comment = `## ${status} Quality Dashboard Report
+
+              | Metric | Value | Target |
+              |--------|-------|--------|
+              | **Total Score** | ${scoreData.total}/100 | ≥80 |
+              | Coverage | ${scoreData.coverage}% | >75% |
+              | Pass Rate | ${scoreData.pass_rate}% | 100% |
+              | Performance | ${scoreData.performance_score}/25 | - |
+              | Code Quality | ${scoreData.code_quality}/25 | - |
+
+              ${scoreData.passed ? '🎉 This PR meets quality standards!' : '⚠️ Quality score below threshold. Please review weak areas.'}
+
+              [View detailed report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+              `;
+
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            } catch (error) {
+              console.log('Could not post quality comment:', error);
+            }

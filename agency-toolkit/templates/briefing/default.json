@@ -1,0 +1,16 @@
+{
+  "rationale": "The 5 W's. Gathers the absolute minimum required to start any task.",
+  "required": [
+    {"key": "client_name", "prompt": "Client Name"},
+    {"key": "project_name", "prompt": "Project Name"},
+    {"key": "main_objective", "prompt": "What is the single most important goal? (WHAT)"},
+    {"key": "target_audience", "prompt": "Who is this for? (WHO)"},
+    {"key": "deadline", "prompt": "When is the final deadline? (YYYY-MM-DD) (WHEN)"}
+  ],
+  "optional": [
+    {"key": "context", "prompt": "Why are we doing this now? (WHY)"},
+    {"key": "key_message", "prompt": "What is the key takeaway message?"},
+    {"key": "budget", "prompt": "Budget (if known)"},
+    {"key": "deliverables", "prompt": "What specific files are needed? (e.g., PDF, PNGs)"}
+  ]
+}

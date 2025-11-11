@@ -1,0 +1,599 @@
+# Epic 2: Migrate Task Handlers to Plugin System
+
+## 🎯 Goal
+Convert `core/task_handlers.py` (4 handlers) to plugin architecture like `providers/`.
+
+## 📊 Current State (from analysis)
+```
+✅ Confirmed:
+  - File: agency_toolkit/core/task_handlers.py (173 lines)
+  - Has TASK_REGISTRY dict
+  - Has 4 handler functions (handle_*)
+  - Used by: core/orchestrator.py
+```
+
+## 🏗️ Target Architecture
+```
+agency_toolkit/
+├── tasks/
+│   ├── __init__.py
+│   ├── base.py              # TaskHandler ABC
+│   ├── registry.py          # register_task_handler, get_task_handler
+│   ├── ai_handler.py        # AITaskHandler(TaskHandler)
+│   ├── social_handler.py    # SocialTaskHandler(TaskHandler)
+│   ├── briefing_handler.py  # BriefingTaskHandler(TaskHandler)
+│   └── structure_handler.py # StructureTaskHandler(TaskHandler)
+└── core/
+    └── orchestrator.py      # Uses: from tasks.registry import get_task_handler
+```
+
+---
+
+## 📋 Tasks
+
+### Task 2.1: Read Current Implementation
+
+**AI Agent Instructions:**
+```bash
+ACTION: Analyze
+FILES:
+  - agency_toolkit/core/task_handlers.py (full file)
+  - agency_toolkit/core/orchestrator.py (lines with TASK_REGISTRY)
+
+OUTPUT:
+1. List all 4 handlers:
+   - Function name
+   - Parameters
+   - Return type
+   - Dependencies (what it imports/calls)
+
+2. Show TASK_REGISTRY structure:
+   ```python
+   TASK_REGISTRY = {
+       "ai": handle_ai_task,
+       # ... what else?
+   }
+   ```
+
+3. Show how orchestrator uses it:
+   ```python
+   handler = TASK_REGISTRY.get(tool_name)
+   # ... then what?
+   ```
+
+FORMAT: Markdown with code snippets
+NO PROPOSALS YET - just facts
+```
+
+**Validation:**
+- AI shows exact current code
+- AI identifies all dependencies
+- AI shows orchestrator usage pattern
+
+**Time:** 20 minutes
+
+---
+
+### Task 2.2: Create Base Classes
+
+**AI Agent Instructions:**
+```python
+ACTION: Create new module
+FILE: agency_toolkit/tasks/base.py
+
+CONTENT:
+from abc import ABC, abstractmethod
+from dataclasses import dataclass
+from typing import Any
+from pathlib import Path
+
+
+@dataclass
+class TaskContext:
+    """Execution context for a task.
+
+    Attributes:
+        config: Global Config object
+        step_context: Outputs from previous tasks (e.g., {"tagline": "..."})
+        archetype_id: Current archetype being processed (optional)
+        solution_id: Current solution being executed (optional)
+    """
+    config: Any  # TODO: Import Config type from models
+    step_context: dict[str, Any]
+    archetype_id: str | None = None
+    solution_id: str | None = None
+
+
+class TaskHandler(ABC):
+    """Base class for all task handlers (Strategy Pattern).
+
+    Example:
+        class MyTaskHandler(TaskHandler):
+            @property
+            def name(self) -> str:
+                return "mytask"
+
+            def validate_params(self, params: dict) -> None:
+                if "required_field" not in params:
+                    raise ValueError("Missing required_field")
+
+            def execute(self, params: dict, context: TaskContext) -> dict:
+                return {"result": "success"}
+    """
+
+    @property
+    @abstractmethod
+    def name(self) -> str:
+        """Unique task name (e.g., 'ai', 'social')."""
+        pass
+
+    @abstractmethod
+    def validate_params(self, params: dict[str, Any]) -> None:
+        """Validate params before execution.
+
+        Args:
+            params: Task parameters from JSON
+
+        Raises:
+            ValueError: If params are invalid
+        """
+        pass
+
+    @abstractmethod
+    def execute(
+        self,
+        params: dict[str, Any],
+        context: TaskContext
+    ) -> dict[str, Any]:
+        """Execute the task.
+
+        Args:
+            params: Task parameters (already validated)
+            context: Execution context with config and step outputs
+
+        Returns:
+            Task output (will be stored in step_context if output_key set)
+        """
+        pass
+
+RULES:
+- Keep it simple (no fancy logic yet)
+- ABC forces subclasses to implement all methods
+- TaskContext is dataclass (not Pydantic) for speed
+
+TEST:
+- Can import: from agency_toolkit.tasks.base import TaskHandler, TaskContext
+- Cannot instantiate ABC directly (raises TypeError)
+```
+
+**Validation:**
+- File created
+- Import works
+- Trying `TaskHandler()` raises TypeError
+
+**Time:** 30 minutes
+
+---
+
+### Task 2.3: Create Registry Module
+
+**AI Agent Instructions:**
+```python
+ACTION: Create new module
+FILE: agency_toolkit/tasks/registry.py
+
+CONTENT:
+from typing import Type
+from .base import TaskHandler
+
+
+# Global registry (same pattern as providers/provider_loader.py)
+_TASK_HANDLERS: dict[str, Type[TaskHandler]] = {}
+
+
+def register_task_handler(handler_class: Type[TaskHandler]) -> None:
+    """Register a task handler class.
+
+    Args:
+        handler_class: TaskHandler subclass
+
+    Example:
+        register_task_handler(AITaskHandler)
+    """
+    handler_instance = handler_class()
+    name = handler_instance.name
+    _TASK_HANDLERS[name] = handler_class
+
+
+def get_task_handler(name: str) -> TaskHandler:
+    """Get a task handler instance by name.
+
+    Args:
+        name: Task name (e.g., 'ai', 'social')
+
+    Returns:
+        Task handler instance
+
+    Raises:
+        ValueError: If handler not found
+
+    Example:
+        handler = get_task_handler("ai")
+        result = handler.execute(params, context)
+    """
+    if name not in _TASK_HANDLERS:
+        available = ", ".join(_TASK_HANDLERS.keys())
+        raise ValueError(
+            f"Unknown task handler: '{name}'. "
+            f"Available handlers: {available}"
+        )
+
+    handler_class = _TASK_HANDLERS[name]
+    return handler_class()
+
+
+def list_task_handlers() -> list[str]:
+    """List all registered task handler names."""
+    return sorted(_TASK_HANDLERS.keys())
+
+RULES:
+- Same pattern as providers/provider_loader.py
+- Clear error messages (show available handlers)
+- list_task_handlers() for CLI help
+
+TEST:
+- Register dummy handler
+- Retrieve it
+- Verify ValueError for unknown handler
+```
+
+**Validation:**
+- File created
+- Can register and get handlers
+- Error message shows available handlers
+
+**Time:** 30 minutes
+
+---
+
+### Task 2.4: Migrate First Handler (AI)
+
+**AI Agent Instructions:**
+```python
+ACTION: Migrate handler
+SOURCE: agency_toolkit/core/task_handlers.py::handle_ai_task
+TARGET: agency_toolkit/tasks/ai_handler.py
+
+STEPS:
+1. Read current handle_ai_task function
+2. Identify:
+   - Required params (e.g., "prompt", "model")
+   - Optional params (e.g., "temperature")
+   - What it calls (e.g., commands.ai module?)
+   - What it returns
+
+3. Create new handler:
+
+from .base import TaskHandler, TaskContext
+from typing import Any
+# ... other imports from old handler
+
+
+class AITaskHandler(TaskHandler):
+    """Task handler for AI text generation."""
+
+    @property
+    def name(self) -> str:
+        return "ai"
+
+    def validate_params(self, params: dict[str, Any]) -> None:
+        """Validate AI task params."""
+        required = ["prompt"]  # Based on old function
+        missing = [k for k in required if k not in params]
+        if missing:
+            raise ValueError(f"Missing required params: {missing}")
+
+    def execute(
+        self,
+        params: dict[str, Any],
+        context: TaskContext
+    ) -> dict[str, Any]:
+        """Execute AI text generation.
+
+        Calls the same logic as handle_ai_task.
+        """
+        # Copy logic from old handle_ai_task
+        # Replace 'task' dict with 'params'
+        # Replace 'context' dict with 'context.config', 'context.step_context'
+
+        # ... implementation ...
+
+        return {
+            "text": generated_text,
+            "model": model_used,
+            # ... other outputs
+        }
+
+
+# Auto-register at module load
+from .registry import register_task_handler
+register_task_handler(AITaskHandler)
+
+RULES:
+- Keep EXACT same logic as old function
+- Only change: function → class method
+- Add better error messages in validate_params
+- Return dict (not arbitrary object)
+
+TEST:
+- Import: from agency_toolkit.tasks.ai_handler import AITaskHandler
+- Verify: "ai" in list_task_handlers()
+- Run old integration test (should still pass)
+```
+
+**Validation:**
+- Handler registered
+- Integration test passes
+- Old code still works (don't delete yet)
+
+**Time:** 1 hour
+
+---
+
+### Task 2.5: Migrate Remaining Handlers
+
+**AI Agent Instructions:**
+```bash
+ACTION: Repeat Task 2.4 for other handlers
+
+HANDLERS (from Task 2.1 analysis):
+  1. ✅ ai_handler.py (done in 2.4)
+  2. social_handler.py (from handle_social_task)
+  3. briefing_handler.py (from handle_briefing_task)
+  4. structure_handler.py (from handle_structure_task)
+
+PROCESS PER HANDLER:
+  1. Create tasks/{name}_handler.py
+  2. Copy logic from old handle_{name}_task
+  3. Implement validate_params
+  4. Implement execute
+  5. Auto-register at bottom
+  6. Test import and registration
+
+VALIDATION PER HANDLER:
+  - Handler appears in list_task_handlers()
+  - Old integration tests pass
+  - No import errors
+```
+
+**Validation:**
+- All 4 handlers migrated
+- All registered
+- All tests pass
+
+**Time:** 3 hours (45 min × 3 remaining handlers)
+
+---
+
+### Task 2.6: Update Orchestrator
+
+**AI Agent Instructions:**
+```python
+ACTION: Refactor
+FILE: agency_toolkit/core/orchestrator.py
+
+CHANGES:
+1. Remove import:
+   - from agency_toolkit.core.task_handlers import TASK_REGISTRY
+
+2. Add import:
+   + from agency_toolkit.tasks.registry import get_task_handler
+   + from agency_toolkit.tasks.base import TaskContext
+
+3. Update _execute_task function:
+
+OLD CODE (approximately):
+def _execute_task(tool_name: str, task: dict, context: dict) -> Any:
+    handler = TASK_REGISTRY.get(tool_name)
+    if not handler:
+        raise ValueError(f"Unknown tool: {tool_name}")
+
+    output = handler(task, context)
+    return output
+
+NEW CODE:
+def _execute_task(tool_name: str, task: dict, context: dict) -> Any:
+    """Execute a task using the handler registry.
+
+    Args:
+        tool_name: Task handler name (e.g., 'ai')
+        task: Task definition with params
+        context: Execution context (will be converted to TaskContext)
+
+    Returns:
+        Task output
+    """
+    # Get handler (raises ValueError if unknown)
+    handler = get_task_handler(tool_name)
+
+    # Extract params and create typed context
+    params = task.get("params", {})
+    task_context = TaskContext(
+        config=context.get("config"),
+        step_context=context.get("step_context", {}),
+        archetype_id=context.get("archetype_id"),
+        solution_id=context.get("solution_id")
+    )
+
+    # Validate and execute
+    handler.validate_params(params)
+    output = handler.execute(params, task_context)
+
+    return output
+
+RULES:
+- Keep same function signature (for now)
+- Add type hints
+- Better error messages
+- Validate params before execution (fail-fast)
+
+TEST:
+- Run all `toolkit os` integration tests
+- Verify error messages are clear for unknown tasks
+- Verify param validation catches errors early
+```
+
+**Validation:**
+- orchestrator.py no longer imports TASK_REGISTRY
+- All integration tests pass
+- Error messages improved
+
+**Time:** 1 hour
+
+---
+
+### Task 2.7: Delete Old Handler File
+
+**AI Agent Instructions:**
+```bash
+ACTION: Cleanup
+FILE: agency_toolkit/core/task_handlers.py
+
+STEPS:
+1. Verify no imports of core.task_handlers in codebase:
+   grep -r "from agency_toolkit.core.task_handlers" .
+   grep -r "import task_handlers" .
+
+2. If clean:
+   git rm agency_toolkit/core/task_handlers.py
+
+3. Run full test suite:
+   pytest tests/ -v
+
+4. If all green:
+   git commit -m "chore: remove deprecated task_handlers.py"
+
+VALIDATION:
+- File deleted
+- No import errors
+- All tests pass
+```
+
+**Validation:**
+- Old file gone
+- No broken imports
+- Tests pass
+
+**Time:** 15 minutes
+
+---
+
+### Task 2.8: Update Documentation
+
+**AI Agent Instructions:**
+```markdown
+ACTION: Document
+FILE: docs/TASK_HANDLERS.md (create new)
+
+CONTENT:
+# Task Handler Plugin System
+
+## Overview
+Task handlers are plugins that execute workflow steps in the GRAND AGENCY OS.
+
+## Architecture
+- **Base Class:** `agency_toolkit.tasks.base.TaskHandler`
+- **Registry:** `agency_toolkit.tasks.registry`
+- **Handlers:** `agency_toolkit.tasks/*_handler.py`
+
+## Creating a Custom Handler
+
+### 1. Implement TaskHandler
+```python
+from agency_toolkit.tasks.base import TaskHandler, TaskContext
+
+class MyTaskHandler(TaskHandler):
+    @property
+    def name(self) -> str:
+        return "mytask"
+
+    def validate_params(self, params: dict) -> None:
+        if "required_field" not in params:
+            raise ValueError("Missing: required_field")
+
+    def execute(self, params: dict, context: TaskContext) -> dict:
+        # Your logic here
+        return {"result": "success"}
+```
+
+### 2. Register Handler
+```python
+from agency_toolkit.tasks.registry import register_task_handler
+
+register_task_handler(MyTaskHandler)
+```
+
+### 3. Use in Solutions
+```json
+{
+  "id": "my_solution",
+  "modules": [
+    {
+      "tool": "mytask",
+      "params": {
+        "required_field": "value"
+      },
+      "output_key": "mytask_result"
+    }
+  ]
+}
+```
+
+## Built-in Handlers
+- **ai:** Text generation (Mistral, Google, Ollama)
+- **social:** Social media post images
+- **briefing:** Project briefing PDFs
+- **structure:** Project folder scaffolding
+
+## Testing
+```python
+from agency_toolkit.tasks.registry import get_task_handler
+
+def test_my_handler():
+    handler = get_task_handler("mytask")
+    result = handler.execute(params, context)
+    assert result["result"] == "success"
+```
+
+ADD TO: README.md
+- Link to docs/TASK_HANDLERS.md
+- Mention extensibility
+```
+
+**Time:** 30 minutes
+
+---
+
+## ✅ Epic 2 Success Criteria
+
+- [ ] 4 handlers migrated to plugin system
+- [ ] orchestrator.py uses new registry
+- [ ] Old task_handlers.py deleted
+- [ ] All tests pass (no behavior change)
+- [ ] Documentation updated
+- [ ] CI/CD pipeline green
+
+## ⏱️ Total Time Estimate
+7.5 hours (spread over 8 atomic tasks)
+
+## 🎯 Why This Matters
+- **Extensibility:** Users can add custom tasks
+- **Testability:** Each handler is isolated
+- **Maintainability:** Clear single responsibility
+- **Consistency:** Same pattern as providers
+
+## 🚨 Risk Mitigation
+- Each handler migration is a separate commit
+- Old code stays until ALL handlers migrated
+- Integration tests prevent regressions
+- Rollback is just `git revert`

@@ -1,0 +1,17 @@
+{
+  "description": "Clean, tech-forward, contemporary gradient with white text stroke",
+  "font_face": "Roboto-Bold",
+  "font_size_ratio": 0.068,
+  "text_x_ratio": 0.5,
+  "text_y_ratio": 0.5,
+  "padding_ratio": 0.14,
+  "h_align": "center",
+  "v_align": "middle",
+  "line_spacing_ratio": 1.35,
+  "text_color": "#FFFFFF",
+  "text_stroke": true,
+  "text_stroke_width": 2,
+  "background_type": "gradient",
+  "gradient_colors": ["#667EEA", "#764BA2"],
+  "max_chars_per_line": 32
+}

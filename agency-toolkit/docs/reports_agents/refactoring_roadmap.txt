@@ -1,0 +1,633 @@
+# Agency Toolkit: Refactoring Roadmap für AI Agents
+
+## 🎯 Ziel
+Von "funktioniert, aber fragil" zu "production-ready showcase" ohne die Core-Features zu brechen.
+
+---
+
+## Phase 1: Foundation Fixes (STOP THE BLEEDING)
+**Dauer:** 1-2 Tage | **Risiko:** LOW | **AI-Agent-Safe:** ✅
+
+### Epic 1.1: Code Style Cleanup (Auto-fixable)
+**Priority:** P0 (Blocker für weitere PRs)
+
+#### Task 1.1.1: Auto-fix Linting Issues
+```bash
+# Work Unit für AI Agent
+TASK: "Run ruff formatter on entire codebase"
+COMMANDS:
+  cd /path/to/agency_toolkit
+  ruff check . --fix
+  ruff format .
+VALIDATION:
+  - Run: ruff check .
+  - Expected: "All checks passed" OR <20 remaining issues
+  - If fails: Create bug report with output
+```
+**Estimated Time:** 5 minutes
+**Risk:** NONE (formatting only)
+
+#### Task 1.1.2: Fix Remaining Line-Length Issues
+```bash
+TASK: "Manually split E501 violations (line too long)"
+FILES: [Output from Task 1.1.1]
+RULES:
+  - Break lines at logical operators (, + . etc)
+  - Max 88 chars per line
+  - Keep string literals intact (use parentheses)
+VALIDATION:
+  - Run: ruff check . | grep E501
+  - Expected: 0 results
+```
+**Estimated Time:** 30 minutes
+**Risk:** LOW (visual only)
+
+---
+
+### Epic 1.2: Remove Dead Code
+**Priority:** P1
+
+#### Task 1.2.1: Remove Unused Imports
+```python
+TASK: "Remove all F401 violations"
+SCRIPT:
+  import subprocess
+  result = subprocess.run(['ruff', 'check', '.', '--select', 'F401'],
+                          capture_output=True)
+  # Parse output and remove imports
+FILES: [From ruff output]
+VALIDATION:
+  - No F401 in ruff output
+  - All tests pass
+```
+**Estimated Time:** 10 minutes
+**Risk:** LOW (unused code)
+
+#### Task 1.2.2: Remove Unused Variables
+```python
+TASK: "Remove or use all F841 violations"
+RULES:
+  - If variable is assignment-only: delete line
+  - If debugging leftover: delete line
+  - If needed for type checking: prefix with _ (e.g., _unused_var)
+VALIDATION: No F841 in ruff output
+```
+**Estimated Time:** 5 minutes
+
+---
+
+### Epic 1.3: Add Pre-commit Hooks
+**Priority:** P1
+
+#### Task 1.3.1: Install Pre-commit Framework
+```yaml
+TASK: "Create .pre-commit-config.yaml"
+CONTENT: |
+  repos:
+    - repo: https://github.com/astral-sh/ruff-pre-commit
+      rev: v0.1.6
+      hooks:
+        - id: ruff
+          args: [--fix]
+        - id: ruff-format
+    - repo: https://github.com/pre-commit/pre-commit-hooks
+      rev: v4.5.0
+      hooks:
+        - id: trailing-whitespace
+        - id: end-of-file-fixer
+VALIDATION:
+  - Run: pre-commit run --all-files
+  - Expected: All hooks pass
+```
+**Estimated Time:** 15 minutes
+
+---
+
+## Phase 2: Structural Refactoring (THE REAL WORK)
+**Dauer:** 3-5 Tage | **Risiko:** MEDIUM | **AI-Agent-Safe:** ⚠️ (Needs validation)
+
+### Epic 2.1: Refactor Task Handler System
+**Priority:** P0 (Critical for `os` command scalability)
+
+**Problem:** `core/task_handlers.py` ist ein monolithischer Registry (8+ handlers in einer Datei).
+
+**Solution:** Implement a proper **Task Handler Plugin System** (wie Provider-Pattern).
+
+#### Task 2.1.1: Create Task Handler Base Class
+```python
+FILE: agency_toolkit/tasks/base.py
+TASK: "Create abstract base class for task handlers"
+
+CODE:
+from abc import ABC, abstractmethod
+from typing import Any
+from pydantic import BaseModel
+
+class TaskContext(BaseModel):
+    """Type-safe context for task execution."""
+    config: Any  # Will be typed later
+    step_context: dict[str, Any]
+    archetype_id: str | None = None
+    solution_id: str | None = None
+
+class TaskHandler(ABC):
+    """Base class for all task handlers."""
+
+    @property
+    @abstractmethod
+    def name(self) -> str:
+        """Unique task name (e.g., 'ai', 'social')."""
+        pass
+
+    @abstractmethod
+    def execute(
+        self,
+        params: dict[str, Any],
+        context: TaskContext
+    ) -> dict[str, Any]:
+        """Execute the task and return results."""
+        pass
+
+    @abstractmethod
+    def validate_params(self, params: dict[str, Any]) -> None:
+        """Validate params before execution (fail-fast)."""
+        pass
+
+VALIDATION:
+  - File exists at correct path
+  - Can be imported: from agency_toolkit.tasks.base import TaskHandler
+  - No syntax errors
+```
+**Estimated Time:** 30 minutes
+**Dependencies:** None
+
+---
+
+#### Task 2.1.2: Create Task Handler Registry
+```python
+FILE: agency_toolkit/tasks/registry.py
+TASK: "Create dynamic task handler registry (like provider_loader.py)"
+
+CODE:
+from typing import Type
+from .base import TaskHandler
+
+_TASK_HANDLERS: dict[str, Type[TaskHandler]] = {}
+
+def register_task_handler(handler_class: Type[TaskHandler]) -> None:
+    """Register a task handler."""
+    handler = handler_class()
+    _TASK_HANDLERS[handler.name] = handler_class
+
+def get_task_handler(name: str) -> TaskHandler:
+    """Get a task handler instance by name."""
+    if name not in _TASK_HANDLERS:
+        raise ValueError(f"Unknown task handler: {name}")
+    return _TASK_HANDLERS[name]()
+
+def list_task_handlers() -> list[str]:
+    """List all registered task handler names."""
+    return list(_TASK_HANDLERS.keys())
+
+VALIDATION:
+  - Can register and retrieve handlers
+  - Raises ValueError for unknown handlers
+```
+**Estimated Time:** 20 minutes
+**Dependencies:** Task 2.1.1
+
+---
+
+#### Task 2.1.3: Migrate AI Task Handler
+```python
+FILE: agency_toolkit/tasks/ai_handler.py
+TASK: "Convert handle_ai_task to AITaskHandler class"
+
+STEPS:
+1. Copy logic from core/task_handlers.py::handle_ai_task
+2. Wrap in AITaskHandler(TaskHandler) class
+3. Implement validate_params() for required fields
+4. Register handler at module bottom
+
+CODE TEMPLATE:
+from .base import TaskHandler, TaskContext
+from ..commands.ai import _load_prompt  # Reuse existing logic
+
+class AITaskHandler(TaskHandler):
+    @property
+    def name(self) -> str:
+        return "ai"
+
+    def validate_params(self, params: dict[str, Any]) -> None:
+        required = ["prompt"]
+        missing = [k for k in required if k not in params]
+        if missing:
+            raise ValueError(f"Missing required params: {missing}")
+
+    def execute(self, params: dict[str, Any], context: TaskContext) -> dict[str, Any]:
+        # ... (copy existing logic) ...
+        pass
+
+# Auto-register
+from .registry import register_task_handler
+register_task_handler(AITaskHandler)
+
+VALIDATION:
+  - Import works: from agency_toolkit.tasks.ai_handler import AITaskHandler
+  - Handler registered: "ai" in list_task_handlers()
+  - Old tests still pass
+```
+**Estimated Time:** 45 minutes
+**Dependencies:** Task 2.1.2
+
+---
+
+#### Task 2.1.4: Migrate Remaining Task Handlers
+```python
+TASK: "Convert all handlers in core/task_handlers.py to plugin classes"
+
+HANDLERS TO MIGRATE:
+  - SocialTaskHandler (from handle_social_task)
+  - BriefingTaskHandler (from handle_briefing_task)
+  - StructureTaskHandler (from handle_structure_task)
+  - ImageTaskHandler (from handle_image_task)
+  - [... others]
+
+PROCESS:
+  For each handler:
+    1. Create tasks/{name}_handler.py
+    2. Copy __doc__ from old function
+    3. Implement validate_params() (extract validation logic)
+    4. Implement execute() (copy main logic)
+    5. Register at bottom of file
+    6. Run tests
+
+VALIDATION PER HANDLER:
+  - Handler appears in list_task_handlers()
+  - Old test cases pass
+  - No import errors
+```
+**Estimated Time:** 3-4 hours (30min per handler × 6-8 handlers)
+**Dependencies:** Task 2.1.3
+
+---
+
+#### Task 2.1.5: Update Orchestrator to Use New Registry
+```python
+FILE: agency_toolkit/core/orchestrator.py
+TASK: "Replace TASK_REGISTRY with tasks.registry"
+
+CHANGES:
+1. Remove import: from core.task_handlers import TASK_REGISTRY
+2. Add import: from tasks.registry import get_task_handler
+3. Update _execute_task():
+
+   OLD:
+   handler = TASK_REGISTRY.get(tool_name)
+   if not handler:
+       raise ValueError(f"Unknown tool: {tool_name}")
+   output = handler(task, enriched_context)
+
+   NEW:
+   handler = get_task_handler(tool_name)  # Raises ValueError if unknown
+   task_context = TaskContext(
+       config=enriched_context.get("config"),
+       step_context=step_context,
+       archetype_id=enriched_context.get("archetype_id")
+   )
+   output = handler.execute(task.get("params", {}), task_context)
+
+VALIDATION:
+  - All `toolkit os` tests pass
+  - Error messages are clear for unknown tasks
+```
+**Estimated Time:** 30 minutes
+**Dependencies:** Task 2.1.4
+
+---
+
+#### Task 2.1.6: Delete Old Task Handlers File
+```bash
+TASK: "Remove deprecated task_handlers.py"
+COMMANDS:
+  git rm agency_toolkit/core/task_handlers.py
+VALIDATION:
+  - No imports of core.task_handlers in codebase
+  - All tests pass
+```
+**Estimated Time:** 5 minutes
+**Dependencies:** Task 2.1.5
+
+---
+
+### Epic 2.2: Refactor High-Complexity Commands
+**Priority:** P1
+
+#### Task 2.2.1: Refactor validate.py::_compare_snapshots
+```python
+TASK: "Break _compare_snapshots into 3 functions"
+
+NEW STRUCTURE:
+1. _load_snapshot(path: Path) -> dict
+   - Handles PDF vs JSON detection
+   - Returns normalized dict
+
+2. _compute_diff(snap1: dict, snap2: dict) -> dict
+   - Pure comparison logic
+   - Returns diff structure
+
+3. _format_diff_output(diff: dict, format: str) -> str
+   - Handles json/text/table formatting
+   - Returns formatted string
+
+4. _compare_snapshots (orchestrator):
+   snap1 = _load_snapshot(path1)
+   snap2 = _load_snapshot(path2)
+   diff = _compute_diff(snap1, snap2)
+   return _format_diff_output(diff, output_format)
+
+VALIDATION:
+  - CC of _compare_snapshots < 8
+  - All tests pass
+  - Each helper has CC < 5
+```
+**Estimated Time:** 2-3 hours
+**Risk:** MEDIUM (core functionality)
+
+---
+
+#### Task 2.2.2: Refactor os.py::_execute_batch
+```python
+TASK: "Extract BatchExecutor class from _execute_batch"
+
+NEW FILE: agency_toolkit/core/batch_executor.py
+
+CLASS STRUCTURE:
+class BatchConfig(BaseModel):
+    csv_path: Path | None = None
+    json_path: Path | None = None
+    archetype_id: str
+    # ... other config
+
+class BatchExecutor:
+    def __init__(self, config: BatchConfig):
+        self.config = config
+
+    def load_entries(self) -> list[dict]:
+        """Load from CSV or JSON."""
+        pass
+
+    def execute_entry(self, entry: dict) -> TaskResult:
+        """Run workflow for single entry."""
+        pass
+
+    def execute_all(self) -> list[TaskResult]:
+        """Main execution loop with progress."""
+        pass
+
+USAGE IN os.py:
+executor = BatchExecutor(batch_config)
+results = executor.execute_all()
+
+VALIDATION:
+  - CC of _execute_batch < 6 (just orchestrates)
+  - BatchExecutor methods all CC < 8
+  - All batch tests pass
+```
+**Estimated Time:** 4 hours
+**Risk:** MEDIUM
+
+---
+
+#### Task 2.2.3: Refactor info.py::providers_status
+```python
+TASK: "Create ProviderStatusChecker class"
+
+NEW FILE: agency_toolkit/core/provider_status.py
+
+CLASS:
+class ProviderStatus(BaseModel):
+    name: str
+    available: bool
+    reason: str | None = None
+    version: str | None = None
+
+class ProviderStatusChecker:
+    def check_mistral(self) -> ProviderStatus: ...
+    def check_replicate(self) -> ProviderStatus: ...
+    def check_all(self) -> list[ProviderStatus]: ...
+
+USAGE:
+checker = ProviderStatusChecker()
+statuses = checker.check_all()
+
+VALIDATION:
+  - CC of providers_status < 5
+  - All provider checks work
+```
+**Estimated Time:** 2 hours
+
+---
+
+## Phase 3: Documentation & Polish
+**Dauer:** 1-2 Tage | **Risiko:** NONE | **AI-Agent-Safe:** ✅
+
+### Epic 3.1: Update Documentation
+
+#### Task 3.1.1: Document Task Handler Plugin System
+```markdown
+FILE: docs/TASK_HANDLERS.md
+TASK: "Write developer guide for creating custom task handlers"
+
+SECTIONS:
+1. Overview of TaskHandler base class
+2. Step-by-step guide to create handler
+3. Example: CustomTaskHandler
+4. Testing guidelines
+5. Registration process
+```
+**Estimated Time:** 1 hour
+
+#### Task 3.1.2: Update Architecture Diagram
+```markdown
+FILE: docs/ARCHITECTURE.md
+TASK: "Update diagrams to reflect new task handler system"
+
+CHANGES:
+- Replace "TASK_REGISTRY dict" with "Task Plugin System"
+- Show provider_loader.py and tasks/registry.py parallel
+- Highlight type-safe TaskContext
+```
+**Estimated Time:** 30 minutes
+
+---
+
+### Epic 3.2: Add Type Hints
+**Priority:** P2
+
+#### Task 3.2.1: Add Type Hints to Public APIs
+```python
+TASK: "Add type hints to all public functions in commands/"
+
+RULES:
+- All function params must have types
+- All return types must be specified
+- Use `from __future__ import annotations` for forward refs
+
+VALIDATION:
+  - Run: mypy agency_toolkit/commands --strict
+  - Expected: No errors (or document exceptions)
+```
+**Estimated Time:** 2-3 hours
+
+---
+
+## 🎛️ Execution Strategy for AI Agents
+
+### Safe Task Characteristics
+✅ **Auto-approve these:**
+- Any task with "Auto-fix" or "Format"
+- Tasks marked "VALIDATION: All tests pass"
+- Tasks with CC reduction goals
+- Documentation updates
+
+⚠️ **Human review required:**
+- Tasks changing `orchestrator.py`
+- Tasks touching `models.py` (Pydantic schemas)
+- Any task marked "MEDIUM" or "HIGH" risk
+
+### Rollback Strategy
+Each task should create a git commit:
+```bash
+git checkout -b task-2.1.3-ai-handler
+# ... work ...
+git commit -m "Task 2.1.3: Migrate AI task handler to plugin"
+git push origin task-2.1.3-ai-handler
+# If breaks: git revert HEAD
+```
+
+---
+
+## 📊 Success Metrics
+
+### Phase 1 Success
+- [ ] Ruff issues < 20 (currently 150)
+- [ ] Pre-commit hooks installed
+- [ ] All tests green
+
+### Phase 2 Success
+- [ ] No function with CC > 10
+- [ ] Task handlers are modular plugins
+- [ ] BatchExecutor exists and works
+
+### Phase 3 Success
+- [ ] Architecture docs updated
+- [ ] Type hints on public APIs
+- [ ] README has "Getting Started" section
+
+---
+
+## 🚨 Critical Gotchas for AI Agents
+
+1. **Never modify `models.py` without explicit instructions**
+   - Pydantic validators have complex side effects
+
+2. **Always run tests after each task**
+   - Command: `pytest tests/ -v`
+
+3. **Keep old imports working during migration**
+   - Use deprecation warnings, not immediate deletion
+
+4. **Task 2.1.5 is the "point of no return"**
+   - After this, old TASK_REGISTRY is gone
+   - Test extensively before merging
+
+---
+
+## 📝 Example AI Agent Prompt
+
+```
+You are refactoring the agency_toolkit codebase.
+
+CURRENT TASK: Task 2.1.3 - Migrate AI Task Handler
+
+CONTEXT:
+- We are converting dict-based task handlers to a plugin system
+- Base class exists at: agency_toolkit/tasks/base.py
+- Registry exists at: agency_toolkit/tasks/registry.py
+
+YOUR JOB:
+1. Read core/task_handlers.py::handle_ai_task
+2. Create tasks/ai_handler.py with AITaskHandler class
+3. Implement name, validate_params, execute
+4. Register handler at bottom
+5. Run tests: pytest tests/test_ai.py -v
+
+VALIDATION CRITERIA:
+- [ ] File created at correct path
+- [ ] AITaskHandler inherits from TaskHandler
+- [ ] Handler is registered
+- [ ] All existing AI tests pass
+- [ ] New handler works with orchestrator
+
+Do NOT modify orchestrator.py yet - that's Task 2.1.5.
+
+OUTPUT FORMAT:
+1. Show me the full code for tasks/ai_handler.py
+2. Show the test command output
+3. Confirm validation checklist
+```
+
+---
+
+## 🎯 Priority Matrix
+
+| Epic | Impact | Effort | Risk | Do First? |
+|------|--------|--------|------|-----------|
+| 1.1 Code Style | HIGH | 1h | NONE | ✅ YES |
+| 1.2 Dead Code | MED | 30m | NONE | ✅ YES |
+| 2.1 Task Plugins | CRITICAL | 6h | MED | ⚠️ After 1.x |
+| 2.2 Complexity | HIGH | 8h | MED | ⚠️ After 2.1 |
+| 3.1 Docs | MED | 2h | NONE | 🟡 Last |
+
+**Recommendation:** Execute in exact order: 1.1 → 1.2 → 1.3 → 2.1 → 2.2 → 3.x
+
+---
+
+## 🔮 What This Achieves
+
+**Before:**
+```python
+# Fragile string-based task dispatch
+TASK_REGISTRY = {
+    'ai': lambda task, ctx: complicated_logic(task, ctx),
+    'social': lambda task, ctx: more_logic(task, ctx),
+}
+```
+
+**After:**
+```python
+# Type-safe, testable, extensible
+class AITaskHandler(TaskHandler):
+    def validate_params(self, params: dict) -> None:
+        # Fail fast on missing params
+
+    def execute(self, params: dict, context: TaskContext) -> dict:
+        # Pure business logic
+```
+
+**Result:**
+- ✅ Showcase-ready architecture
+- ✅ Easy to add new task types
+- ✅ AI agents can safely modify handlers
+- ✅ Clear separation of concerns
+
+---
+
+## 📞 Questions?
+
+If AI agent gets stuck, ask:
+1. "What was the expected output?"
+2. "What error message did you see?"
+3. "Did all tests pass before this task?"
+4. "Show me the git diff for this task"

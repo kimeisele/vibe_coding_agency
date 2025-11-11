@@ -1,0 +1,315 @@
+{
+  "project_root": "/Users/ss/projects/agency_toolkit",
+  "structure": {
+    "root": "/Users/ss/projects/agency_toolkit",
+    "files": {
+      "agency_toolkit/commands": {
+        "python": 10,
+        "json": 0,
+        "file_list": [
+          "social.py",
+          "ai.py",
+          "os.py",
+          "__init__.py",
+          "interactive_utils.py",
+          "validate.py",
+          "structure.py",
+          "briefing.py",
+          "info.py",
+          "image.py"
+        ]
+      },
+      "agency_toolkit/core": {
+        "python": 33,
+        "json": 0,
+        "file_list": [
+          "workflow_loader.py",
+          "task_handlers.py",
+          "discovery.py",
+          "os_executor.py",
+          "__init__.py",
+          "os_interactive.py",
+          "orchestrator.py",
+          "dependency_resolver.py",
+          "resilience.py",
+          "rendering.py",
+          "layout.py",
+          "validators.py",
+          "batch.py",
+          "constants.py",
+          "background.py",
+          "__init__.py",
+          "templates.py",
+          "generator.py",
+          "pdf_writer.py",
+          "models.py",
+          "constants.py",
+          "io.py",
+          "__init__.py",
+          "templates.py",
+          "generator.py",
+          "interactive.py",
+          "pdf_sections.py",
+          "validators.py",
+          "__init__.py",
+          "templates.py",
+          "generator.py",
+          "writer.py",
+          "__init__.py"
+        ]
+      },
+      "agency_toolkit/tasks": "NOT_EXISTS",
+      "agency_toolkit/providers": {
+        "python": 8,
+        "json": 0,
+        "file_list": [
+          "provider_loader.py",
+          "pollinations.py",
+          "replicate.py",
+          "__init__.py",
+          "mistral_provider.py",
+          "ollama_provider.py",
+          "google_provider.py",
+          "base.py"
+        ]
+      },
+      "registry/seeds": {
+        "python": 0,
+        "json": 3,
+        "file_list": [
+          "solutions.json",
+          "templates.json",
+          "archetypes.json"
+        ]
+      },
+      "templates": {
+        "python": 0,
+        "json": 11,
+        "file_list": [
+          "minimal.json",
+          "modern.json",
+          "bold.json",
+          "web.json",
+          "video.json",
+          "default.json",
+          "social.json",
+          "web.json",
+          "print.json",
+          "video.json",
+          "default.json"
+        ]
+      },
+      "tests": {
+        "python": 36,
+        "json": 1,
+        "file_list": [
+          "test_image_gen_unit.py",
+          "conftest.py",
+          "__init__.py",
+          "test_utils_unit.py",
+          "test_ai_unit.py",
+          "test_pdf_writer_unit.py",
+          "test_google_provider_unit.py",
+          "test_config_unit.py",
+          "test_social_templates_unit.py",
+          "test_models_unit.py",
+          "test_social_unit.py",
+          "test_info_command_unit.py",
+          "test_config_priority.py",
+          "test_dependency_resolver.py",
+          "test_interactive_utils.py",
+          "__init__.py",
+          "test_pollinations.py",
+          "test_provider_loader.py",
+          "test_base.py",
+          "test_replicate.py",
+          "__init__.py",
+          "test_semantic_quality.py",
+          "test_cli_baseline.py",
+          "test_briefing_integration.py",
+          "test_grand_agency_integration.py",
+          "test_semantic_commands.py",
+          "conftest.py",
+          "test_social_batch.py",
+          "test_ai_integration.py",
+          "test_social_integration.py",
+          "test_workflow_integration.py",
+          "__init__.py",
+          "test_structure_integration.py",
+          "test_social_orchestration.py",
+          "test_image_integration.py",
+          "test_social_ai_background.py",
+          "campaign_posts.json"
+        ]
+      }
+    },
+    "directories": [
+      "agency_toolkit/commands",
+      "agency_toolkit/core",
+      "agency_toolkit/providers",
+      "registry/seeds",
+      "templates",
+      "tests"
+    ]
+  },
+  "infrastructure": {
+    "pre_commit": {
+      "exists": true,
+      "content": "# Pre-commit hooks for code quality and formatting\n# Install with: pre-commit install\n# Run manually with: pre-commit run --all-files\n\nrepos:\n  # Code formatting with Black\n  - repo: https://github.com/psf/black\n    rev: 24.10.0\n    hooks:\n      - id: black\n        language_version: python3.11\n        args: [--line-length=88]\n\n  # Linting with Ruff\n  - repo: https://github.com/astral-sh/ruff-pre-commit\n    rev: v0.6.8\n    hooks:\n      - id: ruff\n        args: [--fix]\n      - id: ruff-format\n\n  # Type checking with mypy\n  - repo: https://github.com/pre-commit/mirrors-mypy\n    rev: v1.11.0\n    hooks:\n      - id: mypy\n        args: [--ignore-missing-imports, --no-implicit-optional]\n        stages: [manual]  # Only run manually, not on commit (too slow for CI)\n        additional_dependencies: [\n          \"pydantic>=2.0.0\",\n          \"typer[all]>=0.9.0\",\n          \"replicate>=0.25.0\",\n          \"requests>=2.31.0\",\n          \"pillow>=10.0.0\",\n          \"fpdf2>=2.7.0\",\n          \"mistralai>=0.1.0\",\n        ]\n\n  # Trailing whitespace and file ending checks\n  - repo: https://github.com/pre-commit/pre-commit-hooks\n    rev: v4.5.0\n    hooks:\n      - id: trailing-whitespace\n      - id: end-of-file-fixer\n      - id: check-yaml\n        args: [--safe]\n      - id: check-toml\n      - id: check-merge-conflict\n      - id: mixed-line-ending\n\n# Configuration\nci:\n  autofix_commit_msg: \"chore: auto format with pre-commit\"\n  autofix_prs: true\n  autoupdate_commit_msg: \"chore: update pre-commit hooks\"\n  autoupdate_schedule: weekly\n  skip: [mypy]  # mypy can be slow, skip in CI\n  stages: [commit]\n"
+    },
+    "ruff_config": {
+      "file": "pyproject.toml",
+      "content": "[build-system]\nrequires = [\"setuptools>=61.0\"]\nbuild-backend = \"setuptools.build_meta\"\n\n[tool.setuptools]\npackages = [\"agency_toolkit\"]\n\n[project]\nname = \"agency-toolkit\"\nversion = \"0.1.0\"\ndescription = \"CLI tools for agency workflow automation\"\nreadme = \"README.md\"\nrequires-python = \">=3.10\"\nlicense-files = [\"LICENSE\"]\nauthors = [\n    {name = \"Kim Eisele\", email = \"your.email@example.com\"}\n]\n\nclassifiers = [\n    \"Development Status :: 3 - Alpha\",\n    \"Intended Audience :: Developers\",\n    \"Topic :: Office/Business\",\n    \"Programming Language :: Python :: 3.10\",\n    \"Programming Language :: Python :: 3.11\",\n    \"Programming Language :: Python :: 3.12\"\n]\n\ndependencies = [\n    \"typer[all]>=0.9.0\",\n    \"pillow>=10.0.0\",\n    \"fpdf2>=2.7.0\",\n    \"pydantic>=2.0.0\",\n    \"toml>=0.10.0\",\n    \"python-slugify>=8.0.0\",\n    \"jsonschema>=4.0.0\",\n    \"replicate>=0.25.0\",\n    \"requests>=2.31.0\"\n]\n\n[project.optional-dependencies]\ngoogle = [\"google-generativeai>=0.3.0\"]\nmistral = [\"mistralai>=0.1.0\"]\ninteractive = [\"questionary>=2.0.0\"]\ndev = [\n    \"pytest>=7.4.0\",\n    \"pytest-cov>=4.1.0\",\n    \"black>=23.0.0\",\n    \"ruff>=0.1.0\",\n    \"mypy>=1.0.0\",\n    \"google-generativeai>=0.3.0\",\n    \"mistralai>=0.1.0\",\n    \"questionary>=2.0.0\",\n    \"pyinstaller>=6.0.0\"\n]\n\n[project.scripts]\ntoolkit = \"agency_toolkit.cli_app:cli_entrypoint\"\n\n[tool.ruff]\nline-length = 88\nselect = [\"E\", \"F\", \"W\", \"I\", \"UP\", \"N\"]\n\n[tool.black]\nline-length = 88\ntarget-version = [\"py310\", \"py311\", \"py312\"]\n\n[tool.mypy]\nstrict = true\nwarn_return_any = true\nwarn_unused_configs = true\nignore_missing_imports = false\nnamespace_packages = true\n\n[tool.pytest.ini_options]\ntestpaths = [\"tests\"]\npython_files = [\"test_*.py\", \"*_unit.py\", \"*_integration.py\"]\npython_functions = [\"test_*\"]\nmarkers = [\n    \"integration: marks tests as integration tests (deselect with '-m \\\"not integration\\\"')\",\n    \"unit: marks tests as unit tests\"\n]\n"
+    },
+    "mypy": {
+      "exists": false,
+      "content": null
+    },
+    "ci_cd": {
+      "type": "github_actions",
+      "workflows": [
+        "ci.yml"
+      ]
+    }
+  },
+  "task_handlers": {
+    "new_structure_exists": false,
+    "old_structure_exists": true,
+    "old_structure": {
+      "lines": 173,
+      "has_task_registry": true,
+      "handler_count": 4
+    }
+  },
+  "orchestrator": {
+    "exists": true,
+    "lines": 242,
+    "imports": [
+      "import logging",
+      "from dataclasses import dataclass",
+      "from typing import Any",
+      "from agency_toolkit.core.task_handlers import TASK_REGISTRY"
+    ],
+    "has_execute_module": true,
+    "has_format_task_params": true,
+    "uses_task_registry": true,
+    "uses_get_task_handler": false
+  },
+  "complexity": {
+    "found": 16,
+    "hotspots": [
+      {
+        "location": "F 88:0 load_config",
+        "score": 20
+      },
+      {
+        "location": "F 154:0 _execute_batch",
+        "score": 17
+      },
+      {
+        "location": "F 42:0 _compare_snapshots",
+        "score": 17
+      },
+      {
+        "location": "F 17:0 validate_config_file",
+        "score": 15
+      },
+      {
+        "location": "F 248:0 providers_status",
+        "score": 15
+      },
+      {
+        "location": "F 70:0 validate_registry",
+        "score": 14
+      },
+      {
+        "location": "F 30:0 generate",
+        "score": 14
+      },
+      {
+        "location": "F 154:0 snapshot_validate",
+        "score": 14
+      },
+      {
+        "location": "F 22:0 social",
+        "score": 13
+      },
+      {
+        "location": "F 119:0 _format_task_params",
+        "score": 12
+      }
+    ]
+  },
+  "registry": {
+    "exists": true,
+    "files": {
+      "solutions.json": {
+        "keys": "not_dict",
+        "size_kb": 16.794921875,
+        "top_level_count": 6
+      },
+      "templates.json": {
+        "keys": [
+          "metadata",
+          "templates"
+        ],
+        "size_kb": 2.181640625,
+        "top_level_count": 2
+      },
+      "archetypes.json": {
+        "keys": "not_dict",
+        "size_kb": 3.4609375,
+        "top_level_count": 6
+      }
+    },
+    "solutions_structure": {
+      "count": 6,
+      "sample_keys": [
+        "id",
+        "name",
+        "archetype_id",
+        "description",
+        "modules"
+      ],
+      "has_modules": false
+    }
+  },
+  "tests": {
+    "exists": true,
+    "test_files": [
+      "test_image_gen_unit.py",
+      "unit/test_utils_unit.py",
+      "unit/test_ai_unit.py",
+      "unit/test_pdf_writer_unit.py",
+      "unit/test_google_provider_unit.py",
+      "unit/test_config_unit.py",
+      "unit/test_social_templates_unit.py",
+      "unit/test_models_unit.py",
+      "unit/test_social_unit.py",
+      "unit/test_info_command_unit.py",
+      "unit/test_config_priority.py",
+      "unit/test_dependency_resolver.py",
+      "unit/test_interactive_utils.py",
+      "unit/providers/test_pollinations.py",
+      "unit/providers/test_provider_loader.py",
+      "unit/providers/test_base.py",
+      "unit/providers/test_replicate.py",
+      "quality/test_semantic_quality.py",
+      "integration/test_cli_baseline.py",
+      "integration/test_briefing_integration.py",
+      "integration/test_grand_agency_integration.py",
+      "integration/test_semantic_commands.py",
+      "integration/test_social_batch.py",
+      "integration/test_ai_integration.py",
+      "integration/test_social_integration.py",
+      "integration/test_workflow_integration.py",
+      "integration/test_structure_integration.py",
+      "integration/test_social_orchestration.py",
+      "integration/test_image_integration.py",
+      "integration/test_social_ai_background.py"
+    ],
+    "count": 30,
+    "pytest_works": false,
+    "test_count": 0
+  }
+}

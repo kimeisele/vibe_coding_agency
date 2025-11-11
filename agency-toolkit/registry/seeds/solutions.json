@@ -1,0 +1,476 @@
+[
+  {
+    "id": "A1",
+    "name": "Lokale Dominanz",
+    "archetype_id": "I",
+    "description": "Workflow-Template für hyper-lokale Handwerksbetriebe und KMU",
+    "modules": [
+      {
+        "id": "A1_M1",
+        "title": "Fundament (Corporate Design)",
+        "description": "Erstellung eines professionellen, einheitlichen visuellen Erscheinungsbilds (Logo, Farben, Schriftarten, Geschäftsausstattung)",
+        "tasks": [
+          {
+            "tool": "structure",
+            "params": {
+              "client": "{project_name}",
+              "project": "Corporate Design",
+              "type": "default"
+            }
+          },
+          {
+            "tool": "briefing",
+            "params": {
+              "type": "Other",
+              "client_name": "{project_name_safe}",
+              "project_name": "Corporate Design Entwicklung",
+              "output_format": "pdf"
+            }
+          }
+        ],
+        "dependencies": [],
+        "context_variables": []
+      },
+      {
+        "id": "A1_M2",
+        "title": "Website Relaunch (Fokus: Vertrauen & Portfolio)",
+        "description": "Erstellung einer modernen, klaren und responsiven Website mit Fokus auf Vertrauensbildung und Kompetenzdarstellung",
+        "tasks": [
+          {
+            "tool": "structure",
+            "params": {
+              "client": "{project_name}",
+              "project": "Website Relaunch",
+              "type": "web"
+            }
+          },
+          {
+            "tool": "briefing",
+            "params": {
+              "type": "Web",
+              "client_name": "{project_name_safe}",
+              "project_name": "Website Relaunch",
+              "output_format": "pdf"
+            }
+          }
+        ],
+        "dependencies": ["A1_M1"],
+        "context_variables": []
+      },
+      {
+        "id": "A1_M3",
+        "title": "Lokale Sichtbarkeit (Local SEO)",
+        "description": "Erstellung und Optimierung des Google My Business Profils und konsistenter NAP-Daten",
+        "tasks": [],
+        "dependencies": ["A1_M2"],
+        "context_variables": []
+      },
+      {
+        "id": "A1_M4",
+        "title": "Social Recruiting Kampagne",
+        "description": "Erstellung einer Karriere-Landingpage, authentischer Video-Content und zielgerichtete Meta Ads zur Mitarbeitergewinnung",
+        "tasks": [
+          {
+            "tool": "structure",
+            "params": {
+              "client": "{project_name}",
+              "project": "Social Recruiting",
+              "type": "social"
+            }
+          },
+          {
+            "tool": "ai",
+            "output_key": "recruiting_tagline",
+            "params": {
+              "prompt": "Du bist ein Recruiting-Experte für {archetype_name}. Erstelle EINEN prägnanten, emotionalen Recruiting-Slogan für {project_name}. WICHTIG: Der Output wird als HEADLINE auf einer Social-Media-Grafik angezeigt. Zielgruppe: Handwerker und Fachkräfte. Fokus: {pain_points}. Stil: Direkt, ehrlich, bodenständig. LÄNGE: Maximal 40 Zeichen, 3-6 Wörter. Deine Antwort darf NUR den Slogan enthalten und sonst nichts.",
+              "provider": "{ai_provider}",
+              "temperature": 0.8,
+              "max_tokens": 100
+            }
+          },
+          {
+            "tool": "social",
+            "params": {
+              "text": "{recruiting_tagline}",
+              "style": "bold",
+              "color": "blue",
+              "format": "story",
+              "output_dir": "./output/{project_name_safe}/social"
+            }
+          },
+          {
+            "tool": "ai",
+            "output_key": "job_ad_text",
+            "params": {
+              "prompt": "Erstelle eine kurze, authentische Stellenanzeige für {project_name}. Zielgruppe: Handwerker. Anforderungen: {pain_points}. Vorteile: {goals}. Ton: Persönlich und direkt (Du-Ansprache). Länge: Max 150 Wörter. Keine Floskeln, keine generischen HR-Phrasen.",
+              "provider": "{ai_provider}",
+              "temperature": 0.7,
+              "max_tokens": 400
+            }
+          },
+          {
+            "tool": "briefing",
+            "params": {
+              "type": "Social",
+              "client_name": "{project_name_safe}",
+              "project_name": "Social Recruiting Kampagne",
+              "output_format": "pdf"
+            }
+          }
+        ],
+        "dependencies": ["A1_M1", "A1_M2"],
+        "context_variables": []
+      }
+    ]
+  },
+  {
+    "id": "A2",
+    "name": "Direktbuchung & Erlebnis",
+    "archetype_id": "II",
+    "description": "Workflow-Template für Tourismus, Hotellerie & Gastronomie",
+    "modules": [
+      {
+        "id": "A2_M1",
+        "title": "Strategie-Workshop",
+        "description": "Definition des USP, Brand Identity und Entwicklung einer Nachhaltigkeits-Kommunikationsstrategie",
+        "tasks": [
+          {
+            "tool": "structure",
+            "params": {
+              "client": "{project_name}",
+              "project": "Brand Strategy Workshop",
+              "type": "default"
+            }
+          },
+          {
+            "tool": "briefing",
+            "params": {
+              "type": "Other",
+              "client_name": "{project_name_safe}",
+              "project_name": "Brand Strategy & USP Definition",
+              "output_format": "pdf"
+            }
+          }
+        ],
+        "dependencies": [],
+        "context_variables": []
+      },
+      {
+        "id": "A2_M2",
+        "title": "Website Relaunch (Fokus: Booking Engine)",
+        "description": "Hoch-emotionales, visuelles Design mit nahtloser, mobil-optimierter Buchungs-Engine",
+        "tasks": [],
+        "dependencies": [],
+        "context_variables": []
+      },
+      {
+        "id": "A2_M3",
+        "title": "Content-Produktion (Foto/Video)",
+        "description": "Erstellung von professionellem Foto- und Videomaterial für authentische Erlebnis-Darstellung",
+        "tasks": [],
+        "dependencies": [],
+        "context_variables": []
+      },
+      {
+        "id": "A2_M4",
+        "title": "Social Media Kampagnen (Saisonal)",
+        "description": "Kontinuierliche Bespielung von Instagram, Facebook, TikTok mit UGC, Influencer-Kooperationen und saisonalen Kampagnen",
+        "tasks": [
+          {
+            "tool": "structure",
+            "params": {
+              "client": "{project_name}",
+              "project": "Social Media Kampagne",
+              "type": "social"
+            }
+          },
+          {
+            "tool": "ai",
+            "output_key": "campaign_headline",
+            "params": {
+              "prompt": "Du bist ein Social Media Stratege für Tourismus & Hotellerie. Erstelle EINE elegante, emotionale Headline für eine saisonale Kampagne von {project_name}. WICHTIG: Der Output wird als HEADLINE auf einer Social-Media-Grafik angezeigt. Zielgruppe: Erlebnis-suchende Urlauber. Pain Points: {pain_points}. Ziele: {goals}. Stil: Emotional, visuell, authentisch. LÄNGE: Maximal 50 Zeichen, 4-8 Wörter. Deine Antwort darf NUR die Headline enthalten und sonst nichts.",
+              "provider": "{ai_provider}",
+              "temperature": 0.8,
+              "max_tokens": 120
+            }
+          },
+          {
+            "tool": "social",
+            "params": {
+              "text": "{campaign_headline}",
+              "style": "minimal",
+              "color": "purple",
+              "format": "square",
+              "output_dir": "./output/{project_name_safe}/social"
+            }
+          },
+          {
+            "tool": "briefing",
+            "params": {
+              "type": "Social",
+              "client_name": "{project_name_safe}",
+              "project_name": "Seasonal Social Media Campaign",
+              "output_format": "pdf"
+            }
+          }
+        ],
+        "dependencies": [],
+        "context_variables": []
+      }
+    ]
+  },
+  {
+    "id": "B1",
+    "name": "B2B Lead-Maschine",
+    "archetype_id": "III",
+    "description": "Workflow-Template für B2B-Industrie, Hersteller & Logistik",
+    "modules": [
+      {
+        "id": "B1_M1",
+        "title": "Content-Strategie (Inbound)",
+        "description": "Definition von Kern-Themen (Themen-Cluster) und Analyse der Pain Points der Kunden",
+        "tasks": [
+          {
+            "tool": "structure",
+            "params": {
+              "client": "{project_name}",
+              "project": "Content Strategy & Planning",
+              "type": "default"
+            }
+          },
+          {
+            "tool": "briefing",
+            "params": {
+              "type": "Other",
+              "client_name": "{project_name_safe}",
+              "project_name": "B2B Content Strategy",
+              "output_format": "pdf"
+            }
+          }
+        ],
+        "dependencies": [],
+        "context_variables": []
+      },
+      {
+        "id": "B1_M2",
+        "title": "Website-Struktur (Fokus: Lead Generation)",
+        "description": "Website als Lead-Maschine mit klaren CTAs, Blog und Ressourcen-Hub",
+        "tasks": [],
+        "dependencies": [],
+        "context_variables": []
+      },
+      {
+        "id": "B1_M3",
+        "title": "Content-Erstellung (Lead Magnets)",
+        "description": "Erstellung von Blog-Beiträgen, Whitepapern, Case Studies und Webinaren für verschiedene Funnel-Phasen",
+        "tasks": [
+          {
+            "tool": "structure",
+            "params": {
+              "client": "{project_name}",
+              "project": "B2B Content & Lead Magnets",
+              "type": "default"
+            }
+          },
+          {
+            "tool": "ai",
+            "output_key": "whitepaper_topics",
+            "params": {
+              "prompt": "Du bist ein B2B Content Strategist für Industrie & Fertigung. Entwickle 3 Whitepaper-Themen für {project_name}. Zielgruppe: Einkaufsleiter und technische Entscheider im B2B. Pain Points der Zielgruppe: {pain_points}. Business-Ziele: {goals}. Anforderungen: Themen müssen Thought Leadership zeigen, konkrete Lösungen bieten, SEO-relevant sein. Format: Pro Thema: 1) Titel, 2) Kernfrage (1 Satz), 3) Key Takeaways (3 Stichpunkte).",
+              "provider": "{ai_provider}",
+              "temperature": 0.7,
+              "max_tokens": 600
+            }
+          },
+          {
+            "tool": "ai",
+            "output_key": "case_study_outline",
+            "params": {
+              "prompt": "Erstelle ein Case Study Outline für {project_name}. Kontext: B2B Industrie-Kunde. Problem: {pain_points}. Lösung: {goals}. Format: 1) Challenge (2 Sätze), 2) Solution (3 Stichpunkte), 3) Results (3 messbare Outcomes mit Platzhaltern für echte Zahlen). Stil: Faktenbasiert, präzise, ohne Marketing-Floskeln.",
+              "provider": "{ai_provider}",
+              "temperature": 0.6,
+              "max_tokens": 400
+            }
+          },
+          {
+            "tool": "briefing",
+            "params": {
+              "type": "Other",
+              "client_name": "{project_name_safe}",
+              "project_name": "B2B Lead Magnet Content",
+              "output_format": "pdf"
+            }
+          }
+        ],
+        "dependencies": [],
+        "context_variables": []
+      },
+      {
+        "id": "B1_M4",
+        "title": "Account-Based Marketing (ABM)",
+        "description": "Gezielte Ansprache von Target Accounts über LinkedIn mit personalisierten Inhalten",
+        "tasks": [],
+        "dependencies": [],
+        "context_variables": []
+      }
+    ]
+  },
+  {
+    "id": "C1",
+    "name": "Frequenz & Standort",
+    "archetype_id": "IV",
+    "description": "Workflow-Template für lokalen & nationalen Einzelhandel",
+    "modules": [
+      {
+        "id": "C1_M1",
+        "title": "Local SEO & GMB (Priorität 1)",
+        "description": "Exzellente Pflege des Google My Business Profils mit korrekten Öffnungszeiten, Produkt-Highlights, Fotos und Bewertungsmanagement",
+        "tasks": [],
+        "dependencies": [],
+        "context_variables": []
+      },
+      {
+        "id": "C1_M2",
+        "title": "Local Content Marketing",
+        "description": "Erstellung von Inhalten für lokale Zielgruppe: Blog-Beiträge über lokale Events und Sortiment-Anleitungen",
+        "tasks": [],
+        "dependencies": [],
+        "context_variables": []
+      },
+      {
+        "id": "C1_M3",
+        "title": "Lokale Social Media Kampagnen",
+        "description": "Social Media Kampagnen für lokale Angebote, Aktionen und Events im Geschäft",
+        "tasks": [
+          {
+            "tool": "structure",
+            "params": {
+              "client": "{project_name}",
+              "project": "Local Social Campaign",
+              "type": "social"
+            }
+          },
+          {
+            "tool": "ai",
+            "output_key": "local_offer_headline",
+            "params": {
+              "prompt": "Du bist ein Local Marketing Experte für Einzelhandel. Erstelle EINE knackige, einladende Headline für ein lokales Angebot oder Event von {project_name}. WICHTIG: Der Output wird als HEADLINE auf einer Social-Media-Grafik angezeigt. Zielgruppe: Lokale Kunden im Umkreis. Pain Points: {pain_points}. Ziele: {goals}. Fokus: Events, Sonderangebote, Community. Stil: Freundlich, nahbar, lokal verwurzelt. LÄNGE: Maximal 45 Zeichen, 3-7 Wörter. Deine Antwort darf NUR die Headline enthalten und sonst nichts.",
+              "provider": "{ai_provider}",
+              "temperature": 0.8,
+              "max_tokens": 110
+            }
+          },
+          {
+            "tool": "social",
+            "params": {
+              "text": "{local_offer_headline}",
+              "style": "bold",
+              "color": "green",
+              "format": "square",
+              "output_dir": "./output/{project_name_safe}/social"
+            }
+          },
+          {
+            "tool": "briefing",
+            "params": {
+              "type": "Social",
+              "client_name": "{project_name_safe}",
+              "project_name": "Local Social Media Campaign",
+              "output_format": "pdf"
+            }
+          }
+        ],
+        "dependencies": [],
+        "context_variables": []
+      }
+    ]
+  },
+  {
+    "id": "C2",
+    "name": "Bürger & Mitglieder",
+    "archetype_id": "V",
+    "description": "Workflow-Template für Kommunen, Verbände, Kultur & NGOs (mit Varianten)",
+    "modules": [
+      {
+        "id": "C2_M1",
+        "title": "Website Relaunch (Fokus: Bürgerservice-Portal)",
+        "description": "Neugestaltung als Service-Portal mit klarer Navigation, Barrierefreiheit und E-Government-Diensten",
+        "tasks": [],
+        "dependencies": [],
+        "context_variables": []
+      },
+      {
+        "id": "C2_M2",
+        "title": "Standortmarketing-Kampagne",
+        "description": "Kampagne zur Positionierung der Stadt: Lebensqualität, Wirtschaftsstandort",
+        "tasks": [],
+        "dependencies": [],
+        "context_variables": []
+      },
+      {
+        "id": "C2_M3",
+        "title": "Social Recruiting (Verwaltung)",
+        "description": "Social Media Kanäle (TikTok, LinkedIn) zur Gewinnung von Fachkräften und Auszubildenden für die Verwaltung",
+        "tasks": [],
+        "dependencies": [],
+        "context_variables": []
+      },
+      {
+        "id": "C2_M4",
+        "title": "Social Media Strategie (Fokus: Mitgliedergewinnung)",
+        "description": "Definition der Ziele (Mitglieder, Spenden, Ehrenamtliche) und Kanalauswahl",
+        "tasks": [],
+        "dependencies": [],
+        "context_variables": []
+      },
+      {
+        "id": "C2_M5",
+        "title": "Content-Plan (Engagement)",
+        "description": "Redaktionsplan mit Show-dont-tell, Mitglieder als Botschafter, klare Engagement-Möglichkeiten",
+        "tasks": [],
+        "dependencies": [],
+        "context_variables": []
+      }
+    ]
+  },
+  {
+    "id": "D1",
+    "name": "Global Brand Compliance",
+    "archetype_id": "VI",
+    "description": "Workflow-Template für internationale Konzerne mit lokalem Bedarf",
+    "modules": [
+      {
+        "id": "D1_M1",
+        "title": "Onboarding & Brand Compliance",
+        "description": "Tiefgreifende Einarbeitung in Corporate Design, Brand Guidelines und Tone of Voice",
+        "tasks": [],
+        "dependencies": [],
+        "context_variables": []
+      },
+      {
+        "id": "D1_M2",
+        "title": "Kampagnen-Adaption (Global-to-Local)",
+        "description": "Übernahme und Adaption von globalen Master-Kampagnen für lokalen Markt (AT/DE)",
+        "tasks": [],
+        "dependencies": [],
+        "context_variables": []
+      },
+      {
+        "id": "D1_M3",
+        "title": "High-End-Produktionsmanagement",
+        "description": "Management des gesamten Produktionsprozesses für physische Werbemittel",
+        "tasks": [],
+        "dependencies": [],
+        "context_variables": []
+      },
+      {
+        "id": "D1_M4",
+        "title": "Reporting & Abstimmung",
+        "description": "Engmaschiges, proaktives Projektmanagement und Reporting an internationale Zentrale",
+        "tasks": [],
+        "dependencies": [],
+        "context_variables": []
+      }
+    ]
+  }
+]

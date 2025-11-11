@@ -1,0 +1,588 @@
+﻿A Framework for Taming the 'Vibe-Coded' Project: An AI-Augmented Refactoring Strategy
+
+
+
+
+Part 1: The "Dauerprompt": Establishing the Project Steward (System Architect)
+
+
+The foundation of any successful, long-term AI-assisted development project is the transition from a simple "prompt" to a robust "Dauerprompt," or system prompt. A "user prompt" is a transient, short-term input, analogous to a keystroke; a "system prompt," in contrast, is the "BIOS configuration".1 It is the "operating system of AI behavior" that is loaded once and "influence[s] everything thereafter".1
+This foundational prompt must elevate the interaction from simple "prompt engineering"—the art of finding the right words—to "Context Engineering".2 Context engineering is the "art and science of filling the context window with just the right information".3 The primary challenge in complex AI-agent workflows is no longer model failure, but "context failure".7 Therefore, the system prompt is not the entire solution, but the static, foundational component of a dynamic context engineering system.4
+The request for a "system architect role" or a "framework with various roles" is not a binary choice. The most effective solution is to use the "Dauerprompt" to instantiate a "System Architect" persona 8, whose primary function is to manage the framework and orchestrate other specialist personas. This model is seen in advanced multi-agent systems, such as the "Nova System," which uses a "Discussion Continuity Expert" to facilitate a process 9, or the multi-agent QA framework, which is managed by a "QA0: Supervisor".10
+This "Project Steward" acts as the central orchestrator, receiving tasks, analyzing them, and then invoking the appropriate specialist agent or multi-agent framework to execute.
+
+
+The "Project Steward" Foundational Prompt Template
+
+
+The following template should be loaded at the beginning of every development session (e.g., as a system prompt or the first "primer" prompt 11) to establish the AI's core operating parameters.13
+
+
+
+
+
+
+You are the **Project Steward**, a senior system architect and my lead technical partner. Your expertise is in AI-driven code modernization and DevSecOps.
+
+Your primary directive is to help me refactor a "vibe-coded" Python project. This codebase is characterized by inconsistent coding styles, high coupling, and, most importantly, numerous logical and semantic errors.[15, 16]
+
+You are methodical, rigorous, and will prioritize long-term maintainability, correctness, and security above all else. You will help me impose order on this chaos.
+
+
+You will adhere to the following **Project Constitution** in all analyses and code generation. This constitution is our set of guiding principles, similar to a Constitutional AI (CAI) framework.[17, 18, 19]
+
+1.  **Technology Stack (Constraint-Based):**
+   *   Python Version: [e.g., 3.10]
+   *   Frameworks:
+   *   Testing: [e.g., Pytest]
+   *   Constraint: You must use *only* these technologies. Do not introduce new libraries without my explicit permission.
+
+2.  **Coding Principles:**
+   *   You will strictly adhere to SOLID principles (Single Responsibility, etc.).
+   *   You will enforce DRY (Don't Repeat Yourself) and KISS (Keep It Simple, Stupid) principles.
+   *   Code must be readable and follow PEP 8 conventions.
+
+3.  **Correctness First:**
+   *   A working, correct, and readable solution is always superior to a clever, complex, or opaque one.
+   *   All generated code must be robust against edge cases.
+
+4.  **Security Mandate:**
+   *   All code must be reviewed for potential security vulnerabilities.
+   *   You will pay special attention to business logic flaws (e.g., flaws in application state, broken validation).[22, 23]
+
+
+These are the most important rules of our interaction. You **must** follow them at all times.
+
+1.  **The "Plan-and-Approve" Mandate:**
+   *   For any request that involves modifying more than one file, creating new files, or addressing a complex logical flaw, you will **NOT** write the code immediately.
+   *   You will **first** provide a detailed, step-by-step refactoring plan. This plan must identify all files and functions you intend to modify.
+   *   You will then **wait for my explicit approval** before proceeding with code generation.
+   *   This is a non-negotiable rule. It is designed to prevent the exact "vibe coding"  that created this project's problems and counteracts the known failure mode of AI agents that "simply keep creating the next files and ignore [a user's] request" to wait.[14, 24]
+
+2.  **Chain-of-Thought (CoT) Reasoning:**
+   *   For all debugging, analysis, and refactoring tasks, you **must** use step-by-step, chain-of-thought reasoning [25, 26] to explain your analysis and proposed solution.
+   *   Show your work. This transparency is essential for me to validate your logic and for us to "debug the LLM model itself" if it makes a mistake.[26, 27]
+
+3.  **Specialist Invocation:**
+   *   When I provide a task, your first step is to analyze it.
+   *   You will then recommend the best 'specialist persona' (e.g., 'Algorithm Expert,' 'Security Analyst') or 'multi-agent framework' (e.g., 'Expert Panel Debate') from your library to handle the task. You will then *assume* that role or *initiate* that framework.
+
+
+To overcome the context window limit [28, 29, 30], we will use a "Repo Map." This map provides you with the high-level structure of the entire codebase.
+
+You will treat the following as the project's "Repo Map," generated via `tree-sitter`. You will use this map to understand the overall architecture, dependencies, call signatures, and data structures.[32] The `tree-sitter` map is richer than older `ctags` methods and provides "full function call signatures and other details".
+
+**Repo Map:**
+
+
+
+Part 2: Phase 1 - AI-Driven Discovery and Analysis (The "See" Phase)
+
+
+Before any refactoring can begin, both the developer and the AI must have a shared, accurate understanding of the project's current state. The project's "vibe-coded" nature means documentation is sparse and the code itself is an unreliable narrator of its own intent. The first phase is to use the "Project Steward" and its "Repo Map" to conduct a deep analysis.
+
+
+Building the "Repo Map"
+
+
+The "Repo Map" referenced in the "Dauerprompt" is the single most critical piece of context for a multi-file project. It is impossible to analyze dependencies, refactor shared modules, or trace data flow if the AI can only see one file at a time.33 The context window is a finite resource 2, and simply concatenating all files is inefficient and often impossible.29
+The solution is to create a high-level summary of the codebase's structure. While early methods used ctags 32, modern tools like tree-sitter provide a far richer, more accurate map.31 This map includes "full function call signatures and other details straight from the source files".31 This map is the compressed, essential context 6 that will be pasted into Section 4 of the "Project Steward" prompt.
+
+
+Analysis Prompt 1: The Architectural Overview
+
+
+Once the "Steward" is primed with the "Repo Map," the first task is to generate a high-level architectural overview. This prompt is directly inspired by proven techniques for whole-repo analysis.35
+Prompt Template:
+
+
+
+
+
+
+You are the **Project Steward**.
+Task: Generate a high-level **Architectural Overview** of this project.[36]
+Source of Truth: Use *only* the `tree-sitter` "Repo Map" I have provided in your system prompt. Do not invent or assume any functionality not present in the map.
+
+Your analysis **must** include:
+1.  **Module & Purpose:** A list of all major modules (directories/files) and their inferred purpose based on their file names and function signatures.
+2.  **Key Dependencies:** An analysis of inter-file dependencies.[37] Identify:
+   *   The most critical, central modules (i.e., "most depended-on").
+   *   Potential areas of high coupling (modules that are "too chatty").
+   *   Any obvious cyclic dependencies.[37]
+3.  **Data Flow & Call Graph:**
+   *   Trace the most likely data flow for a critical operation (e.g., "new user registration").
+   *   Generate a visualization of the primary call graph between the top 5-7 most critical modules. Use Mermaid syntax (```mermaid... ```) for this visualization.[38]
+
+
+
+Analysis Prompt 2: The Semantic & Logic Flaw Audit
+
+
+This is the most crucial analysis for a project plagued by "logical flaws." A logical error is when the code is syntactically correct and runs without crashing, but produces the wrong result.15 This is often caused by flawed logic, incorrect assumptions, or a failure to handle "unusual application states".15
+The central problem is that "If it's difficult to understand what is supposed to happen, it will be difficult to spot any logic flaws".22 Therefore, the AI cannot find logical flaws by just reading the code. It must first establish the intended logic and then check the implementation against that documented intent. This requires a two-step "infer-then-critique" prompt.
+Prompt Template:
+
+
+
+
+
+
+You are the **Logic Debugger**.
+Task: Perform a semantic and logic flaw audit on the following file.
+
+[Paste file contents]
+
+**Step 1: Infer Intent.**
+First, analyze the code and write a high-level summary of its **intended** purpose. Document the **business logic** it is *supposed* to enforce. What is this code trying to achieve?
+
+**Step 2: Identify Flaws (Critique Implementation vs. Intent).**
+Now, critique the implementation *against* the intent you just documented. Systematically list all potential logical flaws, semantic errors [40], or "unusual application states"  the developer may have missed.
+
+Pay special attention to:
+*   Off-by-one errors in loops.
+*   Incorrect comparison operators (e.g., `>` vs. `>=`).
+*   Unhandled edge cases (e.g., empty lists, null values, zero, negative numbers, boundary values).
+*   Flawed business logic assumptions (e.g., assuming a user is always authenticated, assuming an item is always in stock).
+*   Code that is reachable but will never produce the *correct* output due to flawed conditional logic.
+
+
+
+Part 3: Phase 2 - Assembling the Virtual Refactoring Team
+
+
+With the project analyzed, the next phase is refactoring. A single persona is insufficient for this complex task. The request for a "prompt framework with various roles" can be answered by implementing multi-agent frameworks. The research reveals two distinct types: lightweight, single-prompt simulations ("Expert Panels") and heavyweight, multi-step, stateful workflows ("Multi-Agent Frameworks"). A robust strategy requires both.
+
+
+Framework 1: The "AI Code Review Panel" (Lightweight Simulation)
+
+
+This approach merges the "expert panel (multi-persona)" template 41 with the specific roles identified in the "AI-Powered Code Review Panel" use case.42 It provides a fast, multi-faceted critique of a single function or file within a single turn.
+Prompt Template:
+
+
+
+
+
+
+I need multiple expert perspectives on the following code:
+
+[Paste code snippet]
+
+Please simulate a panel discussion  between these three experts :
+
+1.  **Expert 1: Senior Security Analyst**  (Focused on vulnerabilities, insecure practices, and business logic flaws ).
+2.  **Expert 2: Senior Performance Optimizer**  (Focused on bottlenecks, algorithmic inefficiency, and resource consumption [43]).
+3.  **Expert 3: Readability & Maintainability Expert**  (Focused on clean code, SOLID principles , and adherence to our Project Constitution).
+
+Have each expert:
+1.  **State their credentials and primary concern**.
+2.  **Analyze the code** from their specific viewpoint.
+3.  **Propose a concrete solution** or improvement.
+4.  **Briefly respond to the other experts' viewpoints** to reach a consensus on the best path forward, or explain their disagreements.[41, 44]
+
+Format the entire output as a single, coherent discussion.
+
+
+
+Framework 2: The "QA-Refactor-Loop" (Heavyweight Hybrid Framework)
+
+
+This is a more advanced, multi-step workflow that provides a systematic solution to the project's deep logical flaws. It creates a powerful "QA-Refactor-Loop" by combining two complementary academic frameworks: the QA Team framework 10 and the RefactorGPT framework.45
+These are not competing frameworks; they are sequential. The QA Team is used to find flaws and generate tests, and RefactorGPT is used to fix the flaws and use those tests for validation.
+This workflow proceeds in three stages:
+Stage 1: Deploy QA1 (The Feature Reviewer) to Audit Existing Code
+The "QA Team" framework includes a "QA1: Feature Reviewer" agent whose job is to perform "static testing" and review a feature description for "completeness," "gaps," and "risks".10 We will adapt this to review existing code.
+Prompt:
+
+
+
+
+
+
+Act as **QA1: The Feature Reviewer**.
+Your task is to perform "static testing" on the following code. Instead of a feature description, you will analyze the code and its comments to infer the feature's intent.
+
+[Paste code]
+
+Your goal is to identify all **gaps, risks, and ambiguities** in the logic. Ask iterative questions that a developer would need to answer to make this code robust. List all product risks you perceive.
+
+Stage 2: Deploy QA2 & QA3 (The Test Designers) to Generate a Failing Test Suite
+The outputs from QA1 (the "gaps" and "risks") are now fed to the "Test Plan" and "Test Catalog" designers.10 Their job is to create a comprehensive test suite (using pytest) that proves the existence of the logical flaws.
+Prompt:
+
+
+
+
+
+
+Act as **QA2 (Test Plan Designer)** and **QA3 (Test Catalog Designer)**.
+Based on the code from the previous step and the "gaps" and "risks" identified by QA1, your task is to design a comprehensive `pytest` test suite.
+
+This test suite must:
+1.  Cover all Test Conditions (explicit and implicit).
+2.  Include "atomic" test cases that validate the gaps and risks.
+3.  Be designed to **fail** where the current code's logic is flawed.
+
+Generate the full, executable `pytest` file.
+
+Stage 3: Deploy RefactorGPT (The Multi-Agent Refactorer) to Fix the Code
+Now that a failing test suite exists, the RefactorGPT framework 45 can be deployed. This framework consists of a sequence of agents: AnalyzerAgent (identifies refactoring opportunities), RefactorAgent (applies the fix), RefineAgent (improves quality), and, most importantly, a FixerAgent (validates and repairs the code).45
+Prompt:
+
+
+
+
+
+
+You will now initiate the **RefactorGPT** framework.
+Your input is:
+1.  **The Flawed Code:** [Paste code]
+2.  **The Failing Test Suite:**
+
+Your task is to execute the RefactorGPT pipeline:
+1.  **Analyze:** Identify the refactoring needed to fix the failing tests.
+2.  **Refactor:** Generate the refactored code.
+3.  **Refine:** Improve the refactored code's quality.
+4.  **Fix & Validate:** Your `FixerAgent`  must use the provided test suite. Its goal is to generate a final version of the code that makes the *entire test suite pass*.
+
+
+
+Table 1: Comparison of Multi-Agent Refactoring Frameworks
+
+
+This table summarizes the available frameworks, enabling a strategic decision about which tool to deploy for a given task.
+
+
+Framework
+	Agents / Roles
+	Process
+	Best For...
+	"Expert Panel" 41
+	Security, Performance, Readability Experts
+	Single-prompt, simulated discussion.
+	Quick, multi-faceted critique of a single function or file.
+	"QA Team" 10
+	QA0 (Supervisor), QA1 (Reviewer), QA2 (Test Planner), QA3 (Test Writer)
+	Multi-step, sequential workflow.
+	Auditing existing features, finding logical gaps, and generating a test suite from scratch.
+	"RefactorGPT" 45
+	AnalyzerAgent, RefactorAgent, RefineAgent, FixerAgent
+	Multi-step, sequential workflow.
+	Automated, systematic refactoring of a module when tests already exist (or were just generated).
+	"Constitutional AI" 17
+	Self-Critiquing Model
+	Iterative self-revision based on a "constitution".18
+	A principle to embed in all other prompts, forcing the AI to self-correct based on project rules.
+
+
+Part 4: The Core Persona Prompt Library
+
+
+The "Project Steward" (Part 1) acts as an orchestrator that delegates tasks to a library of specialists. Each persona is a "Dauerprompt" in miniature, designed to focus the AI's "attention" on a specific domain.
+
+
+Prompt 1: The Senior Python Architect
+
+
+* Directive: This persona focuses on high-level structure, design patterns, and project-wide consistency. It is concerned with "fixing tech bottlenecks" 47 and ensuring the codebase adheres to architectural principles like SOLID.21
+* Template:
+Act as a **Senior Python Architect** with DevSecOps experience.
+Analyze the following module:
+
+[Paste code]
+
+Provide a refactoring plan to improve its adherence to **SOLID principles**. Your plan must:
+1.  Identify any violations (e.g., functions with multiple responsibilities).
+2.  Suggest how to refactor for better scalability and testability.
+3.  Analyze inter-module coupling and suggest changes to reduce it.[37]
+
+(Adhere to the "Plan-and-Approve" mandate.)
+
+
+
+Prompt 2: The Algorithm Expert
+
+
+   * Directive: This persona focuses on computational efficiency. It thinks in terms of Big O notation 43 and finding "optimal" solutions 49, rather than just "working" solutions.
+   * Template:
+Act as a **seasoned computer science professor and algorithm expert**.
+Analyze the following function:
+
+[Paste code]
+
+1.  Determine its **Big O time and space complexity**.[43, 48, 51]
+2.  **Justify your analysis** by explaining *which* operations contribute to this complexity.[52]
+3.  Provide a refactored, **optimal** version of the algorithm.
+4.  Explain the Big O complexity of your new, improved solution.
+
+
+
+Prompt 3: The QA Analyst
+
+
+      * Directive: This persona is a black-box tester. It does not look at the implementation details. Its specialty is "exploratory testing" 53, where it uses "different personas" and creativity to uncover "issues... overlooked by scripted testing".53 It is the AI equivalent of a creative and slightly malicious power user.
+      * Template:
+Act as a **Senior QA Analyst**  performing **exploratory testing**.
+You will be given a function signature and its docstring. **Do not analyze the implementation.**
+
+**Function:**
+
+
+Your task:
+1.  Generate a list of 10-15 creative, malicious, or **"unusual" test cases**  designed to break the function's logic.
+2.  Think about edge cases: nulls, empty strings, zero, negatives, boundary values, massive inputs, and unexpected data types.
+3.  For each test case, list the `Input` and the `Expected Output`.
+
+
+
+Prompt 4: The Logic Debugger
+
+
+         * Directive: This persona is the white-box counterpart to the QA Analyst. It is a specialist in "AIP Logic Debugger" tools 39 and uses "formal methods" to trace execution.55 Its primary tool is Chain-of-Thought reasoning 26 to find the exact point of failure.
+         * Template:
+Act as a **Logic Debugger**  with a "hoare-logic" mindset.
+I have a bug. The following code...
+
+[Paste code]
+
+
+...is failing the following test case:
+
+
+
+
+
+
+[Paste failing test case or describe the bad input and incorrect output]
+
+Use a **Chain-of-Thought**  to trace the execution of this function *with the failing input*.
+*   Go line by line.
+*   State the value of all relevant variables at each step.
+*   Pinpoint the **exact line** where the logic deviates from the expected behavior.
+*   Explain the root cause of the semantic error.[40]
+*   Finally, propose the corrected code.
+```
+
+
+
+Table 2: Specialist Persona Library (Quick Reference)
+
+
+This table provides a "cheat sheet" for invoking the correct specialist.
+
+
+Persona
+	Core Directive
+	Key Prompt Snippet
+	When to Use
+	System Architect 8
+	High-level structure, SOLID 21, scalability.
+	"Analyze this module for SOLID principle violations..."
+	When refactoring the structure of a module or the entire project.
+	Algorithm Expert 50
+	Time/Space Complexity 48, optimization.
+	"Analyze the Big O complexity and provide an optimal version..."
+	When a specific function is a performance bottleneck.43
+	QA Analyst 54
+	Black-box, exploratory testing 53, test case generation.
+	"Generate 10 'unusual' test cases to break this function..."
+	Before refactoring, to build a test suite that proves the code is broken.
+	Logic Debugger 39
+	White-box, execution tracing 55, CoT.26
+	"Trace the execution of this function with this failing input, step by step..."
+	After a test fails, to find the root cause of a logical error.16
+	Security Analyst 23
+	Find vulnerabilities, auth, and business logic flaws.22
+	"Analyze this code for security vulnerabilities, especially auth and business logic flaws..."
+	Before deploying any code that handles user data, authentication, or transactions.
+
+
+Part 5: Advanced Prompting Techniques for Logical Flaws
+
+
+The project's core issue is "logical flaws" (semantic errors), which are the most "insidious" type of error because the code runs but produces incorrect results.15 The following techniques are specifically designed to find and fix these errors.
+
+
+Technique 1: Chain-of-Thought (CoT) Debugging
+
+
+This is the most fundamental advanced prompting technique. CoT 25 forces the AI to "simulate human-like reasoning processes by breaking down elaborate problems into manageable, intermediate steps".25 This is essential for debugging, as it makes the AI's reasoning process transparent 27, allowing the developer to "easily understand how the model proceeds" and, crucially, to "debug the LLM model" itself when it produces a wrong output.26
+            * How-To: Instead of just asking for a fix, explicitly demand a step-by-step reasoning chain.20
+            * Template:
+Let's debug this step-by-step.
+
+**Code:**
+[Paste flawed code]
+
+**Error/Bug:**
+[Paste error message or describe the failing test case]
+
+Provide your analysis in the following structured format:
+
+**Step 1. Analyze the User's Intent:** [AI describes what the code is *supposed* to do]
+
+**Step 2. Analyze the Error/Bug:** [AI interprets the error message or the logical failure]
+
+**Step 3. Formulate a Hypothesis:** [AI states its primary hypothesis for the root cause]
+
+**Step 4. Trace and Verify:**
+
+**Step 5. Propose the Fix:** [AI provides the corrected code snippet]
+
+**Step 6. Explain the Fix:** [AI explains *why* the new code solves the bug]
+
+
+
+Technique 2: Recursive Criticism and Improvement (RCI)
+
+
+This is the most powerful and effective technique for complex refactoring. Research on automated refactoring shows that "RCI-based prompting consistently outperforms one-shot prompting in test pass rates and refactoring quality".57 RCI is an iterative process 58 that "simulat[es] the iterative test-debug-refine cycle that human developers rely on".59
+               * How-To (The RCI Loop): RCI is not a single prompt but an interactive workflow.
+               1. Developer (Attempt 1): "Refactor this function to improve readability: [code_v1]"
+               2. AI: [code_v2]
+               3. Developer: (Runs the pytest suite, and a test fails).
+               4. Developer (Attempt 2 - The RCI Step): "Your refactoring in code_v2 is incorrect and failed the test suite. Here is the pytest failure log: [paste pytest failure log].
+Your task:
+                  1. Critique your code_v2.
+                  2. Explain why it caused this test to fail.
+                  3. Provide a corrected code_v3 that passes all tests."
+                  5. AI: (Uses CoT) "Critique: My code_v2 failed because... The error log indicates... Fix: Here is code_v3..."
+                  6. Developer: Repeat from Step 3 until all tests pass. This "recursive criticism" 58 is what trains the AI to handle the project's specific logic.
+
+
+Technique 3: "LecPrompt-inspired" Error Localization
+
+
+Sometimes, the bug is so subtle that asking for a "fix" is premature. The academic "LecPrompt" framework 62 was designed for logical error correction. One of its key innovations is using model properties ("log probabilities") to "localize suspicious tokens and lines that may lead to logical errors".64 We can simulate this behavior with a targeted prompt.
+                  * How-To: Instead of asking the AI to fix the code, ask it to find the flaw. This forces it to act as a high-precision diagnostic tool.
+                  * Template:
+Act as a **Logic Debugger**.
+
+**Code:**
+[Paste flawed code]
+
+**Failing Test Case:**
+
+
+**Task:** Do **not** write the fix. Your task is to **localize the logical error**.
+1.  List the **top 3 specific lines or tokens** that are the *most likely* cause of this logical error.
+2.  For each, provide a brief hypothesis explaining *why* it might be the cause of the failure.
+
+
+
+Part 6: Interactive Workflow and Control Prompts (The "Dauerprompt" Rules)
+
+
+The "vibe-coded" 14 project's primary risk is that the AI will simply add to the chaos. The "Dauerprompt" (Part 1) must include explicit rules of engagement. These are not suggestions; they are control mechanisms.
+
+
+Control 1: The "Plan-and-Approve" (P&A) Mandate
+
+
+This is the most important control mechanism. A common failure mode of coding agents is that they "vibe code"—they "simply keep creating the next files and ignore [the user's] request" to wait for approval.14 This leads to a state where the developer cannot track the agent's changes. The P&A mandate solves this by enforcing a "human-in-the-loop" checkpoint for all significant changes.56
+                     * The Rule (from Part 1): "For any request that involves modifying more than one file... you will NOT write the code. You will first provide a detailed refactoring plan... and wait for my explicit approval".24
+                     * Example Interaction:
+                     * Developer: "Refactor the user_auth module to use the new TokenService."
+                     * AI (Steward): "This is a complex, multi-file task. As per our rules, I will first provide a plan and wait for your approval.
+Refactoring Plan:
+                        1. Modify models/user.py: Remove the generate_token() method.
+                        2. Modify routes/auth.py: In the /login endpoint, replace the call to user.generate_token() with a call to TokenService.create_token(user).
+                        3. Create services/token_service.py: Create this new file with a create_token() method that handles JWT generation.
+Do I have your approval to proceed?"
+                        * Developer: "Yes, this plan is approved. But for step 2, please also update the error handling for a failed token creation."
+                        * AI (Steward): "Understood. Proceeding with the approved (and modified) plan.
+Here is the code for services/token_service.py..."
+
+
+Control 2: The "Refactoring Debate"
+
+
+Never accept the first answer.65 For critical, complex logical flaws, the AI's first solution may seem correct but may introduce new, more subtle bugs. This technique forces the AI to take an adversarial position against itself, combining the "Expert Panel" 41 concept with an adversarial "Debate" structure.44 This often "highlights issues/opportunities I wouldn't consider to ask either".67
+                           * How-To: Use this after the AI has proposed a fix for a complex bug.
+                           * Template:
+Thank you for the proposed fix. Now, let's debate it.[44]
+
+Simulate a debate between two senior architects:
+*   **Architect 1 (Proponent):** Argue *for* your proposed solution. Why is it elegant, correct, and robust? Why does it fully solve the problem?
+*   **Architect 2 (Skeptic):** Argue *against* it. Be an aggressive critic. What hidden risks, new edge cases, or future maintainability problems does this "fix" introduce? What did the Proponent miss?
+
+Finally, act as the **Project Steward**:
+1.  Summarize the debate.
+2.  Provide a **final, improved `v2` of your fix** that addresses the Skeptic's valid points.
+
+
+
+Conclusions and Recommendations
+
+
+The challenge of a "vibe-coded" 14 project plagued by logical and semantic errors 15 cannot be solved by a single "magic prompt." The solution is to transition from simple prompting to a disciplined, systematic framework of Context Engineering.2 This report has provided a comprehensive strategy to transform a general-purpose CLI agent into a specialized, AI-augmented development partner.
+The core recommendations are as follows:
+                              1. Establish a "Dauerprompt": Implement the "Project Steward" system prompt (Part 1). This establishes the AI's core identity, embeds a "Project Constitution" 17 for code quality, and, most critically, enforces the "Plan-and-Approve" (P&A) control mechanism 24 to prevent further "vibe coding."
+                              2. Map Before You Move: In Phase 1 (Part 2), use a tree-sitter-based "Repo Map" 31 to give the AI a high-level understanding of the entire codebase. Use the "Semantic & Logic Flaw Audit" prompt to force the AI to first infer intent and then critique the implementation 22, a necessary process for finding logical flaws.
+                              3. Deploy Multi-Agent Frameworks: In Phase 2 (Part 3), use the right tool for the job.
+                              * For quick critiques, use the "AI Code Review Panel".41
+                              * For deep, systematic refactoring, implement the "QA-Refactor-Loop" by first using the "QA Team" framework 10 to generate a failing test suite, and then using the "RefactorGPT" framework 45 to fix the code until the tests pass.
+                              4. Use a Specialist Library: Maintain the Persona Prompt Library (Part 4) and have the "Steward" invoke the correct specialist (e.g., "Logic Debugger" 39 for tracing, "QA Analyst" 54 for test generation).
+                              5. Master Advanced Debugging: For the most difficult logical flaws, the "Dauerprompt" is not enough. The developer must actively deploy advanced techniques (Part 5), primarily Recursive Criticism and Improvement (RCI) 57, which uses failing test logs as iterative feedback to refine solutions.
+By implementing this structured, multi-layered strategy, a "vibe-coded" project can be systematically analyzed, tested, and refactored, moving it from a state of chaos to one of disciplined, maintainable, and correct engineering.
+Referenzen
+                              1. The Art of Writing Great System Prompts | by Saurabh Singh ..., Zugriff am November 8, 2025, https://medium.com/towardsdev/the-art-of-writing-great-system-prompts-abb22f8b8f37
+                              2. Effective context engineering for AI agents - Anthropic, Zugriff am November 8, 2025, https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents
+                              3. Zugriff am November 8, 2025, https://jtanruan.medium.com/context-engineering-in-llm-based-agents-d670d6b439bc#:~:text=In%20practice%2C%20context%20engineering%20encompasses,with%20few%2Dshot%20examples).
+                              4. Context Engineering: A Guide With Examples - DataCamp, Zugriff am November 8, 2025, https://www.datacamp.com/blog/context-engineering
+                              5. Context engineering in agents - Docs by LangChain, Zugriff am November 8, 2025, https://docs.langchain.com/oss/python/langchain/context-engineering
+                              6. Context Engineering for Agents - YouTube, Zugriff am November 8, 2025, https://www.youtube.com/watch?v=4GiqzUHD5AA
+                              7. Context Engineering in LLM-Based Agents | by Jin Tan Ruan, CSE Computer Science, Zugriff am November 8, 2025, https://jtanruan.medium.com/context-engineering-in-llm-based-agents-d670d6b439bc
+                              8. The Art of Guiding AI: My Journey in Prompt Engineering for an, Zugriff am November 8, 2025, https://medium.com/the-assist-angle/the-art-of-guiding-ai-my-journey-in-prompt-engineering-for-an-agentic-coder-d14034819817
+                              9. ChatGPT coding skills seem to have been gutted. Im asking it to write simple Pythone code to create a todo list. Simple, using GPT-4, Im a plus memebr, and it keeps giving me code with bad logic, bugs and its just getting worse each iteration. Like its confused. It used to not be this bad. - Reddit, Zugriff am November 8, 2025, https://www.reddit.com/r/ChatGPT/comments/14lisa9/chatgpt_coding_skills_seem_to_have_been_gutted_im/
+                              10. ChatGPT Prompt to impersonate a QA Analyst for Static Test into ..., Zugriff am November 8, 2025, https://www.reddit.com/r/QualityAssurance/comments/1gzjqqd/chatgpt_prompt_to_impersonate_a_qa_analyst_for/
+                              11. Kalabint/ChatGPT-Primer: ChatGPT-Primer Prompt (Role ... - GitHub, Zugriff am November 8, 2025, https://github.com/Kalabint/ChatGPT-Primer
+                              12. Prompt Engineering in English | PDF | Artificial Intelligence - Scribd, Zugriff am November 8, 2025, https://www.scribd.com/document/681487848/Prompt-Engineering-in-English-1
+                              13. Using ChatGPT as a technical writing assistant - Martin Fowler, Zugriff am November 8, 2025, https://martinfowler.com/articles/2023-chatgpt-tech-writing.html
+                              14. Is it possible to make Cursor behave similar to Cline and ask and wait for approval for each file created before moving on? : r/ChatGPTCoding - Reddit, Zugriff am November 8, 2025, https://www.reddit.com/r/ChatGPTCoding/comments/1kd759x/is_it_possible_to_make_cursor_behave_similar_to/
+                              15. The Different Types of Python Errors and How to Handle Them - Rollbar, Zugriff am November 8, 2025, https://rollbar.com/blog/python-errors-and-how-to-handle-them/
+                              16. 5 Best LLMs for Debugging and Error Detection: Ranked by Hands ..., Zugriff am November 8, 2025, https://www.index.dev/blog/llms-for-debugging-error-detection
+                              17. Claude Code: Revolutionizing Development with Constitutional AI | by ThamizhElango Natarajan, Zugriff am November 8, 2025, https://thamizhelango.medium.com/claude-code-revolutionizing-development-with-constitutional-ai-9839a32faddc
+                              18. Contextual Constitutional AI - LessWrong, Zugriff am November 8, 2025, https://www.lesswrong.com/posts/ivWPqkipkKywQbdDw/contextual-constitutional-ai
+                              19. Beyond Vibe Coding - A Guide To AI-Assisted Development, Zugriff am November 8, 2025, https://beyond.addy.ie/
+                              20. 35 Code Refactoring Prompts to Know for Generative AI | Built In, Zugriff am November 8, 2025, https://builtin.com/articles/code-refactoring-prompt
+                              21. Business logic vulnerabilities | Web Security Academy - PortSwigger, Zugriff am November 8, 2025, https://portswigger.net/web-security/logic-flaws
+                              22. I built an LLM agent that finds security vulnerabilities in your code : r/SideProject - Reddit, Zugriff am November 8, 2025, https://www.reddit.com/r/SideProject/comments/1ihod1a/i_built_an_llm_agent_that_finds_security/
+                              23. AI Coding Tools keep misunderstanding your prompts? → Here's a ..., Zugriff am November 8, 2025, https://www.reddit.com/r/ClaudeCode/comments/1mj53z1/ai_coding_tools_keep_misunderstanding_your/
+                              24. What is chain of thought (CoT) prompting? - IBM, Zugriff am November 8, 2025, https://www.ibm.com/think/topics/chain-of-thoughts
+                              25. Chain of Thought Prompting Explained (with examples) - Codecademy, Zugriff am November 8, 2025, https://www.codecademy.com/article/chain-of-thought-cot-prompting
+                              26. Let Claude think (chain of thought prompting) to increase performance, Zugriff am November 8, 2025, https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/chain-of-thought
+                              27. Any AI Tools for Software Project Refactoring exist? - OpenAI Developer Community, Zugriff am November 8, 2025, https://community.openai.com/t/any-ai-tools-for-software-project-refactoring-exist/736992
+                              28. How to generate accurate LLM responses on large code repositories: Presenting CGRAG, a new feature of dir-assistant | by Chase Adams | Medium, Zugriff am November 8, 2025, https://medium.com/@djangoist/how-to-create-accurate-llm-responses-on-large-code-repositories-presenting-cgrag-a-new-feature-of-e77c0ffe432d
+                              29. Building a better repository map with tree sitter | aider, Zugriff am November 8, 2025, https://aider.chat/2023/10/22/repomap.html
+                              30. The author starts out with an excellent observation: Lately, I've been playing a... | Hacker News, Zugriff am November 8, 2025, https://news.ycombinator.com/item?id=36073627
+                              31. How to analyze source code with many files : r/ChatGPTCoding, Zugriff am November 8, 2025, https://www.reddit.com/r/ChatGPTCoding/comments/1jhvei5/how_to_analyze_source_code_with_many_files/
+                              32. Improving GPT-4's codebase understanding with ctags | aider, Zugriff am November 8, 2025, https://aider.chat/docs/ctags.html
+                              33. Here's how I use LLMs to help me write code, Zugriff am November 8, 2025, https://simonwillison.net/2025/Mar/11/using-llms-for-code/
+                              34. AIP Logic • FAQ - Palantir, Zugriff am November 8, 2025, https://palantir.com/docs/foundry/logic/faq/
+                              35. 8 AI prompt templates to use with your AI chatbots - Zapier, Zugriff am November 8, 2025, https://zapier.com/blog/ai-prompt-templates/
+                              36. Kriss Strikis's LLM Responses MCP Server: The AI Engineer's Guide ..., Zugriff am November 8, 2025, https://skywork.ai/skypage/en/llm-responses-ai-collaboration/1980872548075368448
+                              37. Prompt engineering techniques - Azure OpenAI | Microsoft Learn, Zugriff am November 8, 2025, https://learn.microsoft.com/en-us/azure/ai-foundry/openai/concepts/prompt-engineering
+                              38. Multi-Agent Debate Strategies to Enhance Requirements Engineering with Large Language Models - arXiv, Zugriff am November 8, 2025, https://arxiv.org/html/2507.05981v1
+                              39. RefactorGPT: a ChatGPT-based multi-agent framework for ... - PeerJ, Zugriff am November 8, 2025, https://peerj.com/articles/cs-3257/
+                              40. Constitutional AI: Harmlessness from AI Feedback - Anthropic, Zugriff am November 8, 2025, https://www.anthropic.com/research/constitutional-ai-harmlessness-from-ai-feedback
+                              41. Find a Team Management freelancer on Malt, Zugriff am November 8, 2025, https://en.malt.nl/s/tags/team-management-59ca86946e6c295df40aa4da?p=2
+                              42. How to Calculate Algorithm Efficiency? - Analytics Vidhya, Zugriff am November 8, 2025, https://www.analyticsvidhya.com/blog/2024/07/calculate-algorithm-efficiency/
+                              43. Prompt Stability in Code LLMs: Measuring Sensitivity across Emotion- and Personality-Driven Variations - arXiv, Zugriff am November 8, 2025, https://arxiv.org/html/2509.13680v1
+                              44. High-Performance AI Prompts 50 - Your Go-To Guide - Scribd, Zugriff am November 8, 2025, https://www.scribd.com/document/905755180/High-Performance-AI-Prompts-50-Your-Go-To-Guide
+                              45. Performing Exploratory Testing: Improving Your App with Crowdsourced QA - Oursky, Zugriff am November 8, 2025, https://www.oursky.com/blogs/performing-exploratory-testing-improving-your-app-with-crowdsourced-qa
+                              46. The Ultimate Guide to GPT Prompts for Test Case Generation in 2025 - CloudQA, Zugriff am November 8, 2025, https://cloudqa.io/gpt-prompts-test-case-generation-qa-automation-2025/
+                              47. UNIVERSITY OF CYPRUS - UCY - CS Department Document Managment System: Folder 'DMS', Zugriff am November 8, 2025, https://dms.cs.ucy.ac.cy/op/op.Download.php?documentid=17733&version=1
+                              48. How AI Refactors Code for Better Performance - AI Tools - God of Prompt, Zugriff am November 8, 2025, https://www.godofprompt.ai/blog/how-ai-refactors-code-for-better-performance
+                              49. [2510.26480] Automated Extract Method Refactoring with Open-Source LLMs: A Comparative Study - arXiv, Zugriff am November 8, 2025, https://arxiv.org/abs/2510.26480
+                              50. arxiv.org, Zugriff am November 8, 2025, https://arxiv.org/html/2510.26480v1
+                              51. (PDF) Self-Programming AI: Code-Learning Agents for Autonomous Refactoring and Architectural Evolution - ResearchGate, Zugriff am November 8, 2025, https://www.researchgate.net/publication/391933574_Self-Programming_AI_Code-Learning_Agents_for_Autonomous_Refactoring_and_Architectural_Evolution
+                              52. Prompt Engineering Showcase: Your Best Practical LLM Prompting ..., Zugriff am November 8, 2025, https://community.openai.com/t/prompt-engineering-showcase-your-best-practical-llm-prompting-hacks/1267113?page=2
+                              53. [Literature Review] Automated Extract Method Refactoring with Open-Source LLMs: A Comparative Study - Moonlight, Zugriff am November 8, 2025, https://www.themoonlight.io/en/review/automated-extract-method-refactoring-with-open-source-llms-a-comparative-study
+                              54. LecPrompt: A Prompt-based Approach for Logical Error Correction with CodeBERT | AI Research Paper Details - AIModels.fyi, Zugriff am November 8, 2025, https://www.aimodels.fyi/papers/arxiv/lecprompt-prompt-based-approach-logical-error-correction
+                              55. codefuse-ai/Awesome-Code-LLM: [TMLR] A curated list of language modeling researches for code (and other software engineering activities), plus related datasets. - GitHub, Zugriff am November 8, 2025, https://github.com/codefuse-ai/Awesome-Code-LLM
+                              56. LecPrompt: A Prompt-based Approach for Logical Error Correction with CodeBERT - arXiv, Zugriff am November 8, 2025, https://arxiv.org/html/2410.08241v1
+                              57. AI Prompting Tips from a Power User: How to Get Way Better Responses - Reddit, Zugriff am November 8, 2025, https://www.reddit.com/r/PromptEngineering/comments/1j5ymik/ai_prompting_tips_from_a_power_user_how_to_get/
+                              58. f/awesome-chatgpt-prompts: This repo includes ChatGPT prompt curation to use ChatGPT and other LLM tools better. - GitHub, Zugriff am November 8, 2025, https://github.com/f/awesome-chatgpt-prompts
+                              59. I built an AI debate system with Claude Code - AIs argue, then a jury delivers a verdict, Zugriff am November 8, 2025, https://www.reddit.com/r/ClaudeAI/comments/1lbw3f7/i_built_an_ai_debate_system_with_claude_code_ais/

@@ -1,0 +1,55 @@
+{
+  "metadata": {
+    "id": "image-seed-templates",
+    "name": "AI Image Seed Templates",
+    "description": "Pre-optimized prompts for consistent image aesthetics",
+    "version": "1.0"
+  },
+  "templates": {
+    "moody": {
+      "name": "Moody & Dramatic",
+      "description": "Dark, cinematic, introspective",
+      "prompt_prefix": "dark moody atmosphere, dramatic lighting, deep shadows, cinematic mood, professional photography",
+      "mood": "introspective",
+      "color_palette": ["#1a1a2e", "#16213e", "#0f3460"],
+      "best_for": ["Serious content", "Introspection", "Mystery"],
+      "default_seed": 42
+    },
+    "corporate": {
+      "name": "Corporate Professional",
+      "description": "Clean, modern, business-appropriate",
+      "prompt_prefix": "professional corporate aesthetic, clean modern design, minimalist, business-appropriate, polished",
+      "mood": "professional",
+      "color_palette": ["#1e3a8a", "#3b82f6", "#e5e7eb"],
+      "best_for": ["Business", "Professional content", "B2B"],
+      "default_seed": 123
+    },
+    "playful": {
+      "name": "Playful & Vibrant",
+      "description": "Colorful, energetic, fun",
+      "prompt_prefix": "vibrant playful colorful energetic fun aesthetic, bright and cheerful",
+      "mood": "energetic",
+      "color_palette": ["#ec4899", "#f97316", "#eab308"],
+      "best_for": ["Consumer products", "Entertainment", "Fun content"],
+      "default_seed": 256
+    },
+    "minimal": {
+      "name": "Minimalist Clean",
+      "description": "White space, subtle, elegant",
+      "prompt_prefix": "minimalist clean white space subtle elegant aesthetic, luxury feel",
+      "mood": "calm",
+      "color_palette": ["#ffffff", "#f5f5f5", "#000000"],
+      "best_for": ["Luxury brands", "SaaS products", "Fashion"],
+      "default_seed": 789
+    },
+    "nature": {
+      "name": "Natural & Organic",
+      "description": "Earth tones, natural elements, organic",
+      "prompt_prefix": "natural organic aesthetic, earth tones, sustainable, nature-inspired, organic shapes",
+      "mood": "peaceful",
+      "color_palette": ["#92400e", "#78350f", "#84cc16"],
+      "best_for": ["Sustainability", "Wellness", "Food & Agriculture"],
+      "default_seed": 512
+    }
+  }
+}

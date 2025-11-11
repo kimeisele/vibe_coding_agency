@@ -1,0 +1,20 @@
+{
+  "rationale": "Specific questions for a web project (e.g., website build, landing page).",
+  "required": [
+    {"key": "client_name", "prompt": "Client Name"},
+    {"key": "project_name", "prompt": "Project Name"},
+    {"key": "main_objective", "prompt": "What is the primary goal? (e.g., generate leads, sell products)"},
+    {"key": "target_audience", "prompt": "Describe the primary user persona"},
+    {"key": "deadline", "prompt": "Launch Date? (YYYY-MM-DD)"}
+  ],
+  "optional": [
+    {"key": "scope_pages", "prompt": "List all required pages (e.g., Home, About, Contact)"},
+    {"key": "competitors", "prompt": "List 2-3 competitor websites"},
+    {"key": "design_inspiration", "prompt": "List 2-3 websites you like (for design)"},
+    {"key": "cms_preference", "prompt": "CMS preference? (e.g., Webflow, WordPress, Shopify, Custom)"},
+    {"key": "hosting_provider", "prompt": "Who will host? (e.g., Netlify, Vercel, Client's AWS)"},
+    {"key": "integrations", "prompt": "Any 3rd-party integrations? (e.g., Stripe, Mailchimp, CRM)"},
+    {"key": "seo_needs", "prompt": "SEO requirements? (e.g., basic on-page, full audit)"},
+    {"key": "content_status", "prompt": "Is text/image content ready? (Yes / No / In Progress)"}
+  ]
+}

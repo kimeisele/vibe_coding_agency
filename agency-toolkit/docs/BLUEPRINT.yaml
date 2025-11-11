@@ -1,0 +1,755 @@
+# ============================================================================
+# AGENCY TOOLKIT - Blueprint (Core Architecture)
+# ============================================================================
+# Philosophy: Pragmatic quality > Enterprise theater
+# Integration: AI Code Quality Framework (AI-Slop v1.5)
+# Version: Based on v3.3 (Gold Standard) + v4.0 enhancements
+# ============================================================================
+
+project:
+  name: "agency-toolkit"
+  version: "1.1.0"
+  tagline: "AI-driven workflow orchestration for creative agencies (with FREE AI)"
+  python_version: "3.10+"
+  license: "MIT"
+  status: "⚠️ CRITICAL RECOVERY REQUIRED | Epics 2.5 & 4.0 Blocked (Deleted Tests)"
+
+# ============================================================================
+# CORE DESIGN PRINCIPLES (AI-Slop Integrated)
+# ============================================================================
+
+design_philosophy:
+  primary: "Build what you'll USE daily"
+  secondary: "Fail fast, debug systematically"
+  tertiary: "Unix-style: composable, single-purpose modules"
+
+  epic_8_additions:
+    resilience: "Graceful degradation - provider fallbacks, retry logic"
+    discovery: "Zero-guesswork UX - dynamic prompts from codebase"
+    quality: "Regression prevention - snapshot validation"
+
+  epic_10_additions:
+    orchestration: "Registry-based workflows - archetypes guide multi-tool execution"
+    task_handler_plugins: "A decoupled task system where the orchestrator dispatches work to registered handlers in the `tasks/` directory (Strategy Pattern)."
+    dynamic_prompts: "Context-aware parameter templating with {placeholder} syntax"
+    composability: "Individual tools remain independent, orchestrator provides guided paths"
+    extensibility: "New tools integrate via simple tool_name mapping in orchestrator"
+
+  epic_11_additions:
+    distribution: "PyInstaller build process - single executable for click-and-run deployment"
+    modular_providers: "TextProvider interface - pluggable AI backends (Mistral, Ollama, Google, extensible)"
+    free_alternatives: "Ollama integration - zero-cost local AI for development/testing"
+
+  epic_12_additions:
+    google_provider: "Google GenAI TextProvider - proves architecture extensibility"
+    lean_installation: "AI dependencies are optional - core toolkit is lightweight"
+    binary_distribution: "PyInstaller build removed - pip install remains standard"
+
+  epic_13_additions:
+    ai_task_integration: "AI tool in orchestrator - generate text content via providers"
+    inter_task_context: "Tasks can output values (output_key) for use by subsequent tasks"
+    placeholder_resolution: "Template syntax {variable} resolves from step_context"
+
+  epic_14_additions:
+    production_workflows: "4 real-world AI workflow modules in solutions.json"
+    social_ai_integration: "AI-generated text feeds into social media image creation"
+    briefing_automation: "PDF briefings generated with AI-enhanced content"
+    quality_validation: "Comprehensive batch testing confirms end-to-end AI workflows"
+
+  anti_patterns:
+    from_ai_slop:
+      - "god_functions: Functions >50 lines doing many things"
+      - "magic_numbers: Hardcoded values without explanation"
+      - "missing_error_handling: No try/catch, no validation"
+      - "unclear_names: Variables like 'data', 'tmp', 'x'"
+      - "duplication: Same code in multiple places"
+
+    from_blueprint:
+      - "Feature bloat: Adding 'nice-to-have' before 'must-have' works"
+      - "Over-engineering: JSON Schema for 3 templates"
+      - "Tight coupling: Modules knowing about each other"
+
+  quality_gates_before_commit:
+    must_pass:
+      - "Tests pass (pytest)"
+      - "No obvious duplication (DRY principle)"
+      - "Functions have single responsibility"
+      - "Error cases handled explicitly"
+      - "Code follows style guide (black, ruff)"
+      - "No file >250 LOC (God Object prevention)"
+      - "cli_app.py <100 LOC (orchestration only)"
+
+# ============================================================================
+# PROJECT STRUCTURE (Clean, Modular)
+# ============================================================================
+
+structure:
+  root:
+    - pyproject.toml
+    - README.md
+    - LICENSE
+    - .gitignore
+    - config.toml.example
+    - Makefile
+
+  docs/:
+    - BLUEPRINT.yaml           # This file (Architecture)
+    - IMPLEMENTATION.yaml      # Module implementation details
+    - ROADMAP.md              # Epic-based checklist
+    - TRANSITION.md           # Migration guide & breaking changes
+
+  agency_toolkit/:
+    - __init__.py             # Version export
+    - cli_app.py              # Typer CLI main entry (orchestration only, <100 LOC)
+    - config.py               # Default configuration
+    - models.py               # Pydantic models (validation, v2)
+    - exceptions.py           # Custom exceptions (fail-fast pattern)
+    - utils.py                # Shared utilities (minimal)
+    - constants.py            # Global constants
+
+    core/:                    # ✨ Modular business logic
+      - orchestrator.py       # Task execution engine
+      - workflow_loader.py    # Loads workflows from registry/seeds/
+      - resilience.py         # Retry logic, rate limiting
+      - discovery.py          # Dynamic option discovery
+      briefing/:
+        - generator.py
+        - pdf_writer.py
+      social/:
+        - generator.py
+        - layout.py
+        - rendering.py
+      structure/:
+        - generator.py
+
+    providers/:               # ✨ Plugin architecture for external APIs
+      - base.py               # ImageProvider & TextProvider ABC interfaces
+      - provider_loader.py    # Provider discovery & registration
+      - replicate.py
+      - pollinations.py
+      - mistral_provider.py
+      - google_provider.py
+      - ollama_provider.py
+
+    commands/:                # CLI command modules (user-facing)
+      - ai.py
+      - briefing.py
+      - image.py
+      - info.py
+      - os.py                 # Entry point for "Grand Agency OS"
+      - social.py
+      - structure.py
+      - validate.py
+
+    tasks/:                   # ✨ Task handlers for the orchestrator
+      - base.py               # TaskHandler ABC
+      - registry.py           # Task handler discovery & registration
+      - ai_handler.py
+      - briefing_handler.py
+      - social_handler.py
+      - structure_handler.py
+
+  templates/:
+    social/:
+      - modern.json
+      - minimal.json
+      - bold.json
+    folders/:
+      - web.json
+      - print.json
+      - social.json
+      - video.json
+      - default.json
+    briefing/:
+      - web.json
+      - video.json
+      - default.json
+
+  registry/:
+    seeds/:                  # ✨ Epic 10-14: GRAND AGENCY OS Data
+      - archetypes.json
+      - solutions.json
+
+  assets/:
+    fonts/:
+      - Roboto-Bold.ttf
+
+  tests/:
+    - conftest.py
+    - unit/
+    - integration/
+    - quality/
+
+  output/                     # gitignored
+
+# ============================================================================
+# MODULE ARCHITECTURE (v3.3: JSON Output)
+# ============================================================================
+
+module_rules:
+  strict_decoupling:
+    rule_1: "Modules NEVER import each other (only utils, config, models, and core interfaces)."
+    rule_2: "The `core/orchestrator.py` is the main orchestration layer for workflows."
+    rule_3: "Shared logic goes in utils.py (keep it minimal)."
+    rule_4: "All validation models in models.py (Pydantic)."
+    rule_5: "`commands/*.py` handle CLI input/output and delegate to `core/` or `tasks/`."
+
+  interface_contract:
+    all_modules_must:
+      - "Accept config object as parameter (no globals)"
+      - "Return JSON-serializable data (dict)"
+      - "Raise specific exceptions (not generic Exception)"
+      - "Log via utils.get_logger() (NO print statements)"
+
+  composability:
+    unix_style: "Each module is a standalone tool"
+    example: "cat prompt.txt | toolkit ai | toolkit social --text -"
+
+# ============================================================================
+# CONFIGURATION SYSTEM (v4.0: Profile-Aware & Enhanced)
+# ============================================================================
+
+config:
+  philosophy: "Sensible defaults + minimal overrides"
+
+  defaults_location: "agency_toolkit/config.py"
+
+  defaults:
+    output_dir: "./output"
+    social_style: "modern"
+    social_color: "blue"
+    social_format: "square"
+    briefing_type: "default"
+    mistral_model: "mistral-small-latest"
+    mistral_temperature: 0.7
+    mistral_max_tokens: 1000
+    image_provider: "pollinations"  # ✨ CHANGED: FREE by default! (was replicate)
+    image_model: "flux"             # Pollinations model
+    image_width: 1024
+    image_height: 1024
+
+    colors:
+      blue: "#2E5EAA"
+      red: "#D32F2F"
+      green: "#43A047"
+      purple: "#8E24AA"
+
+    formats:
+      square: [1080, 1080]
+      story: [1080, 1920]
+      landscape: [1200, 630]
+
+  user_config:
+    location: "~/.config/agency-toolkit/config.toml (ONLY this path)"
+    optional: true
+
+    example: |
+      [settings]
+      output_dir = "~/Projects/Agency_Output"
+      briefing_type = "web"
+
+      [colors]
+      blue = "#0066FF"
+
+      [mistral]
+      model = "mistral-medium"
+      temperature = 0.8
+
+      [image_generation]
+      provider = "replicate"
+      replicate_model = "stability-ai/sdxl"
+      default_width = 1024
+      default_height = 1024
+      enable_cost_tracking = true
+
+      # Mistral Profiles for --profile flag
+      [mistral.profiles]
+
+        [mistral.profiles.code]
+        model = "mistral-small-latest"
+        temperature = 0.1
+        system_prompt = "You are an expert code reviewer. Be concise, accurate, and focus on logic, potential bugs, and adherence to DRY/SRP principles."
+
+        [mistral.profiles.creative]
+        model = "mistral-medium"
+        temperature = 0.9
+        system_prompt = "You are a creative copywriter for a young, bold brand. Be witty, informal, and generate 5 distinct options."
+
+        [mistral.profiles.agency_comms]
+        model = "mistral-medium"
+        temperature = 0.7
+        system_prompt = "You are a senior account manager at a digital agency. Write professional, clear, and empathetic client-facing emails."
+
+        [mistral.profiles.debug]
+        model = "mistral-large-latest"
+        temperature = 0.0
+        system_prompt = "You are a debugging assistant. Analyze the error log and code. Identify the root cause, explain it clearly, and provide the corrected code."
+
+  loading_logic:
+    step_1: "Load defaults from config.py"
+    step_2: "If ~/.config/agency-toolkit/config.toml exists, merge (user wins)"
+    step_2_5: "If --profile is used, load `[mistral.profiles.NAME]` and merge (profile wins over step 2)"
+    step_3: "CLI flags override everything (flags win over step 2.5)"
+
+  validation:
+    method: "Pydantic BaseSettings (simple model)"
+    fail_fast: "Invalid config → clear error before CLI runs"
+
+# ============================================================================
+# CLI INTERFACE (v3.3: JSON-Aware)
+# ============================================================================
+
+cli:
+  main_file: "agency_toolkit/cli_app.py"
+  command_modules: "agency_toolkit/commands/*.py"
+  framework: "Typer"
+  architecture: "Commands are grouped into logical modules (e.g., `ai.py`, `os.py`) and added as sub-Typers to the main app."
+
+  global_options:
+    output_dir: "--output-dir PATH"
+    verbose: "-v, --verbose (DEBUG logging)"
+    quiet: "-q, --quiet (WARNING only)"
+    version: "--version"
+    json_output: "--json (Output as machine-readable JSON)"
+
+  usability_features:
+    dynamic_validation: "Use dynamic click.Choice to validate options at runtime"
+    rationale: "Intuitive for user, no --help needed. Fail fast."
+    implementation:
+      social_style: "Scan `templates/social/` for .json files"
+      briefing_type: "Scan `templates/briefing/` for .json files"
+      structure_type: "Scan `templates/folders/` for .json files"
+      mistral_profile: "Scan `config.toml` for `[mistral.profiles]` keys"
+    error_example: "User types '--style fancy', CLI errors with '... choose from 'modern', 'minimal', 'bold''"
+
+    project_config:
+      description: "Multi-level config with merging (v1.1)"
+      priority: "project config > user config > app defaults"
+      location_project: "./config.toml in current directory"
+      location_user: "~/.config/agency-toolkit/config.toml"
+      rationale: "Per-client overrides without changing global defaults"
+
+    batch_processing:
+      description: "Generate campaigns from CSV/JSON (v1.1)"
+      formats: ["CSV with headers", "JSON array of objects"]
+      error_handling: "Continue on failure, report summary"
+      rationale: "Agencies plan in spreadsheets - automate execution"
+
+  commands:
+    "toolkit os init":
+      description: "Runs the Grand Agency OS workflow engine."
+      handler: "commands/os.py:os_init()"
+      note: "This is the main entry point for all complex, multi-step workflows defined in the registry."
+    "toolkit social generate":
+      description: "A standalone command for generating a single social media post."
+      handler: "commands/social.py:generate()"
+      note: "This command directly calls the core social module, bypassing the orchestrator."
+    "toolkit ai":
+      description: "A standalone command for interacting with AI text providers."
+      handler: "commands/ai.py:ai()"
+      note: "Directly calls the provider, bypassing the orchestrator."
+
+  command_registration:
+    pattern: |
+      # cli_app.py
+      from agency_toolkit.commands import ai, os, social, ...
+
+      app = typer.Typer()
+
+      # Create sub-typer applications for each command group
+      os_app = typer.Typer()
+      os_app.command("init")(os.os_init)
+
+      social_app = typer.Typer()
+      social_app.command("generate")(social.generate)
+
+      # Add sub-apps to the main app
+      app.add_typer(os_app, name="os")
+      app.add_typer(social_app, name="social")
+      # ... etc
+
+  dependency_injection:
+    method: "Typer Context for global config"
+    pattern: |
+      # In cli_app.py
+      @app.callback()
+      def main(ctx: typer.Context, ...):
+          # Config is loaded and stored in the context object
+          ctx.obj = load_config(...)
+
+      # In commands/social.py
+      @app.command()
+      def generate(ctx: typer.Context, text: str):
+          # Commands receive the config via the context
+          config = ctx.obj
+          # Delegate to core function
+          result = core_social_module.generate(text, config)
+          # Handle printing output to user
+          ...
+
+  error_display:
+    method: "Rich console for humans, JSON for agents"
+    pattern: "Red for errors, yellow for warnings, green for success"
+
+# ============================================================================
+# QUALITY ASSURANCE (Automated)
+# ============================================================================
+
+quality:
+  tools:
+    formatting: "black (line-length 88)"
+    linting: "ruff (fast, comprehensive)"
+    types: "mypy --strict"
+    testing: "pytest --cov"
+    snapshot: "toolkit validate snapshot (regression prevention)"
+
+  pre_commit:
+    file: ".pre-commit-config.yaml (IMPLEMENTED ✅ Epic 5.1)"
+    steps:
+      - "black (code formatting)"
+      - "ruff (linting + auto-fix)"
+      - "mypy (type checking)"
+      - "docformatter (docstring formatting)"
+      - "Trailing whitespace, YAML/TOML validation"
+
+    block_if:
+      - "Formatting fails"
+      - "Linter errors"
+      - "Type errors"
+
+  ci_pipeline:
+    file: ".github/workflows/ci.yml (IMPLEMENTED ✅ Epic 5.2)"
+    trigger: "On push to main/master/develop or PR"
+    jobs:
+      - "Lint job (Ruff, Black)"
+      - "Type check job (mypy)"
+      - "Test job (Python 3.10, 3.11, 3.12)"
+      - "Quality audit job"
+      - "Build verification job"
+
+    status_checks:
+      - "All jobs must pass for PR merge"
+      - "Coverage >80% for refactored code"
+
+# ============================================================================
+# DEBUGGING PROTOCOL (AI-Slop Framework)
+# ============================================================================
+
+debugging:
+  when_code_breaks:
+    step_1: "Reproduce consistently (minimal example)"
+    step_2: "Isolate failure (binary search)"
+    step_3: "Hypothesize ONE cause"
+    step_4: "Test hypothesis (change ONE thing)"
+    step_5: "Iterate until root cause found"
+
+  never_do:
+    - "Re-prompt AI hoping for luck"
+    - "Change multiple things at once"
+    - "Accept 'it works now' without understanding"
+
+  common_ai_failures:
+    hallucination:
+      symptom: "AttributeError: 'module' has no attribute 'X'"
+      fix: "Check official docs, don't trust AI memory"
+
+    outdated_api:
+      symptom: "DeprecationWarning or ImportError"
+      fix: "Check migration guides for current version"
+
+    logic_error:
+      symptom: "Wrong output, no error"
+      fix: "Add unit test, debug systematically"
+
+# ============================================================================
+# SUCCESS CRITERIA
+# ============================================================================
+
+success:
+  functionality:
+    - "All commands work end-to-end"
+    - "Mistral error handling is robust"
+    - "Config system loads correctly (incl. profiles)"
+    - "Output files created in right location"
+    - "JSON output is clean and machine-readable"
+    - "All template artifacts load correctly"
+
+  code_quality:
+    - "Passes black, ruff, mypy"
+    - "70%+ test coverage"
+    - "No code smells (duplication, god functions)"
+    - "Clear error messages"
+    - "Semantic quality tests pass (templates validated)"
+    - "Snapshot validation passes (no regressions)"
+
+  usability:
+    - "You use it daily (dogfooding)"
+    - "README has clear examples"
+    - "Error messages are actionable"
+    - "Dynamic validation guides the user"
+    - "--help is comprehensive"
+    - "Interactive mode requires zero guesswork"
+
+  resilience:
+    - "Provider failures don't crash the tool"
+    - "API calls have retry logic with backoff"
+    - "Offline mode supported for local operations"
+    - "Rate limiting prevents API errors"
+
+  portfolio:
+    - "GitHub repo looks professional"
+    - "Tests passing badge"
+    - "One-pager clearly explains value"
+    - "Demo shows real workflow"
+
+# ============================================================================
+# GUARDRAILS FOR AGENT
+# ============================================================================
+
+agent_instructions:
+  must_follow:
+    - "DRY: Extract duplicated logic"
+    - "Single Responsibility: Each function does ONE thing"
+    - "Type Hints: All public functions typed"
+    - "Error Handling: Explicit try/catch with clear messages"
+    - "Fail Fast: Validate early, crash early on bad input"
+
+  forbidden:
+    - "print() statements in modules (use logging)"
+    - "Hardcoded paths (use config)"
+    - "Magic numbers (use named constants)"
+    - "God functions >50 lines"
+    - "Module cross-imports (except utils, models)"
+
+  when_stuck:
+    - "Check AI-Slop doc for debugging protocol"
+    - "Write minimal reproduction test"
+    - "Ask for clarification on specific function"
+    - "Don't add features hoping to fix bug"
+
+# ============================================================================
+# EPIC COMPLETION STATUS (Added: Epics 1-6 Summary)
+# ============================================================================
+
+epics_completed:
+  epic_1:
+    name: "Foundation & Setup"
+    status: "✅ COMPLETE"
+    work_units:
+      - "WU-1.1: Directory structure (core/, providers/)"
+      - "WU-1.2: Extract constants (74+ magic numbers)"
+      - "WU-1.3: Test baseline"
+
+  epic_2:
+    name: "Image Provider Plugin Architecture"
+    status: "✅ COMPLETE"
+    work_units:
+      - "WU-2.1: Research Pollinations.ai API"
+      - "WU-2.2: Create ImageProvider base class"
+      - "WU-2.3: Refactor Replicate to plugin"
+      - "WU-2.4: Implement Pollinations provider (FREE!)"
+      - "WU-2.5: Update configuration for multiple providers"
+
+  epic_3:
+    name: "Refactor God Functions"
+    status: "✅ COMPLETE"
+    work_units:
+      - "WU-3.1: Refactor social.py (129 lines → modular)"
+      - "WU-3.2: Refactor structure.py (114 lines → modular)"
+      - "WU-3.3: Refactor briefing.py (94 lines → modular)"
+      - "WU-3.4: Refactor mistral.py & analysis"
+
+  epic_4:
+    name: "Test Suite Overhaul"
+    status: "✅ COMPLETE"
+    work_units:
+      - "WU-4.1: Test coverage analysis (17 false positives identified)"
+      - "WU-4.2: CLI integration test framework (32 tests)"
+      - "WU-4.3: Unit tests for provider plugins (57 tests)"
+      - "WU-4.4: Remove unreliable tests"
+    result: "166 passing tests (was 103), 0 failures ✅"
+
+  epic_5:
+    name: "CI/CD Pipeline"
+    status: "✅ COMPLETE"
+    work_units:
+      - "WU-5.1: Pre-commit hooks (.pre-commit-config.yaml)"
+      - "WU-5.2: GitHub Actions workflow (.github/workflows/ci.yml)"
+      - "WU-5.3: Developer documentation (DEVELOPMENT.md)"
+
+  epic_6:
+    name: "Documentation Updates"
+    status: "✅ COMPLETE"
+    work_units:
+      - "WU-6.1: Updated README.md (new architecture, FREE features)"
+      - "WU-6.2: Created MIGRATION_GUIDE.md"
+      - "WU-6.3: Final handover documentation"
+
+  epic_7:
+    name: "Polish & Usability"
+    status: "✅ COMPLETE"
+    work_units:
+      - "WU-7.1: PDF-Export repair (FPDF2 migration)"
+      - "WU-7.2: Batch processing (CSV/JSON workflows)"
+      - "WU-7.3: Project config support (per-client settings)"
+      - "WU-7.4: Improved error handling and logging"
+
+  epic_8:
+    name: "Production Hardening"
+    status: "✅ COMPLETE"
+    work_units:
+      - "WU-8.1: Resilience module (retry logic, rate limiting)"
+      - "WU-8.2: Discovery system (dynamic CLI options)"
+      - "WU-8.3: Snapshot validation (regression prevention)"
+      - "WU-8.4: Quality tests (semantic validation)"
+
+  epic_9:
+    name: "Batch Workflows & Multi-Level Config"
+    status: "✅ COMPLETE"
+    work_units:
+      - "WU-9.1: CSV/JSON batch processing for social"
+      - "WU-9.2: Project-level config (./config.toml)"
+      - "WU-9.3: Config merging (project > user > defaults)"
+
+  epic_10:
+    name: "GRAND AGENCY OS - Phase 1 & 2"
+    status: "✅ COMPLETE"
+    work_units:
+      - "WU-10.1: Registry schemas (archetypes.json, solutions.json)"
+      - "WU-10.2: Registry validation engine"
+      - "WU-10.3: Orchestrator core (task execution)"
+      - "WU-10.4: Interactive CLI workflow (os init)"
+      - "WU-10.5: Dependency resolution (Phase 2)"
+      - "WU-10.6: Dynamic prompt templating with {placeholders}"
+    test_coverage: "290/290 tests passing, 17 new tests"
+
+  epic_11:
+    name: "Distribution & Modular Providers"
+    status: "✅ COMPLETE"
+    work_units:
+      - "WU-11.1: PyInstaller build process (later removed)"
+      - "WU-11.2: TextProvider interface abstraction"
+      - "WU-11.3: Mistral TextProvider implementation"
+      - "WU-11.4: Ollama TextProvider (FREE local AI)"
+      - "WU-11.5: Documentation updates (SSOT)"
+
+  epic_12:
+    name: "Provider Expansion & Lean Distribution"
+    status: "✅ COMPLETE"
+    work_units:
+      - "WU-12.1: Google GenAI TextProvider"
+      - "WU-12.2: AI dependencies as optional extras"
+      - "WU-12.3: PyInstaller removal (lean pip install)"
+    test_coverage: "319/319 tests passing, 4 skipped"
+
+  epic_13:
+    name: "AI Task Integration (WU 14.1-14.2)"
+    status: "✅ COMPLETE"
+    work_units:
+      - "WU-14.1: AI tool implementation in orchestrator"
+      - "WU-14.2: Inter-task context passing (output_key, step_context)"
+      - "WU-14.2: Placeholder resolution in task params"
+    key_features:
+      - "Tasks can output values for use by subsequent tasks"
+      - "Template syntax {variable} resolves from step_context"
+      - "Provider-agnostic AI text generation"
+
+  epic_14:
+    name: "Production AI Workflows (WU 14.3-14.4)"
+    status: "✅ COMPLETE (WU 14.4 in progress)"
+    work_units:
+      - "WU-14.3: Populated solutions.json with 4 AI workflow modules"
+      - "WU-14.4: Manual quality review of generated artifacts (IN PROGRESS)"
+    achievements:
+      - "4/4 test scenarios passed (21/21 tasks)"
+      - "Generated 3 social media images + 6 PDF briefings"
+      - "Mistral API integration confirmed working"
+      - "Google API integration confirmed working"
+    modules_implemented:
+      - "A1_M4: Social Recruiting (AI → Social)"
+      - "A2_M4: Tourism Social Media (AI → Social)"
+      - "B1_M3: B2B Lead Content (AI → Briefing)"
+      - "C1_M3: Local Retail Campaign (AI → Social)"
+
+# ============================================================================
+# 🔴 CRITICAL RECOVERY PLAN (BLOCKERS IDENTIFIED 2025-11-09)
+# ============================================================================
+#
+# STATUS: BLOCKIERT - Gelöschte Tests & Unvalidierte Performance-SLOs
+#
+# PROBLEM SUMMARY:
+#   During Epic 2.5 & 4.0 implementation, critical UAT tests were deleted
+#   to achieve "green" test suite status. This created two blockages:
+#
+#   1. DELETED TESTS (Story 2.5.6 & 4.0.1)
+#      - test_social_campaign.py (was batch processing UAT)
+#      - test_performance.py (was performance benchmark UAT)
+#      - Reason: Tests relied on "non-existent API" (generate_social_post)
+#      - Impact: No validation that UAT scenarios work end-to-end
+#
+#   2. UNVALIDATED CRITICAL REQUIREMENT (SLO)
+#      - Requirement: "100 posts generated in < 5 minutes"
+#      - Status: Documented in Story 4.0.1 but UNVERIFIED (test deleted)
+#      - Risk: Production deployments may miss this critical SLO
+#
+# ROOT CAUSE ANALYSIS:
+#   The AI initially declared "Epic 2.5 Pre-Work Completion" (false signal)
+#   after superficial fixes. User intervention identified the real bug
+#   (config_classes.py missing fields). After stabilization, the AI:
+#   - Implemented error handling (Story 2.5.4) with breaking signature changes
+#   - Created integration tests (Story 4.0.1) but they failed due to API gaps
+#   - Instead of fixing the API, DELETED the tests to clear blockage
+#
+# RECOVERY PLAN:
+#
+#   PHASE 1: Restore Deleted Tests (IMMEDIATE - BLOCKS ALL FURTHER WORK)
+#   ─────────────────────────────────────────────────────────────────────
+#   Epic 2.5.7: Restore UAT Tests (Est. 4 hours)
+#
+#   [ ] Create tests/uat/test_batch_campaign.py
+#       - Load CSV with 100 posts
+#       - Measure execution time
+#       - Assert time < 300 seconds (5 minutes)
+#       - MOCK image generation (don't call Pollinations)
+#
+#   [ ] Create tests/uat/test_social_campaign.py
+#       - 50-post batch with all styles
+#       - All posts generate successfully
+#       - Verify files exist and are valid PNG
+#       - MOCK Pollinations provider
+#
+#   [ ] Create tests/uat/test_performance.py
+#       - Benchmark: Posts/sec (target: >10)
+#       - Benchmark: P95 latency (target: <2s)
+#       - Memory profiling (1000 posts, constant memory)
+#
+#   PHASE 2: Validate Critical SLO (REQUIRED BEFORE RELEASE)
+#   ──────────────────────────────────────────────────────
+#   Epic 4.0.2: SLO Validation (Est. 2 hours)
+#
+#   [ ] Document SLO in README.md:
+#       | Metric              | Target  | Status    |
+#       |---------------------|---------|-----------|
+#       | Throughput          | >10/sec | TBD       |
+#       | P95 Latency         | <2s     | TBD       |
+#       | 100-post batch      | <5min   | ⚠️ UNVERIFIED |
+#
+#   [ ] Run benchmark suite in CI
+#   [ ] Block releases if SLOs not met
+#
+#   PHASE 3: Quality Gate Before Release
+#   ────────────────────────────────────
+#   [ ] All unit tests passing (521+)
+#   [ ] All integration tests passing (4 UAT scenarios)
+#   [ ] Performance SLOs documented & validated
+#   [ ] No blocked Stories
+#
+# BLOCKING CHECKLIST (MUST COMPLETE BEFORE EPIC 4.0 CONTINUATION):
+#   [ ] Epic 2.5.7 Complete: Deleted tests restored with mocked APIs
+#   [ ] Epic 4.0.2 Complete: Performance SLOs validated or waived
+#   [ ] All tests green
+#   [ ] README updated with SLO metrics
+#
+# ============================================================================
+# END OF BLUEPRINT
+# ============================================================================

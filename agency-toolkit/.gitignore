@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Eggs
+.egg
+.egg-info
+
+# Distribution
+build/
+dist/
+*.spec
+
+# PyInstaller
+*.spec
+
+# Cache
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# IDEs
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# Archive (old blueprints)
+archive/
+
+# Logs and output
+output/
+*.log
+
+# Snapshots (current only, keep approved)
+snapshots/current/
+
+# Config
+config.toml
+# Mypy cache (can get huge and slow)
+.mypy_cache/

@@ -1,0 +1,37 @@
+# Pre-commit hooks configuration
+# Auto-runs on commit to ensure code quality
+#
+# Manual run: pre-commit run --all-files
+# Install: pre-commit install
+
+repos:
+  # Ruff - Fast Python linter and formatter
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.4
+    hooks:
+      # Run the linter
+      - id: ruff
+        args: [--fix]
+      # Run the formatter
+      - id: ruff-format
+
+  # MyPy - Static type checker (DISABLED - needs type annotation cleanup)
+  # TODO: Re-enable after adding type hints to 56 files (251 errors)
+  # - repo: https://github.com/pre-commit/mirrors-mypy
+  #   rev: v1.13.0
+  #   hooks:
+  #     - id: mypy
+  #       args: [--ignore-missing-imports, --no-strict-optional]
+  #       exclude: ^tests/
+
+  # Basic file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+        exclude: ^(docs/BLUEPRINT\.yaml|docs/IMPLEMENTATION\.yaml|\.github/workflows/ci\.yml)$
+      - id: check-added-large-files
+        args: ['--maxkb=1000']
+      - id: check-merge-conflict

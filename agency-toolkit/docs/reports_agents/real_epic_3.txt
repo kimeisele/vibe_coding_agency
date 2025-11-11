@@ -1,0 +1,279 @@
+# Epic 3: Command Complexity Reduction
+
+## 🎯 Goal
+Reduce complexity of command layer functions to CC < 10
+
+## 📊 Current Hotspots (commands/)
+```
+_execute_batch (os.py): CC 17 → Target <10
+_compare_snapshots (validate.py): CC 17 → Target <8
+providers_status (info.py): CC 15 → Target <8
+social (social.py): CC 13 → Target <8
+ai (ai.py): CC 12 → Target <8
+briefing (briefing.py): CC 11 → Target <8
+snapshot_validate (validate.py): CC 14 → Target <10
+```
+
+---
+
+## Epic 3.1: Refactor os.py::_execute_batch (CC: 17 → <10)
+
+### Current State
+File: `agency_toolkit/commands/os.py`
+Function: `_execute_batch` (line 154)
+CC: 17 (D rating - needs refactoring)
+
+### Task 3.1.1: Analyze _execute_batch
+
+**Action:** Read and understand current implementation
+```python
+# Analyze:
+1. What does _execute_batch do?
+2. Count branches (if/elif/else)
+3. Count loops (for/while)
+4. Identify responsibilities
+```
+
+**Time:** 15 min
+
+---
+
+### Task 3.1.2: Extract CSV Loading Logic
+
+**Action:** Create `_load_batch_csv(csv_path)` function
+
+```python
+def _load_batch_csv(csv_path: Path) -> list[dict[str, Any]]:
+    """Load and validate batch CSV file.
+
+    Returns:
+        List of dicts, one per row
+
+    Raises:
+        ValueError: If CSV invalid
+    """
+    # Extract all CSV loading logic here
+    pass
+```
+
+**Time:** 30 min
+
+---
+
+### Task 3.1.3: Extract Batch Validation
+
+**Action:** Create `_validate_batch_params(params)` function
+
+```python
+def _validate_batch_params(params: dict[str, Any]) -> None:
+    """Validate batch parameters before execution.
+
+    Raises:
+        ValueError: If params invalid
+    """
+    pass
+```
+
+**Time:** 20 min
+
+---
+
+### Task 3.1.4: Refactor Main Function
+
+**Action:** Reduce `_execute_batch` to orchestrator
+
+```python
+def _execute_batch(...):
+    """Execute batch workflow (orchestrator)."""
+    # Step 1: Load CSV
+    rows = _load_batch_csv(csv_path)
+
+    # Step 2: Validate
+    _validate_batch_params(params)
+
+    # Step 3: Execute (existing logic stays)
+    for row in rows:
+        # ...
+```
+
+**Target CC:** < 10
+
+**Time:** 40 min
+
+---
+
+## Epic 3.2: Refactor validate.py::_compare_snapshots (CC: 17 → <8)
+
+### Task 3.2.1: Analyze
+
+**Time:** 15 min
+
+---
+
+### Task 3.2.2: Extract Snapshot Loading
+
+```python
+def _load_snapshot(path: Path) -> dict[str, Any]:
+    """Load snapshot from JSON file."""
+    pass
+```
+
+**Time:** 20 min
+
+---
+
+### Task 3.2.3: Extract Diff Computation
+
+```python
+def _compute_snapshot_diff(
+    snapshot1: dict,
+    snapshot2: dict
+) -> dict[str, Any]:
+    """Compute differences between snapshots."""
+    pass
+```
+
+**Time:** 30 min
+
+---
+
+### Task 3.2.4: Extract Diff Formatting
+
+```python
+def _format_diff_output(
+    diff: dict,
+    format_type: str
+) -> str:
+    """Format diff for display."""
+    pass
+```
+
+**Time:** 20 min
+
+---
+
+### Task 3.2.5: Refactor Main Function
+
+**Target CC:** < 8
+
+**Time:** 30 min
+
+---
+
+## Epic 3.3: Refactor info.py::providers_status (CC: 15 → <8)
+
+### Task 3.3.1: Create ProviderStatusChecker Class
+
+```python
+class ProviderStatusChecker:
+    """Check provider availability and configuration."""
+
+    def check_mistral(self) -> ProviderStatus:
+        pass
+
+    def check_google(self) -> ProviderStatus:
+        pass
+
+    def check_replicate(self) -> ProviderStatus:
+        pass
+
+    def check_all(self) -> list[ProviderStatus]:
+        return [
+            self.check_mistral(),
+            self.check_google(),
+            self.check_replicate(),
+        ]
+```
+
+**Time:** 1 hour
+
+---
+
+### Task 3.3.2: Refactor providers_status
+
+```python
+def providers_status():
+    """Show provider status (now just calls checker)."""
+    checker = ProviderStatusChecker()
+    statuses = checker.check_all()
+    # Format and display
+```
+
+**Target CC:** < 5
+
+**Time:** 30 min
+
+---
+
+## Epic 3.4: Refactor social.py::social (CC: 13 → <8)
+
+### Task 3.4.1: Extract CSV Batch Logic
+
+```python
+def _execute_social_batch(csv_path: Path, **options):
+    """Execute social media batch from CSV."""
+    pass
+```
+
+**Time:** 30 min
+
+---
+
+### Task 3.4.2: Extract Single Post Creation
+
+```python
+def _create_single_post(text: str, **options):
+    """Create a single social media post."""
+    pass
+```
+
+**Time:** 20 min
+
+---
+
+### Task 3.4.3: Refactor Main Function
+
+```python
+def social(...):
+    """Social media command (orchestrator)."""
+    if csv_path:
+        return _execute_social_batch(csv_path, **options)
+    else:
+        return _create_single_post(text, **options)
+```
+
+**Target CC:** < 5
+
+**Time:** 40 min
+
+---
+
+## 📊 Time Summary
+
+| Epic | Time | Cumulative |
+|------|------|------------|
+| 3.1 | 2h   | 2h         |
+| 3.2 | 2h   | 4h         |
+| 3.3 | 1.5h | 5.5h       |
+| 3.4 | 1.5h | 7h         |
+
+**Total:** 7 hours
+
+---
+
+## ✅ Success Criteria
+
+- [ ] All command functions CC < 10
+- [ ] All tests pass (no regressions)
+- [ ] Code is more readable
+- [ ] Each function has single responsibility
+- [ ] Proper error handling maintained
+
+---
+
+## 🎯 Execution Order
+
+1. **Epic 3.1** (os.py) - HIGHEST impact, benefits Epic 3.4
+2. **Epic 3.2** (validate.py) - Independent, can be done anytime
+3. **Epic 3.3** (info.py) - Good learning for class extraction
+4. **Epic 3.4** (social.py) - Benefits from 3.1 patterns

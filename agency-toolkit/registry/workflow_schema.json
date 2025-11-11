@@ -1,0 +1,165 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Workflow Schema",
+  "description": "Schema for GRAND AGENCY OS workflow definitions (archetypes, solutions, and modules)",
+  "definitions": {
+    "task": {
+      "type": "object",
+      "required": ["tool"],
+      "properties": {
+        "tool": {
+          "type": "string",
+          "description": "Name of the tool/handler to execute",
+          "minLength": 1
+        },
+        "output_key": {
+          "type": "string",
+          "description": "Optional key to store task output in context",
+          "minLength": 1
+        },
+        "on_error": {
+          "type": "string",
+          "enum": ["stop", "continue"],
+          "default": "stop",
+          "description": "Error handling mode for this task"
+        },
+        "params": {
+          "type": "object",
+          "description": "Parameters for the task",
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "module": {
+      "type": "object",
+      "required": ["id", "title", "tasks"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique module identifier",
+          "pattern": "^[A-Z0-9_]+$",
+          "minLength": 1
+        },
+        "title": {
+          "type": "string",
+          "description": "Human-readable module title",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the module"
+        },
+        "tasks": {
+          "type": "array",
+          "description": "List of tasks in the module",
+          "items": {"$ref": "#/definitions/task"}
+        },
+        "dependencies": {
+          "type": "array",
+          "description": "List of module IDs this module depends on",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z0-9_]+$"
+          }
+        },
+        "context_variables": {
+          "type": "array",
+          "description": "List of context variables used by this module",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "archetype": {
+      "type": "object",
+      "required": ["id", "name", "description"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique archetype identifier",
+          "pattern": "^[A-Z0-9]+$",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable archetype name",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the archetype"
+        },
+        "pains": {
+          "type": "array",
+          "description": "List of pain points addressed by this archetype",
+          "items": {
+            "type": "string"
+          }
+        },
+        "goals": {
+          "type": "array",
+          "description": "List of goals this archetype helps achieve",
+          "items": {
+            "type": "string"
+          }
+        },
+        "solution_template_ids": {
+          "type": "array",
+          "description": "List of solution template IDs for this archetype",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z0-9]+$"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "solution": {
+      "type": "object",
+      "required": ["id", "name", "archetype_id", "modules"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique solution template identifier",
+          "pattern": "^[A-Z0-9]+$",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable solution name",
+          "minLength": 1
+        },
+        "archetype_id": {
+          "type": "string",
+          "description": "ID of the archetype this solution belongs to",
+          "pattern": "^[A-Z0-9]+$"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the solution"
+        },
+        "modules": {
+          "type": "array",
+          "description": "List of modules in this solution",
+          "items": {"$ref": "#/definitions/module"}
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "oneOf": [
+    {
+      "type": "array",
+      "items": {"$ref": "#/definitions/archetype"},
+      "description": "Array of archetypes"
+    },
+    {
+      "type": "array",
+      "items": {"$ref": "#/definitions/solution"},
+      "description": "Array of solutions"
+    }
+  ]
+}

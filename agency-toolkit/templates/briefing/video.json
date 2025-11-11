@@ -1,0 +1,21 @@
+{
+  "rationale": "Specific questions for a video production project.",
+  "required": [
+    {"key": "client_name", "prompt": "Client Name"},
+    {"key": "project_name", "prompt": "Video Title / Project Name"},
+    {"key": "main_objective", "prompt": "What should the viewer do/feel after watching?"},
+    {"key": "platform", "prompt": "Where will this be published? (e.g., YouTube, Instagram Reel, TikTok)"},
+    {"key": "format_aspect_ratio", "prompt": "Format? (e.g., 16:9, 9:16, 1:1)"},
+    {"key": "target_duration", "prompt": "Target duration? (e.g., < 60s, 2-3 mins)"},
+    {"key": "deadline", "prompt": "Final delivery date? (YYYY-MM-DD)"}
+  ],
+  "optional": [
+    {"key": "key_message", "prompt": "What is the single key message?"},
+    {"key": "style_inspiration", "prompt": "Link to a video with the style you like"},
+    {"key": "voiceover", "prompt": "Voiceover needed? (Yes / No / Client provides)"},
+    {"key": "music", "prompt": "Music preference? (e.g., upbeat, corporate, cinematic)"},
+    {"key": "graphics", "prompt": "On-screen text or graphics? (e.g., lower thirds, titles)"},
+    {"key": "source_files", "prompt": "Will client provide b-roll/assets? (Yes / No)"},
+    {"key": "call_to_action", "prompt": "What is the final Call to Action (CTA)?"}
+  ]
+}

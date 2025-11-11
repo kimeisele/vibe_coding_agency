@@ -1,0 +1,45 @@
+# Agency Toolkit Configuration
+# Copy to ~/.config/agency-toolkit/config.toml and customize
+# Or place in project root as config.toml
+
+[settings]
+# output_dir = "~/Documents/Agency_Output"  # Customize output directory
+# briefing_type = "web"  # default, web, video (loads specific templates)
+
+[colors]
+# Uncomment and customize your brand colors
+# blue = "#2E5EAA"
+# red = "#D32F2F"
+# green = "#43A047"
+# purple = "#8E24AA"
+
+[social]
+# style = "modern"  # modern, minimal, or bold
+# color = "blue"
+# format = "square"  # square, story, landscape
+
+[mistral]
+# model = "mistral-small-latest"  # mistral-tiny, mistral-small-latest, mistral-medium, mistral-large-latest
+# temperature = 0.7  # 0.0-1.0 (lower = more deterministic)
+# max_tokens = 1000  # Maximum response length
+
+# Note: MISTRAL_API_KEY must be set as environment variable
+# export MISTRAL_API_KEY='your-key-here'
+# Get your key at: https://console.mistral.ai/
+
+[image]
+# provider = "pollinations"  # pollinations (FREE) or replicate (paid, requires token)
+# default_width = 1024
+# default_height = 1024
+# enable_cost_tracking = true
+
+# Replicate settings (only needed if provider = "replicate")
+# replicate_model = "stability-ai/stable-diffusion:db21e45d3f7023abc2a46ee38a23973f6dce16bb082a930b0c49861f96d1e5bf"
+# Note: REPLICATE_API_TOKEN must be set as environment variable for Replicate
+# export REPLICATE_API_TOKEN='your-token-here'
+# Get your token at: https://replicate.com/account
+
+# Pollinations.ai (FREE, no token required!)
+# - No configuration needed
+# - Simply use: toolkit image "prompt" --provider pollinations
+# - Default provider can be set above with: provider = "pollinations"

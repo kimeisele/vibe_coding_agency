@@ -1,0 +1,6 @@
+project_name,archetype_id,solution_id,module_id,ai_provider,goals,pain_points
+Test_Recruiting_Mistral,I,A1,A1_M4,mistral,"Fachkräfte gewinnen|Employer Branding","Keine Bewerbungen|Hohe Fluktuation"
+Test_Tourism_Campaign,II,A2,A2_M4,mistral,"Buchungen steigern|Sichtbarkeit erhöhen","Saisonale Schwankungen|Starke Konkurrenz"
+Test_B2B_LeadGen,III,B1,B1_M3,mistral,"Qualified Leads|Thought Leadership","Lange Sales Cycles|Komplexe Buyer Journey"
+Test_Local_Retail,IV,C1,C1_M3,mistral,"Frequenz erhöhen|Community aufbauen","Online-Konkurrenz|Fehlende Kundenbindung"
+Test_Recruiting_Google,I,A1,A1_M4,google,"Fachkräfte gewinnen|Employer Branding","Keine Bewerbungen|Hohe Fluktuation"

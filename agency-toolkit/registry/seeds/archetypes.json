@@ -1,0 +1,103 @@
+[
+  {
+    "id": "I",
+    "name": "Der Hyper-Lokale",
+    "description": "Handwerk, Lokale Dienstleister & KMU",
+    "pains": [
+      "Akuter Mangel an Zeit für Marketing",
+      "Limitierte Budgets",
+      "Mangel an digitaler Sichtbarkeit",
+      "Akuter Fachkräftemangel und Schwierigkeit, Auszubildende zu finden"
+    ],
+    "goals": [
+      "Nachhaltige Kundenakquise",
+      "Mitarbeitergewinnung (Recruiting)"
+    ],
+    "solution_template_ids": ["A1"]
+  },
+  {
+    "id": "II",
+    "name": "Der Erlebnis-Anbieter",
+    "description": "Tourismus, Hotellerie & Gastronomie",
+    "pains": [
+      "Starke Abhängigkeit von externen Buchungsplattformen (OTAs) und deren Provisionen",
+      "Starke Saisonalität",
+      "Notwendigkeit sich durch klaren USP zu differenzieren",
+      "Lokaler Unmut durch Overtourism"
+    ],
+    "goals": [
+      "Signifikante Steigerung der provisionsfreien Direktbuchungen",
+      "Klare Definition und Kommunikation des USP",
+      "Positive Positionierung durch Kommunikation von Nachhaltigkeit",
+      "Optimierung für mobile Bucher"
+    ],
+    "solution_template_ids": ["A2"]
+  },
+  {
+    "id": "III",
+    "name": "Der Industrie-Partner",
+    "description": "Internationales B2B, Hersteller & Logistik",
+    "pains": [
+      "Mangel an qualifizierten Leads für das Vertriebsteam",
+      "Lange Verkaufszyklen (long sales cycles)",
+      "Komplexe, technische Produkte oder Dienstleistungen schwer zu erklären",
+      "Fehlende Thought Leadership"
+    ],
+    "goals": [
+      "Systematische Generierung von Sales Qualified Leads (SQLs)",
+      "Aufbau von Thought Leadership",
+      "Aufbau von Vertrauen und Demonstration von Fachwissen"
+    ],
+    "solution_template_ids": ["B1"]
+  },
+  {
+    "id": "IV",
+    "name": "Der Frequenzbringer",
+    "description": "Lokaler & Nationaler Einzelhandel",
+    "pains": [
+      "Massive Konkurrenz durch E-Commerce",
+      "Mangelnde Laufkundschaft (Foot Traffic)",
+      "Mangelnde Sichtbarkeit in lokaler Suche (Near-Me-Anfragen)",
+      "Fehlende kohärente Local-SEO-Strategie"
+    ],
+    "goals": [
+      "Steigerung der Kundenfrequenz am Point-of-Sale (POS)",
+      "Dominante Sichtbarkeit in der lokalen 'in der Nähe'-Suche",
+      "Aufbau lokaler Kundenbindung"
+    ],
+    "solution_template_ids": ["C1"]
+  },
+  {
+    "id": "V",
+    "name": "Die Öffentliche Stimme",
+    "description": "Kommunen, Verbände, Kultur & NGOs",
+    "pains": [
+      "Wichtige Informationen erreichen die Bürger oder Mitglieder nicht",
+      "Veraltete Web-Auftritte genügen nicht den modernen Anforderungen",
+      "Mitgliederschwund und schwierige Gewinnung von Ehrenamtlichen",
+      "Akuter Fachkräftemangel in der Verwaltung"
+    ],
+    "goals": [
+      "Verbesserung der Bürger-Information",
+      "Bereitstellung digitaler Services (E-Government)",
+      "Positives Standortmarketing",
+      "Gewinnung von Mitgliedern/Ehrenamtlichen"
+    ],
+    "solution_template_ids": ["C2"]
+  },
+  {
+    "id": "VI",
+    "name": "Die Global Brand",
+    "description": "Internationale Konzerne mit lokalem Bedarf",
+    "pains": [
+      "Lokale Agenturen verstehen strikte globale Corporate Design Vorgaben nicht",
+      "Produktionsqualität von Werbemitteln ist mangelhaft",
+      "Agentur kann nicht mit internationalen Prozessen und Skalierungsanforderungen umgehen"
+    ],
+    "goals": [
+      "Fehlerfreier, CD-konformer Rollout von globalen Kampagnen auf dem lokalen Markt",
+      "High-End-Produktion von Werbemitteln"
+    ],
+    "solution_template_ids": ["D1"]
+  }
+]

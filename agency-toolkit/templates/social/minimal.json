@@ -1,0 +1,17 @@
+{
+  "description": "Clean, sophisticated, generous whitespace, refined typography, no stroke",
+  "font_face": "Roboto-Bold",
+  "font_size_ratio": 0.052,
+  "text_x_ratio": 0.5,
+  "text_y_ratio": 0.5,
+  "padding_ratio": 0.22,
+  "h_align": "center",
+  "v_align": "middle",
+  "line_spacing_ratio": 1.6,
+  "text_color": "#FFFFFF",
+  "text_stroke": false,
+  "text_stroke_width": 0,
+  "background_type": "solid",
+  "background_color": "#F8F8F8",
+  "max_chars_per_line": 38
+}

@@ -1,0 +1,54 @@
+# Production Testing Configuration
+# Real projects for testing the meta-audit pipeline
+# All paths are READ-ONLY
+
+projects:
+  - name: "capsule_audit"
+    path: "/Users/ss/projects/capsule_audit"
+    description: "Meta-audit tool itself (self-audit)"
+    read_only: true
+    capsule_mode: "hotspot"  # Use smart capsule strategy
+    expected_findings:
+      min_critical: 0
+      min_high: 2
+
+  - name: "agency_toolkit"
+    path: "/Users/ss/projects/agency_toolkit"
+    description: "Agency toolkit project"
+    read_only: true
+    capsule_mode: "signature"  # Structural overview only
+    expected_findings:
+      min_critical: 0
+      min_high: 0
+
+test_scenarios:
+  - name: "Single Project Analysis"
+    mode: "single_project"
+    project: "capsule_audit"
+    expected_output: "table"
+
+  - name: "Corpus Analysis"
+    mode: "corpus"
+    projects: ["capsule_audit", "agency_toolkit"]
+    expected_output: "json"
+
+  - name: "Cross-Project Patterns"
+    mode: "corpus"
+    projects: ["capsule_audit", "agency_toolkit"]
+    enable_pattern_detection: true
+
+capsule_modes:
+  hotspot:
+    description: "Only HIGH/CRITICAL severity files + metadata for others"
+    max_tokens_estimate: 15000
+    recommended: true
+
+  signature:
+    description: "AST-based function/class signatures only"
+    max_tokens_estimate: 8000
+    recommended: true
+
+  full:
+    description: "Complete source code (NOT recommended)"
+    max_tokens_estimate: 50000
+    recommended: false

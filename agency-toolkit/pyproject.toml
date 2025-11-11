@@ -1,0 +1,100 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["agency_toolkit"]
+
+[project]
+name = "agency-toolkit"
+version = "0.1.0"
+description = "CLI tools for agency workflow automation"
+readme = "README.md"
+requires-python = ">=3.10"
+license-files = ["LICENSE"]
+authors = [
+    {name = "Kim Eisele", email = "your.email@example.com"}
+]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Office/Business",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12"
+]
+
+dependencies = [
+    "typer[all]>=0.9.0,<0.12.0",
+    "click>=8.0.0,<8.2.0",
+    "pillow>=10.0.0",
+    "fpdf2>=2.7.0",
+    "pydantic>=2.0.0",
+    "toml>=0.10.0",
+    "python-slugify>=8.0.0",
+    "jsonschema>=4.0.0",
+    "replicate>=0.25.0",
+    "requests>=2.32.4",
+    "brotli>=1.2.0",
+    "pdfminer-six>=20251107",
+    "starlette>=0.49.1",
+    "questionary>=2.0.0",
+    "PyYAML>=6.0",
+    "flask-cors>=4.0.2"
+]
+
+[project.optional-dependencies]
+google = ["google-generativeai>=0.3.0"]
+mistral = ["mistralai>=0.1.0"]
+interactive = ["questionary>=2.0.0"]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "pytest-timeout>=2.1.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+    "google-generativeai>=0.3.0",
+    "mistralai>=0.1.0",
+    "questionary>=2.0.0",
+    "pyinstaller>=6.0.0"
+]
+
+[project.scripts]
+toolkit = "agency_toolkit.cli_app:cli_entrypoint"
+
+[tool.ruff]
+line-length = 88
+lint.select = ["E", "F", "W", "I", "UP", "N"]
+lint.ignore = [
+    "E501",  # Line too long (will fix in refactor)
+    "E722",  # Bare except (will fix with specific exceptions)
+    "F401",  # Unused imports (will clean up)
+    "F601",  # Duplicate dict keys (will fix)
+    "F841",  # Unused variables (will clean up)
+    "E402",  # Module import not at top (some are intentional)
+    "UP038", # Use X | Y instead of (X, Y) - Python 3.10+ syntax
+    "W293",  # Blank line whitespace
+    "N802",  # Function name should be lowercase (AST visitors use camelCase)
+]
+
+[tool.black]
+line-length = 88
+target-version = ["py310", "py311", "py312"]
+
+[tool.mypy]
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = false
+namespace_packages = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_unit.py", "*_integration.py"]
+python_functions = ["test_*"]
+markers = [
+    "integration: marks tests as integration tests (deselect with '-m \"not integration\"')",
+    "unit: marks tests as unit tests"
+]

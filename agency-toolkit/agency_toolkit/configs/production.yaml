@@ -1,0 +1,62 @@
+# Production Configuration
+# Optimized for performance, security, and reliability
+
+environment: production
+project_root: "."
+
+database:
+  url: "${DATABASE_URL:sqlite:///agency_toolkit.db}"
+  echo: false
+  pool_size: 20
+  max_overflow: 40
+  pool_timeout: 30
+  pool_recycle: 3600
+  auto_create_tables: false
+
+api:
+  host: "0.0.0.0"
+  port: 8000
+  debug: false
+  workers: 4
+  reload: false
+  access_log: false
+  cors_origins:
+    - "https://example.com"
+
+shell:
+  timeout: 120
+  max_output_lines: 1000
+  respect_gitignore: true
+  retry_on_timeout: true
+  max_retries: 3
+
+logging:
+  level: "INFO"
+  format: "json"
+  log_file: "/var/log/agency_toolkit/app.log"
+  max_file_size: 10485760
+  backup_count: 10
+
+security:
+  enable_constitutional_validation: true
+  audit_log_retention_days: 90
+  max_session_duration_hours: 8
+
+performance:
+  enable_caching: true
+  max_concurrent_operations: 50
+  max_worker_threads: 16
+
+cache:
+  backend: "redis"
+  url: "${CACHE_URL:redis://localhost:6379/0}"
+  ttl_seconds: 3600
+  max_size: 10000
+  prefix: "agency_prod_"
+
+task:
+  max_workers: 8
+  queue_size: 1000
+  retry_attempts: 3
+  retry_delay_seconds: 10
+  timeout_seconds: 600

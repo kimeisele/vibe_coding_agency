@@ -1,0 +1,134 @@
+{
+  "id": "MULTI",
+  "name": "Multi-Module Complete Workflow",
+  "archetype_id": "I",
+  "description": "A comprehensive workflow with multiple modules that depend on each other, demonstrating module chaining and dependency resolution",
+  "modules": [
+    {
+      "id": "MULTI_M1",
+      "title": "Foundation - Corporate Identity",
+      "description": "Create foundational brand assets and corporate design standards",
+      "tasks": [
+        {
+          "tool": "structure",
+          "on_error": "stop",
+          "params": {
+            "client": "{project_name}",
+            "project": "Corporate Design Foundation",
+            "type": "default"
+          }
+        },
+        {
+          "tool": "briefing",
+          "output_key": "brand_brief",
+          "on_error": "stop",
+          "params": {
+            "type": "Other",
+            "client_name": "{project_name_safe}",
+            "project_name": "Brand Identity Development",
+            "output_format": "pdf"
+          }
+        }
+      ],
+      "dependencies": [],
+      "context_variables": [
+        "project_name"
+      ]
+    },
+    {
+      "id": "MULTI_M2",
+      "title": "Website Relaunch",
+      "description": "Build website infrastructure based on brand foundation from Module 1",
+      "tasks": [
+        {
+          "tool": "structure",
+          "on_error": "stop",
+          "params": {
+            "client": "{project_name}",
+            "project": "Website Relaunch",
+            "type": "web"
+          }
+        },
+        {
+          "tool": "ai",
+          "output_key": "website_description",
+          "on_error": "continue",
+          "params": {
+            "prompt": "Create a compelling website description for {project_name}. The company targets {archetype_name} and wants to address: {pain_points}. Keep it to 2-3 sentences. Your response should ONLY be the description.",
+            "provider": "{ai_provider}",
+            "temperature": 0.7,
+            "max_tokens": 150
+          }
+        },
+        {
+          "tool": "briefing",
+          "on_error": "continue",
+          "params": {
+            "type": "Web",
+            "client_name": "{project_name_safe}",
+            "project_name": "Website Relaunch",
+            "output_format": "pdf"
+          }
+        }
+      ],
+      "dependencies": [
+        "MULTI_M1"
+      ],
+      "context_variables": [
+        "project_name",
+        "archetype_name",
+        "pain_points",
+        "ai_provider"
+      ]
+    },
+    {
+      "id": "MULTI_M3",
+      "title": "Social Media Strategy",
+      "description": "Create social media campaign using assets from both foundation and website modules",
+      "tasks": [
+        {
+          "tool": "ai",
+          "output_key": "social_tagline",
+          "on_error": "continue",
+          "params": {
+            "prompt": "Create social media taglines for {project_name}. Generate 5 different versions, each max 40 characters. Format as comma-separated list. Target audience: {archetype_name}. Focus on: {goals}. Your response should ONLY be the taglines.",
+            "provider": "{ai_provider}",
+            "temperature": 0.8,
+            "max_tokens": 200
+          }
+        },
+        {
+          "tool": "social",
+          "on_error": "continue",
+          "params": {
+            "text": "{social_tagline}",
+            "style": "bold",
+            "color": "blue",
+            "format": "story",
+            "output_dir": "./output/{project_name_safe}/social"
+          }
+        },
+        {
+          "tool": "briefing",
+          "on_error": "continue",
+          "params": {
+            "type": "Social",
+            "client_name": "{project_name_safe}",
+            "project_name": "Social Media Strategy",
+            "output_format": "pdf"
+          }
+        }
+      ],
+      "dependencies": [
+        "MULTI_M1",
+        "MULTI_M2"
+      ],
+      "context_variables": [
+        "project_name",
+        "archetype_name",
+        "goals",
+        "ai_provider"
+      ]
+    }
+  ]
+}

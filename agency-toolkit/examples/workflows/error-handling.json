@@ -1,0 +1,178 @@
+{
+  "id": "RESILIENT",
+  "name": "Resilient Workflow with Error Handling",
+  "archetype_id": "I",
+  "description": "Demonstrates on_error modes: using 'stop' for critical tasks and 'continue' for optional/non-critical tasks, enabling graceful degradation",
+  "modules": [
+    {
+      "id": "RESILIENT_M1",
+      "title": "Core Deliverables with Graceful Failure",
+      "description": "Create core project structure (critical) and attempt optional analytics/monitoring setup",
+      "tasks": [
+        {
+          "tool": "structure",
+          "on_error": "stop",
+          "params": {
+            "client": "{project_name}",
+            "project": "Project Foundation",
+            "type": "default"
+          }
+        },
+        {
+          "tool": "ai",
+          "output_key": "project_brief",
+          "on_error": "stop",
+          "params": {
+            "prompt": "Create a project brief for {project_name}. Include overview, key objectives, and success metrics. Target audience: {archetype_name}. Keep to 3-4 paragraphs.",
+            "provider": "{ai_provider}",
+            "temperature": 0.7,
+            "max_tokens": 400
+          }
+        },
+        {
+          "tool": "briefing",
+          "output_key": "foundation_brief",
+          "on_error": "stop",
+          "params": {
+            "type": "Other",
+            "client_name": "{project_name_safe}",
+            "project_name": "Project Foundation Brief",
+            "output_format": "pdf"
+          }
+        }
+      ],
+      "dependencies": [],
+      "context_variables": [
+        "project_name",
+        "archetype_name",
+        "ai_provider"
+      ]
+    },
+    {
+      "id": "RESILIENT_M2",
+      "title": "Website with Graceful Content Generation",
+      "description": "Website structure is critical, but if content generation fails, we continue with template content",
+      "tasks": [
+        {
+          "tool": "structure",
+          "on_error": "stop",
+          "params": {
+            "client": "{project_name}",
+            "project": "Website Foundation",
+            "type": "web"
+          }
+        },
+        {
+          "tool": "ai",
+          "output_key": "hero_copy",
+          "on_error": "continue",
+          "params": {
+            "prompt": "Write compelling hero section copy for a website for {project_name}. Address these pain points: {pain_points}. Keep to 2 sentences, max 60 words.",
+            "provider": "{ai_provider}",
+            "temperature": 0.8,
+            "max_tokens": 100
+          }
+        },
+        {
+          "tool": "ai",
+          "output_key": "features_copy",
+          "on_error": "continue",
+          "params": {
+            "prompt": "List 3 key features and benefits for {project_name}. Format as bullet points. Target: {archetype_name}.",
+            "provider": "{ai_provider}",
+            "temperature": 0.7,
+            "max_tokens": 150
+          }
+        },
+        {
+          "tool": "briefing",
+          "on_error": "continue",
+          "params": {
+            "type": "Web",
+            "client_name": "{project_name_safe}",
+            "project_name": "Website Brief",
+            "output_format": "pdf"
+          }
+        }
+      ],
+      "dependencies": [
+        "RESILIENT_M1"
+      ],
+      "context_variables": [
+        "project_name",
+        "pain_points",
+        "archetype_name",
+        "ai_provider"
+      ]
+    },
+    {
+      "id": "RESILIENT_M3",
+      "title": "Social Media with Optional Features",
+      "description": "Primary social content is critical, secondary features fail gracefully",
+      "tasks": [
+        {
+          "tool": "ai",
+          "output_key": "primary_post",
+          "on_error": "stop",
+          "params": {
+            "prompt": "Create a primary social media post for {project_name}. Keep to max 280 characters for Twitter. Make it engaging and relevant to {archetype_name}.",
+            "provider": "{ai_provider}",
+            "temperature": 0.8,
+            "max_tokens": 80
+          }
+        },
+        {
+          "tool": "social",
+          "on_error": "stop",
+          "params": {
+            "text": "{primary_post}",
+            "style": "bold",
+            "format": "post",
+            "output_dir": "./output/{project_name_safe}/social"
+          }
+        },
+        {
+          "tool": "ai",
+          "output_key": "hashtags",
+          "on_error": "continue",
+          "params": {
+            "prompt": "Generate 5-10 relevant hashtags for {project_name}. Format as space-separated list starting with #. Topic: {archetype_name}.",
+            "provider": "{ai_provider}",
+            "temperature": 0.5,
+            "max_tokens": 100
+          }
+        },
+        {
+          "tool": "ai",
+          "output_key": "follow_up_post",
+          "on_error": "continue",
+          "params": {
+            "prompt": "Create a follow-up post based on this primary post: {primary_post}. Add value by expanding on one key aspect. Max 280 characters.",
+            "provider": "{ai_provider}",
+            "temperature": 0.7,
+            "max_tokens": 100
+          }
+        },
+        {
+          "tool": "briefing",
+          "on_error": "continue",
+          "params": {
+            "type": "Social",
+            "client_name": "{project_name_safe}",
+            "project_name": "Social Media Strategy",
+            "output_format": "pdf"
+          }
+        }
+      ],
+      "dependencies": [
+        "RESILIENT_M2"
+      ],
+      "context_variables": [
+        "project_name",
+        "archetype_name",
+        "ai_provider",
+        "primary_post"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "text": "Monday Motivation ✨",
+    "style": "modern",
+    "color": "blue"
+  },
+  {
+    "text": "Flash Sale Ends Tonight!",
+    "style": "bold",
+    "color": "red",
+    "format": "story"
+  },
+  {
+    "text": "Behind the Scenes",
+    "style": "minimal",
+    "color": "green"
+  }
+]

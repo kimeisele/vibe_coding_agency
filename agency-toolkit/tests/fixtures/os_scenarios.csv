@@ -1,0 +1,9 @@
+project_name,archetype_id,solution_id,module_id,ai_provider
+Test_Handwerk_CD,I,A1,A1_M1,mistral
+Test_Handwerk_Website,I,A1,A1_M2,mistral
+Test_Handwerk_Social,I,A1,A1_M3,google
+Test_Handwerk_Recruiting,I,A1,A1_M4,google
+Test_Erlebnis_Online,II,A2,A2_M1,mistral
+Test_Erlebnis_Booking,II,A2,A2_M2,google
+Test_Industrie_Website,III,B1,B1_M1,google
+Test_Invalid_IDs,invalid-archetype,invalid-solution,invalid-module,ollama

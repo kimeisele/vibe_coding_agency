@@ -1,0 +1,286 @@
+# Epic 1: Refactor load_config (CC: 20 → <10)
+
+## 🔴 Problem
+`utils.py::load_config()` hat CC: 20 - das ist DOUBLE der kritischen Grenze.
+
+## 🎯 Ziel
+CC < 10, ohne Behavior zu ändern.
+
+## 📋 Tasks
+
+### Task 1.1: Analyse - Was macht load_config?
+
+**AI Agent Instructions:**
+```bash
+ACTION: Read and analyze
+FILE: agency_toolkit/utils.py
+FUNCTION: load_config
+
+OUTPUT:
+1. List all branches (if/elif/else chains)
+2. List all try/except blocks
+3. Identify responsibilities:
+   - Config file loading?
+   - Env var merging?
+   - Validation?
+   - Default setting?
+   - Error handling?
+
+FORMAT: Markdown with code snippets
+```
+
+**Validation:**
+- AI must show actual code structure
+- AI must NOT propose solutions yet
+
+**Time:** 15 minutes
+
+---
+
+### Task 1.2: Extract Config File Loader
+
+**AI Agent Instructions:**
+```python
+ACTION: Create new function
+FILE: agency_toolkit/utils.py
+FUNCTION NAME: _load_config_file
+
+RESPONSIBILITY:
+- Load config.toml from standard locations
+- Return dict or None (if not found)
+- NO validation, NO merging
+
+SIGNATURE:
+def _load_config_file() -> dict[str, Any] | None:
+    """Load config file from standard locations.
+
+    Returns:
+        Config dict if found, None otherwise.
+    """
+    # ... implementation
+
+RULES:
+- NO try/except for validation errors (that's load_config's job)
+- Use pathlib.Path for file checks
+- Check order: current_dir → home_dir → None
+
+TEST:
+- Create unit test: test_load_config_file_not_found()
+- Create unit test: test_load_config_file_found()
+```
+
+**Validation:**
+- New function exists
+- Old load_config calls it
+- Tests pass
+
+**Time:** 45 minutes
+
+---
+
+### Task 1.3: Extract Env Var Merger
+
+**AI Agent Instructions:**
+```python
+ACTION: Create new function
+FILE: agency_toolkit/utils.py
+FUNCTION NAME: _merge_env_vars
+
+RESPONSIBILITY:
+- Take base config dict
+- Override with env vars (MISTRAL_API_KEY, etc.)
+- Return merged dict
+
+SIGNATURE:
+def _merge_env_vars(config: dict[str, Any]) -> dict[str, Any]:
+    """Merge environment variables into config.
+
+    Args:
+        config: Base config dict
+
+    Returns:
+        Merged config dict
+    """
+
+RULES:
+- Use os.environ.get() with None default
+- Only set if env var exists (don't override with None)
+- Document which env vars are supported
+
+TEST:
+- Verify env var overrides work
+- Verify missing env vars don't break config
+```
+
+**Validation:**
+- Function exists
+- load_config uses it
+- Tests pass
+
+**Time:** 30 minutes
+
+---
+
+### Task 1.4: Extract Default Value Setter
+
+**AI Agent Instructions:**
+```python
+ACTION: Create new function
+FILE: agency_toolkit/utils.py
+FUNCTION NAME: _apply_defaults
+
+RESPONSIBILITY:
+- Take config dict (possibly incomplete)
+- Apply sane defaults for missing keys
+- Return complete config dict
+
+SIGNATURE:
+def _apply_defaults(config: dict[str, Any]) -> dict[str, Any]:
+    """Apply default values to config.
+
+    Args:
+        config: Partial config dict
+
+    Returns:
+        Complete config with defaults
+    """
+
+DEFAULTS:
+- output_dir: Path("output")
+- mistral_model: "mistral-medium"
+- image.provider: "pollinations"
+- (... find others from current code)
+
+TEST:
+- Verify empty config gets all defaults
+- Verify existing values are not overridden
+```
+
+**Validation:**
+- Defaults documented
+- Tests pass
+
+**Time:** 30 minutes
+
+---
+
+### Task 1.5: Refactor load_config to Orchestrate
+
+**AI Agent Instructions:**
+```python
+ACTION: Refactor
+FILE: agency_toolkit/utils.py
+FUNCTION: load_config
+
+NEW STRUCTURE:
+def load_config() -> Config:
+    """Load and validate configuration (orchestrator function).
+
+    Flow:
+        1. Load file → _load_config_file()
+        2. Merge env → _merge_env_vars()
+        3. Apply defaults → _apply_defaults()
+        4. Validate → Pydantic Config model
+        5. Handle errors → clear error messages
+
+    Returns:
+        Validated Config object
+
+    Raises:
+        ValueError: If config is invalid (with helpful message)
+    """
+    try:
+        # Step 1: Load file
+        file_config = _load_config_file() or {}
+
+        # Step 2: Merge env vars
+        merged = _merge_env_vars(file_config)
+
+        # Step 3: Apply defaults
+        complete = _apply_defaults(merged)
+
+        # Step 4: Validate with Pydantic
+        return Config(**complete)
+
+    except Exception as e:
+        # Clear error message for user
+        raise ValueError(f"Config error: {e}") from e
+
+GOAL:
+- Main function is now just orchestration
+- Each step is a single function call
+- Complexity should be CC < 6
+```
+
+**Validation:**
+- Run: `radon cc agency_toolkit/utils.py -s`
+- Confirm: load_config CC < 10
+- All tests pass
+- No behavior change (integration tests prove this)
+
+**Time:** 1 hour
+
+---
+
+### Task 1.6: Add Docstring Examples
+
+**AI Agent Instructions:**
+```python
+ACTION: Document
+FILE: agency_toolkit/utils.py
+FUNCTIONS: load_config, _load_config_file, _merge_env_vars, _apply_defaults
+
+ADD:
+- Docstring examples for each function
+- Type hints for all params/returns
+- Notes about config priority (file < env < CLI args)
+
+EXAMPLE:
+def load_config() -> Config:
+    """Load configuration from file, env vars, and defaults.
+
+    Priority (low to high):
+        1. Default values
+        2. Config file (~/.config/agency-toolkit/config.toml)
+        3. Environment variables
+        4. CLI arguments (applied by commands)
+
+    Returns:
+        Validated Config object
+
+    Raises:
+        ValueError: If config file is malformed or required keys missing
+
+    Example:
+        >>> config = load_config()
+        >>> config.output_dir
+        PosixPath('output')
+    """
+```
+
+**Time:** 20 minutes
+
+---
+
+## ✅ Success Criteria
+
+- [ ] load_config CC reduced from 20 to < 10
+- [ ] 4 new helper functions exist
+- [ ] All existing tests pass (no behavior change)
+- [ ] New tests cover edge cases
+- [ ] Docstrings are clear
+
+## ⏱️ Total Time Estimate
+3 hours (spread over 6 atomic tasks)
+
+## 🔄 Rollback Plan
+Each task is a separate commit. If any task breaks tests:
+```bash
+git revert HEAD
+```
+
+## 🎯 Why This First?
+- load_config is called by EVERY command
+- CC: 20 is the worst hotspot
+- Fixing this unlocks everything else
+- It's pure refactoring (no new features)

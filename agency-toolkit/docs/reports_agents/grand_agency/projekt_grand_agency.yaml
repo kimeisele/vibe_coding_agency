@@ -1,0 +1,584 @@
+projekt_grand_agency:
+  titel: "Projekt 'GRAND AGENCY': Registry der Client-Archetypen und Lösungs-Templates für die EuRegio Salzburg-BGL"
+
+  teil_1:
+    titel: "Marktanalyse des Agentur-Ökosystems (Bad Reichenhall / Freilassing / Salzburg)"
+    einleitung: |
+      Die Erstellung eines "Betriebssystems" für Agentur-Workflows, wie es das Projekt 'GRAND AGENCY' vorsieht, erfordert eine fundierte Datengrundlage. Diese Grundlage wird durch eine tiefgehende Analyse des bestehenden Agenturmarktes und dessen Klientel in der Zielregion geschaffen. Die EuRegio Salzburg – Berchtesgadener Land – Traunstein 1 bildet einen eng verwobenen Wirtschaftsraum, der jedoch von zwei distinkten Agentur-Ökosystemen bedient wird. Die Analyse dieser Ökosysteme – des deutschen Hubs (Bad Reichenhall/Freilassing) und des österreichischen Hubs (Salzburg) – offenbart das Spektrum der Nachfrage und des Angebots, das für die Abstraktion von Client-Archetypen und Lösungs-Templates notwendig ist.
+
+    section_1_1:
+      titel: "Agenturprofile: Der deutsche Hub (Bad Reichenhall & Freilassing)"
+      beschreibung: |
+        Der deutsche Teil der EuRegio, zentriert um Bad Reichenhall und Freilassing, ist geprägt von Agenturen, die sich auf die Betreuung kleiner und mittelständischer Unternehmen (KMU) spezialisiert haben. Das Service-Spektrum reicht von hyper-lokalen Grundbedürfnissen bis hin zu anspruchsvollen digitalen Lösungen.
+      agenturen:
+        - name: "Concorde Media UG"
+          standort: "Bad Reichenhall"
+          beschreibung: |
+            Diese inhabergeführte Full-Service-Agentur 4 deklariert einen klaren Fokus auf KMUs im Berchtesgadener Land und im oberbayerischen Raum. Das Kernangebot umfasst Website-Erstellung und -Wartung, Social-Media-Betreuung sowie Fotografie.4 Mit über 50 bedienten Kunden und der Generierung von mehr als einer Million monatlicher Impressionen 5 ist Concorde Media ein etablierter regionaler Akteur, der das gesamte Spektrum von Branding über Campaigning bis hin zu Online- und Offline-Marketing abdeckt.5
+        - name: "GS Werbung"
+          standort: "Bad Reichenhall"
+          beschreibung: |
+            Diese Agentur repräsentiert das Fundament der hyper-lokalen Werbebedürfnisse. Der Fokus liegt klar auf "greifbarer" Werbung: Beschriftung, Schilder, Digitaldruck, Werbebanner und Glasveredelung.6 Der Kundenstamm ist implizit im lokalen Handwerk und Gewerbe zu finden, das physische Werbeträger benötigt.
+        - name: "makrohaus"
+          standort: "Bad Reichenhall"
+          beschreibung: |
+            Mit über 20 Jahren Erfahrung positioniert sich makrohaus als "mehr als eine Agentur".8 Die Analyse der "aktuellen Projekte" liefert präzise Hinweise auf den Kundenstamm: Reber Spezialitäten, Brauerei Schönram, Hotel Seeblick und Früchte Maier.8 Dies indiziert einen klaren Fokus auf die regionale Premium-Wirtschaft, insbesondere in den Sektoren Genussmittel, Tourismus und gehobener Einzelhandel.
+        - name: "schoko-seite"
+          standort: "Bad Reichenhall"
+          beschreibung: |
+            Diese Agentur demonstriert eine starke Nischen-Spezialisierung auf Sportmanagement, PR und Events.9 Das Portfolio untermauert dies mit Kunden wie dem Rennrodler Felix Loch (Sportmanagement, PR, Social Media), aber auch Transportbeton Traunstein (Design, PR, Event) und der Kunstakademie Reichenhall.9
+        - name: "Viucom"
+          standort: "Freilassing"
+          beschreibung: |
+            Positioniert sich als Anbieter für "quality-driven digital solutions" mit 25 Jahren Erfahrung.10 Ein entscheidendes Merkmal ist die Vita des Gründers, Simon Back, der bei einer der drei größten Digitalagenturen Österreichs (über 100 Mitarbeiter) tätig war.11 Viucom agiert somit als High-End-Digitaldienstleister im deutschen Hub und schlägt eine Brücke zu den anspruchsvolleren Anforderungen, die sonst eher im Salzburger Markt zu finden sind.
+        - name: "atimedia"
+          standort: "Region Freilassing"
+          beschreibung: |
+            Diese Agentur ist ein Schlüssellieferant für die Definition des hyper-lokalen Archetyps. Sie spezialisiert sich explizit auf "Internet, Website, Homepage, Webdesign für Handel, Handwerk".12 Das Portfolio ist ein Querschnitt des lokalen Gewerbes 12 und listet Dutzende KMUs wie Spenglerei Danner (spenglerfuchs.de), Schreinerei Riedhofer, Gärtnerei Stöhr, Villa Sudrow Apartments, Mais-Thai-Küche und den Berggasthof Neureuth.12
+        - name: "Weitere Agenturen"
+          standort: "Freilassing & Umgebung"
+          beschreibung: |
+            Ein dichtes Netz weiterer Spezialisten bedient den lokalen Markt, darunter HIRMKE (SEO, Grafik), I-DEA Graphics (Full Service), Joe Rankl (Social Media Berater) und Mahler Erfolg.Ist.Machbar (Full Service Digital).7
+
+    section_1_2:
+      titel: "Agenturprofile: Der österreichische Hub (Salzburg)"
+      beschreibung: |
+        Der Salzburger Agenturmarkt agiert auf einem signifikant anderen Niveau. Die hier ansässigen Agenturen betreuen nicht nur den regionalen Markt, sondern steuern oft nationale und internationale Etats für global agierende Konzerne.
+      agenturen:
+        - name: "Adwerba"
+          standort: "Salzburg"
+          beschreibung: |
+            Gegründet 1978 13, ist Adwerba der "Global Player" in dieser regionalen Analyse. Das Kundenportfolio 13 ist von herausragender strategischer Bedeutung, da es mehrere high-level Archetypen klar definiert:
+            - Global Brands: Red Bull, BMW, MINI, Miele, American Express, Nespresso.
+            - B2B/Industrie: SKIDATA (ASSA ABLOY), Lenzing AG, Quehenberger Logistics, Allgemeine Bau-Chemie.
+            - Top-Tourismus: Salzburger Seenland, Gut Brandlhof, Tourismus Salzburg, Aktivhotel FIRSTpeak, Schloss Leopoldskron.
+            Adwerba beweist Kompetenz in komplexem Hotel-Marketing, Webentwicklung, SEO und der Produktion von High-End-Werbemitteln (z.B. Event-Kits, Mailings).13
+        - name: "G.A. Service GmbH"
+          standort: "Salzburg"
+          beschreibung: |
+            Als Full-Service-Agentur mit Standorten in Salzburg, Wien und Graz 14 bedient G.A. Service einen überregionalen Markt. Das angebotene Spektrum ist breit und umfasst Konzeption, Webprogrammierung/SEO, Online-Marketing und Video-/Film-Produktion.14 Die Projektbeschreibungen im Portfolio 14 deuten auf anspruchsvolle B2B-Kunden und den Non-Profit-Sektor hin (z.B. "Grünen Strom spielerisch entdecken", "Die neue Online-Heimat der geretteten Tiere").
+        - name: "P8 Marketing"
+          standort: "Salzburg"
+          beschreibung: |
+            Die Multi-Standort-Struktur (Innsbruck, Salzburg, Wien) 15 impliziert ebenfalls eine überregionale Kundenbasis, die über den lokalen Salzburger Markt hinausgeht.
+        - name: "oha.digital (Agentur SO.UL GmbH)"
+          standort: "Salzburg"
+          beschreibung: |
+            Diese Agentur repräsentiert den modernen, digital-fokussierten Pol in Salzburg.16 Mit den Schwerpunkten Social Media, Digital Marketing und Consulting 16 bedient sie anspruchsvolle Kunden, die spezifische, messbare digitale Lösungen benötigen. Das Portfolio 16 zeigt dies deutlich: W&M Holding (Social Recruiting), European Forum Alpbach (LinkedIn-Kampagne) und die Brauerei Die Weisse (Social Media Aktivierung).
+
+    section_1_3:
+      titel: "Synthese: Grenzübergreifende Marktdynamiken (Die 'EuRegio-Kluft')"
+      beschreibung: |
+        Die Analyse der EuRegio Salzburg - Berchtesgadener Land - Traunstein 17 offenbart eine signifikante strategische Kluft im Agenturmarkt, die "EuRegio-Kluft".
+        - Deutscherseits (BR/F) existiert ein Markt von hyper-lokalen Dienstleistern (z.B. GS Werbung 6, atimedia 12) und soliden KMU-Betreuern (z.B. Concorde Media 4, makrohaus 8). Deren Fokus liegt auf der digitalen Grundausstattung und dem regionalen Branding.
+        - Österreichseits (SZG) agiert ein Markt von Agenturen, die globale Marken (Adwerba 13) und komplexe, datengetriebene Digitalkampagnen (oha.digital 16) für internationale Kunden steuern.
+
+        Diese Kluft hat eine zentrale strategische Implikation für das Projekt 'GRAND AGENCY': Ein Kunde in dieser EuRegio (z.B. ein Hotel in Bad Reichenhall) hat die Wahl zwischen fundamental unterschiedlichen Service-Leveln:
+        - Lokaler Held: Beauftragung von atimedia 12 für eine funktionale, kosteneffiziente Website.
+        - Regionaler Premium-Anbieter: Beauftragung von makrohaus 8 für ein hochwertiges Branding und regionales Storytelling.
+        - Globaler Standard: Beauftragung von Adwerba 13 für eine internationale, SEO-optimierte Tourismus-Kampagne mit Anbindung an globale Buchungssysteme.
+
+        Das 'GRAND AGENCY' Betriebssystem muss zwingend in der Lage sein, Workflows für alle drei Service-Level abzubilden. Es muss von der Erstellung einer "Visitenkarten-Website" für den lokalen Handwerker bis hin zur Steuerung einer "Global-Brand-Kampagne" skalierbar sein.
+
+    tabelle_1_agentur_mapping:
+      titel: "Agentur-Mapping & Fokus-Analyse (EuRegIo BR/F/SZG)"
+      eintraege:
+        - agenturname: "Adwerba"
+          standort: "Salzburg"
+          spezialisierung: "Webdesign, SEO, Hotel Marketing 13"
+          portfolio_beispiele: "Red Bull, BMW, SKIDATA, Salzburger Seenland 13"
+          abgeleiteter_fokus: "Archetyp VI (Global Brand), III (Industrie), II (Tourismus)"
+        - agenturname: "atimedia"
+          standort: "Region Freilassing"
+          spezialisierung: "Websites für Handel, Handwerk 12"
+          portfolio_beispiele: "Spenglerfuchs, Schreinerei Riedhofer, Villa Sudrow 12"
+          abgeleiteter_fokus: "Archetyp I (Lokales Handwerk/KMU), II (Tourismus)"
+        - agenturname: "makrohaus"
+          standort: "Bad Reichenhall"
+          spezialisierung: "Branding, Websites, Kampagnen 8"
+          portfolio_beispiele: "Reber Spezialitäten, Hotel Seeblick, Brauerei Schönram 8"
+          abgeleiteter_fokus: "Archetyp II (Tourismus/Genuss), IV (Einzelhandel)"
+        - agenturname: "oha.digital"
+          standort: "Salzburg"
+          spezialisierung: "Social Media, Digital Marketing 16"
+          portfolio_beispiele: "European Forum Alpbach, W&M Holding, Die Weisse 16"
+          abgeleiteter_fokus: "Archetyp V (Öffentlich/Kultur), III (B2B), II (Gastronomie)"
+        - agenturname: "schoko-seite"
+          standort: "Bad Reichenhall"
+          spezialisierung: "Sportmanagement, PR, Social Media, Event 9"
+          portfolio_beispiele: "Felix Loch, Transportbeton Traunstein, Kunstakademie 9"
+          abgeleiteter_fokus: "Archetyp V (Kultur), III (B2B)"
+        - agenturname: "GS Werbung"
+          standort: "Bad Reichenhall"
+          spezialisierung: "Beschriftung, Druck, Schilder 6"
+          portfolio_beispiele: "(Implizit: Lokales Gewerbe)"
+          abgeleiteter_fokus: "Archetyp I (Lokales Handwerk/KMU)"
+        - agenturname: "Concorde Media"
+          standort: "Bad Reichenhall"
+          spezialisierung: "Websites, Social Media, Fotografie (Fokus KMU) 4"
+          portfolio_beispiele: "(50+ KMU-Kunden) 5"
+          abgeleiteter_fokus: "Archetyp I (Lokales Handwerk/KMU)"
+        - agenturname: "Viucom"
+          standort: "Freilassing"
+          spezialisierung: "Quality-driven digital solutions 10"
+          portfolio_beispiele: "(Nicht spezifiziert)"
+          abgeleiteter_fokus: "(Positionierung: High-End Digital für KMU)"
+
+  teil_2:
+    titel: "Die Client-Registry: Abstraktion Regionaler Client-Archetypen"
+    einleitung: |
+      Basierend auf der Marktanalyse in Teil 1 werden die konkreten Kundenportfolios 8 analysiert, um Muster zu identifizieren. Diese Muster, basierend auf Branche, Unternehmensgröße und impliziten Marketingzielen, werden zu generalisierten "Client-Archetypen" abstrahiert. Diese Registry bildet den ersten Kernbaustein des 'GRAND AGENCY' Betriebssystems.
+    archetypen:
+      - id: "I"
+        name: "Der Hyper-Lokale (Handwerk, Lokale Dienstleister & KMU)"
+        datengrundlage: |
+          Dieser Archetyp wird primär aus dem expliziten Portfolio von atimedia 12 (z.B. Spenglerfuchs, Schreinerei Riedhofer, Haustechnik Körner, Kaspar Huber GmbH, A. Bauer Elektromaschinenbau, piano-peter-komlew.de) und dem impliziten Kundenstamm von GS Werbung 6 (Kunden für "Beschriftung") abgeleitet. Auch Concorde Media 4 zielt auf diesen Sektor.
+        merkmale: |
+          Inhabergeführte Betriebe (1-50 Mitarbeiter), stark lokal oder regional verwurzelt. Marketing wird oft reaktiv oder "nebenbei" durch die Geschäftsführung betrieben. Die Budgets sind gering bis mittel, der Fokus liegt auf konkreter, lokaler Auffindbarkeit und der Stärkung der Reputation.
+        typische_pain_points: |
+          Ein akuter Mangel an Zeit für Marketing 18, limitierte Budgets 18 und ein Mangel an digitaler Sichtbarkeit 19 sind die Hauptprobleme. Der dominanteste Pain Point ist jedoch der akute Fachkräftemangel und die Schwierigkeit, Auszubildende zu finden.20
+
+      - id: "II"
+        name: "Der Erlebnis-Anbieter (Tourismus, Hotellerie & Gastronomie)"
+        datengrundlage: |
+          Dieser Archetyp ist in der EuRegio stark vertreten und wird durch Kunden verschiedener Agenturen validiert: makrohaus 8 (Hotel Seeblick), atimedia 12 (Villa Sudrow Apartments, Berggasthof Neureuth, Mais-Thai-Küche, Hotel Bockmaier), Adwerba 13 (Gut Brandlhof, Salzburger Seenland, Tourismus Salzburg, Aktivhotel FIRSTpeak, Sonja Alpine Resort, Schloss Leopoldskron) und oha.digital 16 (Die Weisse).
+        merkmale: |
+          Ein hochgradig wettbewerbsintensiver Markt, der stark saisonabhängig ist.22 Das Produkt ist ein immaterielles "Erlebnis", dessen Vermarktung extrem von hochwertiger visueller Darstellung (Fotos, Videos) und Reputation (Bewertungen) abhängt. Der Buchungsprozess (Booking Engine) ist ein kritischer Erfolgsfaktor.23
+        typische_pain_points: |
+          Starke Abhängigkeit von externen Buchungsplattformen (OTAs) und deren Provisionen.24 Die Notwendigkeit, sich in einem gesättigten Markt durch einen klaren USP (Alleinstellungsmerkmal) zu differenzieren.25 In der Region kommt hinzu, dass der Tourismus (insbesondere Tagestourismus) zu Unmut bei Anwohnern führt ("Overtourism"), was eine sensible Kommunikationsstrategie erfordert.26
+
+      - id: "III"
+        name: "Der Industrie-Partner (Internationales B2B, Hersteller & Logistik)"
+        datengrundlage: |
+          Dieser Archetyp wird fast ausschließlich von den größeren Agenturen im Ökosystem bedient: Adwerba 13 (SKIDATA, Lenzing AG, Quehenberger Logistics, Allgemeine Bau-Chemie, Sturm GmbH), schoko-seite 9 (Transportbeton Traunstein) und oha.digital 16 (W&M Holding).
+        merkmale: |
+          Klarer B2B-Fokus.27 Die Zielgruppe besteht nicht aus Endkonsommenten, sondern aus Fachentscheidern (z.B. Ingenieure, Einkäufer, Projektleiter). Dies führt zu langen Verkaufszyklen (long sales cycles). Marketing dient nicht dem Impulskauf, sondern dem Aufbau von Expertise und Vertrauen. Lead-Generierung ist das primäre Ziel.28
+        typische_pain_points: |
+          Ein Mangel an qualifizierten Leads für das Vertriebsteam.28 Die Notwendigkeit, komplexe, technische Produkte oder Dienstleistungen verständlich und nutzenorientiert zu erklären.30 Es fehlt an "Thought Leadership" (Vordenkerrolle), um sich als Experte im Markt zu positionieren.31
+
+      - id: "IV"
+        name: "Der Frequenzbringer (Lokaler & Nationaler Einzelhandel)"
+        datengrundlage: |
+          Abgeleitet von den Kundenportfolios von makrohaus 8 (Früchte Maier, Reber Spezialitäten) und Adwerba 13 (SPAR ICS, Étienne Salzburg, Zuckerlwerkstatt).
+        merkmale: |
+          Ein physischer Point-of-Sale (POS) ist der Kern des Geschäftsmodells. Das Marketing kämpft um "Foot Traffic" (Laufkundschaft) 32 und steht in direkter Konkurrenz zum E-Commerce. Es besteht ein hoher Bedarf an lokaler digitaler Sichtbarkeit und oft schnellen, kampagnengetriebenen Angeboten.
+        typische_pain_points: |
+          Die massive Konkurrenz durch den E-Commerce.32 Eine mangelnde Sichtbarkeit in der lokalen Suche (insbesondere bei "in der Nähe"-Anfragen via Smartphone).34 Oft fehlt eine kohärente Local-SEO-Strategie.19
+
+      - id: "V"
+        name: "Die Öffentliche Stimme (Kommunen, Verbände, Kultur & NGOs)"
+        datengrundlage: |
+          Dieser diverse Archetyp wird durch Kunden wie das European Forum Alpbach (von oha.digital 16), die Kunstakademie Reichenhall und Triathlon Austria (von schoko-seite 9) sowie den Verein Freunde des historischen Lokschuppens 1905 Freilassing e.V. und die CSU Oberpframmern (von atimedia 12) belegt.
+        merkmale: |
+          Die Zielgruppe sind "Bürger" oder "Mitglieder", nicht "Kunden". Die Organisationen sind oft Non-Profit. Marketingziele sind Information, Bürger-Engagement, Mitgliedergewinnung, Spendenakquise oder Standortmarketing. Die Stakeholder-Struktur ist oft komplex (Politik, Verwaltung, Mitglieder).
+        typische_pain_points: |
+          Wichtige Informationen erreichen die Bürger oder Mitglieder nicht.35 Veraltete Web-Auftritte genügen nicht den modernen Anforderungen an Bürgerservice oder Barrierefreiheit.36 Bei Vereinen steht der Mitgliederschwund und die schwierige Gewinnung von Ehrenamtlichen im Vordergrund.37 In der Verwaltung herrscht zudem ein eigener Fachkräftemangel.38
+
+      - id: "VI"
+        name: "Die Global Brand (Internationale Konzerne mit lokalem Bedarf)"
+        datengrundlage: |
+          Dieser Archetyp wird exklusiv und eindrucksvoll durch das Portfolio von Adwerba 13 definiert: Red Bull, BMW, MINI, Miele, American Express, Nespresso.
+        merkmale: |
+          Die Marketing-Hauptstrategie wird global oder national vorgegeben. Es existieren lokale Marketingbudgets für die Adaption und Umsetzung dieser Strategien. Es bestehen extrem hohe, unnachgiebige Anforderungen an die Einhaltung des Corporate Designs (CD) und der Brand-Compliance. Der Fokus liegt auf dem fehlerfreien Rollout von Kampagnen und der High-End-Produktion von Werbemitteln (z.B. komplexe Mailings, Event-Ausstattungen).13
+        typische_pain_points: |
+          Die größte Herausforderung ist die Auswahl einer lokalen Agentur, die globale CD-Vorgaben versteht, präzise umsetzen kann und die Skalierbarkeit für internationale Kampagnen-Rollouts sowie eine fehlerfreie High-End-Produktion von Werbemitteln garantiert.
+
+    tabelle_2_abstraktionsmatrix:
+      titel: "Abstraktionsmatrix der Client-Archetypen"
+      eintraege:
+        - agentur: "atimedia 12"
+          konkreter_kunde: "Spenglerfuchs (spenglerfuchs.de)"
+          branche_merkmal: "Handwerk (Spenglerei)"
+          abstrahierter_archetyp: "Archetyp I: Der Hyper-Lokale"
+        - agentur: "makrohaus 8"
+          konkreter_kunde: "Hotel Seeblick"
+          branche_merkmal: "Tourismus (Hotellerie)"
+          abstrahierter_archetyp: "Archetyp II: Der Erlebnis-Anbieter"
+        - agentur: "Adwerba 13"
+          konkreter_kunde: "SKIDATA / ASSA ABLOY"
+          branche_merkmal: "B2B (Zutrittssysteme)"
+          abstrahierter_archetyp: "Archetyp III: Der Industrie-Partner"
+        - agentur: "makrohaus 8"
+          konkreter_kunde: "Reber Spezialitäten"
+          branche_merkmal: "Einzelhandel (Genussmittel)"
+          abstrahierter_archetyp: "Archetyp IV: Der Frequenzbringer"
+        - agentur: "oha.digital 16"
+          konkreter_kunde: "European Forum Alpbach"
+          branche_merkmal: "Öffentl. Sektor (Event/Forum)"
+          abstrahierter_archetyp: "Archetyp V: Die Öffentliche Stimme"
+        - agentur: "Adwerba 13"
+          konkreter_kunde: "Red Bull / BMW"
+          branche_merkmal: "Global Brand (Konzern)"
+          abstrahierter_archetyp: "Archetyp VI: Die Global Brand"
+
+  teil_3:
+    titel: "Die Lösungs-Registry: Workflow-Templates für das 'GRAND AGENCY' OS"
+    einleitung: |
+      Der zweite Kernbaustein der "Registry" sind die "Lösungs-Templates". Diese Templates definieren die Workflow-Logik für das 'GRAND AGENCY' Betriebssystem. Sie verknüpfen die in Teil 2 identifizierten "Pain Points" und Ziele jedes Archetyps mit spezifischen, modularen Marketing-Lösungen, die aus der Analyse von Best-Practice-Modellen und Branchenanforderungen 39 abgeleitet wurden.
+
+    loesungs_templates:
+      - id: "A1"
+        name: "Lokale Dominanz"
+        fuer_archetyp: "Für Archetyp I: Der Hyper-Lokale"
+        pains_basis: |
+          Akuter Zeitmangel 18, limitierte Budgets 18, "Marketing-Ahnungslosigkeit".41 Die Website ist oft veraltet, nicht responsiv oder nicht-existent.19 Der größte Schmerz ist der Fachkräftemangel.20
+        ziele_basis: |
+          Nachhaltige Kundenakquise 43 und, zunehmend wichtiger, Mitarbeitergewinnung (Recruiting).21
+        workflow_module:
+          - modul_id: 1
+            titel: "Fundament (Corporate Design)"
+            beschreibung: |
+              Erstellung eines professionellen, einheitlichen visuellen Erscheinungsbilds (Logo, Farben, Schriftarten, Geschäftsausstattung). Dies ist essenziell, um Vertrauen und Wiedererkennungswert zu schaffen, selbst in kleinen Handwerksbetrieben.45
+          - modul_id: 2
+            titel: 'Website Relaunch (Fokus: "Vertrauen & Portfolio")'
+            beschreibung: |
+              Erstellung einer modernen, klaren und responsiven Website, die auf allen Geräten funktioniert.47 Die Struktur muss Vertrauen bilden und Kompetenz beweisen. Essentielle Seiten 48: Startseite (USP), Über Uns (Team, Vertrauen), Leistungen (klar beschrieben), Referenzen/Projekte (visuell, mit Bildern von abgeschlossenen Arbeiten 49) und Kontakt (mit klarem Call-to-Action). Rechtssicherheit (DSGVO, Impressum) 47 und zukünftige Barrierefreiheit 50 sind technisch sicherzustellen.
+          - modul_id: 3
+            titel: "Lokale Sichtbarkeit (Local SEO)"
+            beschreibung: |
+              Dies ist das erfolgskritischste Modul für lokale Anfragen. Es umfasst die Erstellung und Optimierung des Google My Business (GMB) Profils.51 Dieses Profil muss vollständig gepflegt werden: akkurate Adresse, Telefonnummer (lokal, keine Call-Center), Öffnungszeiten, Dienstleistungen und Fotos.52 Ein weiterer Schritt ist die Sicherstellung konsistenter NAP-Daten (Name, Address, Phone) in relevanten lokalen Online-Verzeichnissen.54
+          - modul_id: 4
+            titel: "(Kritisches Upsell-Modul): Social Recruiting Kampagne"
+            beschreibung: |
+              Da der Fachkräftemangel der Haupt-Pain-Point ist 20, ist dies das wichtigste Upsell-Modul. Der Workflow umfasst: Erstellung einer dedizierten Karriere-Landingpage ("Wir stellen ein"), Produktion von authentischem Video-Content (Einblicke in den Betrieb, Interviews mit Mitarbeitern) 55 und die Schaltung zielgerichteter Meta Ads (Facebook/Instagram) 56, um passive Kandidaten zu erreichen.57 Die Fallstudie Timo Wendler – Ihr Installationsspezialist 42 belegt die Effektivität: Mit 450 € Budget wurden 29 qualifizierte Bewerbungen generiert.
+
+      - id: "A2"
+        name: "Direktbuchung & Erlebnis"
+        fuer_archetyp: "Für Archetyp II: Erlebnis-Anbieter"
+        pains_basis: |
+          Hohe Provisionszahlungen durch Abhängigkeit von Buchungsplattformen wie Booking.com.24 Starke Saisonalität.22 Lokaler Unmut durch "Overtourism".26 Unklare Positionierung im Wettbewerb.25
+        ziele_basis: |
+          Signifikante Steigerung der provisionsfreien Direktbuchungen.59 Klare Definition und Kommunikation des USP.25 Positive Positionierung durch Kommunikation von Nachhaltigkeit.39 Optimierung für mobile Bucher.60
+        workflow_module:
+          - modul_id: 1
+            titel: "Strategie-Workshop"
+            beschreibung: |
+              Definition des USP (Was macht das Hotel einzigartig?) 25 und der Brand Identity.58 Entwicklung einer Kommunikationsstrategie zur Nachhaltigkeit (z.B. regionale Zutaten, Energieeffizienz).39 Dies dient nicht nur dem Marketing, sondern begegnet proaktiv der Overtourism-Kritik.26
+          - modul_id: 2
+            titel: 'Website Relaunch (Fokus: "Booking Engine")'
+            beschreibung: |
+              Das Design muss hoch-emotional, visuell (große Bilder, Videos) und vertrauensbildend sein.61 Absolute technische Priorität: Eine nahtlose, schnelle, mobile-optimierte und direkt auf der Seite integrierte Buchungs-Engine.23 Der Buchungsprozess muss so einfach sein, dass Nutzer nicht zu OTAs abspringen. Ein Hotel Request for Proposal (RFP) Template 65 kann als Briefing-Grundlage für den Relaunch dienen.
+          - modul_id: 3
+            titel: "Content-Produktion (Foto/Video)"
+            beschreibung: |
+              Erstellung von professionellem Foto- und Videomaterial, das das "Erlebnis" (Zimmer, Kulinarik, Umgebung, Personal) authentisch transportiert.66
+          - modul_id: 4
+            titel: "Social Media Kampagnen (Saisonal)"
+            beschreibung: |
+              Kontinuierliche Bespielung von Instagram, Facebook und ggf. TikTok.59 Essentielle Taktiken: Aktive Einbindung von User-Generated Content (UGC) (Gäste posten Erlebnisse) 22, strategische Influencer-Kooperationen (mit zur Marke passenden Influencern) 58 und Erstellung von saisonalen Kampagnen (z.B. Bewerbung von Wellness-Angeboten im Herbst, wie eine "Week of Wellness" 22).
+
+      - id: "B1"
+        name: "B2B Lead-Maschine"
+        fuer_archetyp: "Für Archetyp III: Industrie-Partner"
+        pains_basis: |
+          Der Vertrieb erhält zu wenige oder unqualifizierte Leads.28 Die Sales-Zyklen sind lang und erklärungsbedürftig.27 Das Marketing wird als reines "Broschüren-Erstellen" missverstanden.
+        ziele_basis: |
+          Systematische Generierung von Sales Qualified Leads (SQLs).28 Aufbau von "Thought Leadership" (Vordenkerrolle).31 Aufbau von Vertrauen und Demonstration von Fachwissen.27
+        workflow_module:
+          - modul_id: 1
+            titel: "Content-Strategie (Inbound)"
+            beschreibung: |
+              Definition von Kern-Themen (Themen-Cluster), in denen das Unternehmen als Experte auftreten will. Analyse der "Pain Points" der Kunden des Kunden.
+          - modul_id: 2
+            titel: 'Website-Struktur (Fokus: "Lead Generation")'
+            beschreibung: |
+              Die Website muss als "Lead-Maschine" 68 konzipiert sein. Sie benötigt eine klare Navigationsstruktur, die auf Problemlösungen abzielt, nicht nur auf Produkte. Jede Seite braucht einen klaren Call-to-Action (CTA).69 Essentielle Sektionen: Ein Blog (zur Demonstration von Expertise) 69 und ein "Ressourcen-Hub" für Lead Magnets.
+          - modul_id: 3
+            titel: "Content-Erstellung (Lead Magnets)"
+            beschreibung: |
+              Erstellung von Inhalten für verschiedene Phasen der Customer Journey:
+              - Top-Funnel (Awareness): Regelmäßige Blog-Beiträge 30 und SEO-Optimierung für Industrie-relevante Suchbegriffe.
+              - Mid-Funnel (Consideration/Lead-Generierung): Erstellung von "gated Content" (Inhalt nur gegen E-Mail-Adresse). Dies sind die eigentlichen Lead-Magnete: Whitepaper (Expertisen zu Branchentrends) 30, Case Studies (Erfolgsgeschichten bestehender Kunden) 31 und Webinare.
+          - modul_id: 4
+            titel: "(Optional): Account-Based Marketing (ABM)"
+            beschreibung: |
+              Für High-Value-Kunden. Statt breit zu streuen (Inbound), werden definierte "Target Accounts" (Wunsch-Unternehmen) gezielt über Kanäle wie LinkedIn und mit personalisierten Inhalten (z.B. personalisierte Case Studies) angesprochen.77
+
+      - id: "C1"
+        name: "Frequenz & Standort"
+        fuer_archetyp: "Für Archetyp IV: Frequenzbringer"
+        pains_basis: |
+          Direkte Konkurrenz durch E-Commerce.32 Mangelnde Laufkundschaft (Foot Traffic).32
+        ziele_basis: |
+          Steigerung der Kundenfrequenz am Point-of-Sale (POS).78 Dominante Sichtbarkeit in der lokalen "in der Nähe"-Suche.34 Aufbau lokaler Kundenbindung.33
+        workflow_module:
+          - modul_id: 1
+            titel: "Local SEO & GMB (Priorität 1)"
+            beschreibung: |
+              (Siehe Template A1, Modul 3). Dies ist das absolut wichtigste Modul für den Einzelhandel.19 Das Google My Business Profil muss exzellent gepflegt sein: Korrekte Öffnungszeiten, aktuelle Produkt-Highlights, professionelle Fotos vom Ladenlokal, Management von Kundenbewertungen.51
+          - modul_id: 2
+            titel: "Local Content Marketing"
+            beschreibung: |
+              Erstellung von Inhalten, die für die lokale Zielgruppe relevant sind. Das können Blog-Beiträge über lokale Events sein, bei denen das Geschäft präsent ist, oder Anleitungen, die das lokale Sortiment bewerben.81
+          - modul_id: 3
+            titel: "Lokale Social Media Kampagnen"
+            beschreibung: |
+              Nutzung von Social Media (Facebook, Instagram), um auf lokale Angebote, Aktionen und Events im Geschäft hinzuweisen.79 Organisation von lokalen Events im Geschäft, um einen Offline-Anreiz zu schaffen.81
+
+      - id: "C2"
+        name: "Bürger & Mitglieder"
+        fuer_archetyp: "Für Archetyp V: Öffentliche Stimme"
+        pains_basis: |
+          Bürger fühlen sich nicht informiert oder erreicht.35 Veraltete digitale Infrastruktur.36 Akuter Fachkräftemangel in der Verwaltung.38 Mitgliederschwund und Mangel an Ehrenamtlichen bei Vereinen.37
+        ziele_basis: |
+          Verbesserung der Bürger-Information, Bereitstellung digitaler Services (E-Government) 82, positives Standortmarketing (zur Ansiedlung von Unternehmen/Bürgern) 83, Gewinnung von Mitgliedern/Ehrenamtlichen.86
+        workflow_varianten:
+          - variante_name: "Kommune / Stadt / Öffentliche Hand"
+            module:
+              - modul_id: 1
+                titel: 'Website Relaunch (Fokus: "Bürgerservice-Portal")'
+                beschreibung: |
+                  Neugestaltung des Webauftritts als zentrales Service-Portal.82 Prioritäten: Klare, übersichtliche Navigation (Bürger müssen schnell finden, was sie suchen) 36, technische Barrierefreiheit (nach EU-Richtlinie 2102) 36 und Integration von E-Government-Diensten (Umsetzung des Onlinezugangsgesetzes, OZG).36
+              - modul_id: 2
+                titel: "Standortmarketing-Kampagne"
+                beschreibung: |
+                  Entwicklung einer Kampagne zur Positionierung der Stadt nach innen und außen (Ziele: Lebensqualität, Wirtschaftsstandort).83
+              - modul_id: 3
+                titel: "Social Recruiting (Verwaltung)"
+                beschreibung: |
+                  Nutzung von Social Media Kanälen (auch TikTok, LinkedIn), um gezielt Fachkräfte und Auszubildende für die Verwaltung zu gewinnen und den Sektor zu modernisieren.38
+          - variante_name: "Verein / NGO / Verband"
+            module:
+              - modul_id: 1
+                titel: 'Social Media Strategie (Fokus: "Mitgliedergewinnung")'
+                beschreibung: |
+                  Klare Definition der Ziele (Mitglieder? Spenden? Ehrenamtliche?) und Auswahl der passenden Kanäle.86
+              - modul_id: 2
+                titel: "Content-Plan (Engagement)"
+                beschreibung: |
+                  Entwicklung eines Redaktionsplans.37 Wichtige Taktiken: "Show, don't tell" (visuelle Einblicke in das Vereinsleben, statt nur Text) 37, Nutzung bestehender Mitglieder als Botschafter 37, Erstellung klarer Beschreibungen der Engagement-Möglichkeiten 37 und regelmäßige Aufrufe sowie aktive Interaktion mit der Community.40
+
+      - id: "D1"
+        name: "Global Brand Compliance"
+        fuer_archetyp: "Für Archetyp VI: Global Brand"
+        pains_basis: |
+          Lokale Agenturen verstehen die strikten globalen Corporate Design (CD) Vorgaben nicht. Die Produktionsqualität von Werbemitteln ist mangelhaft. Die Agentur kann nicht mit internationalen Prozessen und Skalierungsanforderungen umgehen.
+        ziele_basis: |
+          Fehlerfreier, CD-konformer Rollout von globalen Kampagnen auf dem lokalen Markt (AT/DE). High-End-Produktion von Werbemitteln (z.B. komplexe Mailings, Event-Kits), wie sie im Portfolio von Adwerba für Red Bull & BMW sichtbar sind.13
+        workflow_module:
+          - modul_id: 1
+            titel: "Onboarding & Brand Compliance"
+            beschreibung: |
+              Tiefgreifende Einarbeitung in das Corporate Design, die Brand Guidelines und die "Tone of Voice"-Vorgaben des globalen Kunden.
+          - modul_id: 2
+            titel: "Kampagnen-Adaption (Global-to-Local)"
+            beschreibung: |
+              Übernahme von globalen Master-Kampagnen (Key Visuals, Slogans) und professionelle Adaption für den lokalen (AT/DE) Markt. Dies umfasst Übersetzungen, Format-Anpassungen für lokale Medien und rechtliche Prüfungen.
+          - modul_id: 3
+            titel: "High-End-Produktionsmanagement"
+            beschreibung: |
+              Management des gesamten Produktionsprozesses für physische Werbemittel (Druck, Verpackung, Logistik). Beispiele aus dem analysierten Portfolio 13 umfassen komplexe Produktionen wie die "Vuse x Tokio Hotel Box", das "Red Bull Flüügelsuche Box" (Holzbox), das "MINI End of Term Kit" oder das "Dr Pepper Snackstadion Bundle".
+          - modul_id: 4
+            titel: "Reporting & Abstimmung"
+            beschreibung: |
+              Engmaschiges, proaktives Projektmanagement und Reporting, oft in englischer Sprache, an die (oft internationale) Zentrale oder das nationale Marketing-Hauptquartier.
+
+  teil_4:
+    titel: "Strategische Blaupause für das 'GRAND AGENCY' Betriebssystem"
+    einleitung: |
+      Die in Teil 2 (Archetypen) und Teil 3 (Lösungs-Templates) erstellte Registry wird nun zu einem kohärenten, modularen Framework synthetisiert. Dieses Framework dient als direkte strategische Blaupause für die Architektur und Logik des 'GRAND AGENCY' Betriebssystems (OS).
+
+    section_4_1:
+      titel: "Das 'GRAND AGENCY' OS: Eine modulare Architektur"
+      beschreibung: |
+        Das "Betriebssystem" sollte als ein workflow-basiertes Tool konzipiert werden, das die Agentur durch einen standardisierten, aber flexiblen Prozess führt. Die Architektur muss die Skalierbarkeit von "hyper-lokal" bis "global brand" (die 'EuRegio-Kluft') abbilden.
+      beispiel_workflow:
+        - schritt: 1
+          titel: "Client Onboarding"
+          beschreibung: "Die Agentur gibt die Stammdaten eines neuen Kunden oder Leads ein (z.B. Branche, Standort, Unternehmensgröße, Website)."
+        - schritt: 2
+          titel: "Archetyp-Zuweisung"
+          beschreibung: "Das OS analysiert die Eingaben und schlägt einen Archetyp vor. (z.B. Eingabe: 'Spenglerei', 'Bad Reichenhall', '15 Mitarbeiter' -> Vorschlag: 'Archetyp I: Der Hyper-Lokale')."
+        - schritt: 3
+          titel: "Template-Auswahl"
+          beschreibung: "Basierend auf dem Archetyp lädt das OS das passende Lösungs-Template (z.B. 'Template A1: Lokale Dominanz')."
+        - schritt: 4
+          titel: "Modul-Konfiguration & Angebotserstellung"
+          beschreibung: "Die Agentur konfiguriert das Template. Sie wählt die Module aus, die der Kunde benötigt. (z.B. 'Modul 1 (CD) wird übersprungen, da vorhanden', 'Modul 2 (Website Relaunch) + Modul 3 (Local SEO) werden ausgewählt'). Das Tool kann daraus direkt ein modulares Angebot generieren."
+        - schritt: 5
+          titel: "Workflow-Start"
+          beschreibung: "Das OS generiert automatisch die Projektphasen, Checklisten, Aufgaben und Zeitpläne basierend auf den ausgewählten Modulen."
+
+    section_4_2:
+      titel: "Die 'GRAND AGENCY' Registry (Finale Blaupause)"
+      beschreibung: |
+        Die folgende Tabelle stellt die finale, konsolidierte "Registry" dar. Sie ist das Kernstück des 'GRAND AGENCY' Betriebssystems und verknüpft jeden Client-Archetyp mit seinen spezifischen Problemen, Zielen, Lösungs-Templates und Erfolgsmetriken.
+      tabelle_3_registry_blaupause:
+        titel: "Das 'GRAND AGENCY' Registry (Blaupause für das Betriebssystem)"
+        eintraege:
+          - client_archetyp: "I: Der Hyper-Lokale\n(Handwerk, KMU)"
+            dominante_pain_points: "Zeit/Budgetmangel 18, Fachkräftemangel 20"
+            primaere_marketing_ziele: "Lokale Kundenanfragen, Bewerbungen 21"
+            loesungs_template_id: "Template A1"
+            template_module_kern_services: |
+              Modul 2 (Website "Vertrauen")
+              Modul 3 (Local SEO / GMB)
+              Modul 4 (Social Recruiting)
+            typische_kpis: "Website-Traffic (lokal), Anrufe über GMB, Conversion-Rate (Kontakt), Anzahl Bewerbungen"
+          - client_archetyp: "II: Erlebnis-Anbieter\n(Tourismus, Gastro)"
+            dominante_pain_points: "Plattform-Abhängigkeit 24, Saisonalität 22, USP unklar 25, Overtourism 26"
+            primaere_marketing_ziele: "Direktbuchungen 59, Brand-Aufbau, Nachhaltigkeits-Komm. 39"
+            loesungs_template_id: "Template A2"
+            template_module_kern_services: |
+              Modul 1 (Strategie / USP / Nachhaltigkeit)
+              Modul 2 (Website mit Booking Engine)
+              Modul 4 (Social Media / UGC / Influencer)
+            typische_kpis: "Direktbuchungsrate (%), Social Media Engagement, Website-Conversion-Rate (Buchung)"
+          - client_archetyp: "III: Industrie-Partner\n(B2B, Hersteller)"
+            dominante_pain_points: "Mangel an qualifiz. Leads 28, lange Sales-Zyklen 27, komplexe Produkte 30"
+            primaere_marketing_ziele: "Sales Qualified Leads (SQLs), Thought Leadership 31"
+            loesungs_template_id: "Template B1"
+            template_module_kern_services: |
+              Modul 2 (Lead-Gen Website / CTAs)
+              Modul 3 (Content-Marketing: Whitepaper, Case Studies) 30
+            typische_kpis: "Anzahl MQLs/SQLs, Download-Rate (Lead Magnets), Cost-per-Lead (CPL)"
+          - client_archetyp: "IV: Frequenzbringer\n(Lokaler Einzelhandel)"
+            dominante_pain_points: "E-Commerce-Konkurrenz 32, Mangelnde Laufkundschaft 32, 'Near-Me' Unsichtbarkeit 34"
+            primaere_marketing_ziele: "Steigerung Frequenz am POS 78, Lokale Sichtbarkeit (GMB)"
+            loesungs_template_id: "Template C1"
+            template_module_kern_services: |
+              Modul 1 (Local SEO / GMB)
+              Modul 3 (Lokale Social Media Kampagnen)
+            typische_kpis: "GMB-Interaktionen (Klicks auf Route, Anrufe), Organischer Traffic (lokal), Erwähnungen lokaler Angebote"
+          - client_archetyp: "V: Die Öffentliche Stimme\n(Kommune, Verein)"
+            dominante_pain_points: "Bürger nicht erreicht 35, Fachkräftemangel (Verw.) 38, Mitgliederschwund (Verein) 37"
+            primaere_marketing_ziele: "Bürger-Service 82, Recruiting (Verwaltung), Mitgliedergewinnung 86"
+            loesungs_template_id: "Template C2"
+            template_module_kern_services: |
+              Kommune: Modul 1 (Bürger-Portal) 36
+              Verein: Modul 1+2 (Social Strategie "Mitgliedergewinnung") 37
+            typische_kpis: "Nutzung E-Government-Services, Anzahl Bewerbungen (Verwaltung), Anzahl Neumitglieder (Verein)"
+          - client_archetyp: "VI: Die Global Brand\n(Konzern-Etats)"
+            dominante_pain_points: "Mangelnde CD-Treue lokaler Agenturen, Schlechte Produktionsqualität"
+            primaere_marketing_ziele: "Fehlerfreier, CD-konformer Rollout von globalen Kampagnen"
+            loesungs_template_id: "Template D1"
+            template_module_kern_services: |
+              Modul 2 (Kampagnen-Adaption)
+              Modul 3 (High-End-Produktionsmgt.) 13
+            typische_kpis: "Einhaltung von Deadlines, 0-Fehler-Rate (Produktion), Einhaltung der Brand Guidelines"
+
+    section_4_3:
+      titel: "Analyse der Marktlücken und strategischen Chancen"
+      beschreibung: |
+        Die Erstellung der Registry offenbart nicht nur bestehende Workflows, sondern deckt auch signifikante Marktlücken in der EuRegio auf, die Agenturen mit dem 'GRAND AGENCY' OS gezielt schließen können.
+      erkenntnisse:
+        - id: 1
+          titel: "Der 'Handwerk-Recruiting'-Markt"
+          beschreibung: |
+            Der mit Abstand größte und am schnellsten wachsende "Pain Point" für Archetyp I (Handwerk) ist der Mangel an Fachkräften und Auszubildenden.20 Die Analyse der hyper-lokalen Agenturen (z.B. GS Werbung 6, atimedia 12) zeigt, dass deren Kernkompetenz im Druck, Schildermachen oder einfachen Website-Bau liegt, nicht im datengetriebenen Recruiting. Hier liegt die größte Marktlücke in der Region. Eine Agentur, die professionelles, performance-orientiertes "Social Recruiting" (Template A1, Modul 4) 55 anbietet, bedient den dringendsten Bedarf des zahlreichsten Archetyps. Das 'GRAND AGENCY' OS sollte dieses Modul als strategischen, hochprofitablen Premium-Service positionieren.
+        - id: 2
+          titel: "Die 'B2B-Content'-Lücke"
+          beschreibung: |
+            Im deutschen Hub (Bad Reichenhall/Freilassing) gibt es eine deutliche Lücke bei Agenturen, die den Bedarf von Archetyp III (Industrie) an komplexem B2B-Content-Marketing (Erstellung von Whitepapern, technischen Case Studies 30) bedienen können. Lokale Industrie-Partner sind gezwungen, sich an die teureren, größeren Agenturen in Salzburg (wie Adwerba 13) zu wenden. Eine Agentur, die das 'GRAND AGENCY' OS nutzt, kann durch den standardisierten Workflow von "Template B1" diese anspruchsvollen B2B-Leistungen effizienter und wettbewerbsfähiger anbieten und diese Lücke füllen.
+        - id: 3
+          titel: "Die 'Overtourism'-Chance"
+          beschreibung: |
+            Für Archetyp II (Tourismus) ist "Nachhaltigkeit" 39 nicht länger eine Marketingfloskel, sondern eine strategische Notwendigkeit, um der öffentlichen Overtourism-Debatte (besonders im Berchtesgadener Land) 26 proaktiv zu begegnen. Agenturen, die "Template A2" nutzen, müssen daher über das reine Hotel-Marketing hinausgehen und das "Modul 1 (Strategie)" proaktiv um "Nachhaltigkeits-Kommunikation" erweitern. Agenturen, die dies anbieten, lösen ein reales Reputationsproblem für ihre Kunden und haben einen klaren strategischen Vorteil.
+
+    section_4_4:
+      titel: "Implementierungs-Roadmap für Agentur-Workflows (Konklusion)"
+      beschreibung: |
+        Die strategische Implementierung des 'GRAND AGENCY' Betriebssystems, basierend auf der entwickelten Registry, geht weit über reines Projektmanagement hinaus. Es wird zu einem strategischen Vertriebs- und Positionierungsinstrument für die Agentur selbst.
+      os_vorteile:
+        - titel: "Kunden-Qualifizierung"
+          beschreibung: "Neukunden und Leads werden im Vertriebsprozess sofort einem Archetyp zugeordnet, was eine schnelle Einschätzung des Bedarfs und des potenziellen Werts ermöglicht."
+        - titel: "Modulare Angebotserstellung"
+          beschreibung: "Statt Angebote manuell zu kalkulieren, kann die Agentur auf die standardisierten, aber konfigurierbaren Module der Lösungs-Templates (z.B. A1) zurückgreifen."
+        - titel: "Standardisierte Projekt-Delivery"
+          beschreibung: "Die Workflows (Checklisten, Phasen) für jedes Modul sind im OS hinterlegt, was die Einarbeitung neuer Mitarbeiter beschleunigt und die Qualität der Ausführung konsistent hoch hält."
+        - titel: "Strategisches Upselling"
+          beschreibung: "Das System identifiziert automatisch die 'Pain Points' eines Archetyps (z.B. 'Handwerker hat keine Mitarbeiter') und schlägt der Agentur proaktiv das passende Upsell-Modul vor (z.B. 'Modul 4: Social Recruiting Kampagne anbieten')."
+      konklusion_text: |
+        Das 'GRAND AGENCY' Betriebssystem wird somit von einem passiven Verwaltungstool zu einem aktiven, intelligenzbasierten Partner, der der Agentur hilft, die identifizierten Marktlücken profitabel zu schließen.
+
+  referenzen:
+    - "Project - EuRegio Salzburg - Berchtesgadener Land - Traunstein 2019-2021 - Keep.eu, Zugriff am November 7, 2025, https://keep.eu/projects/22889/EuRegio-Salzburg-Berchtesga-EN/"
+    - "EUREGIO Salzburg - Berchtesgadener Land - Traunstein, Zugriff am November 7, 2025, https://www.euregio-salzburg.eu/salzburg-berchtesgadener-land-traunstein"
+    - "Grenzraumstrategie 2021 – 2027 - Interreg Bayern-Österreich, Zugriff am November 7, 2025, https://www.interreg-bayaut.net/wp-content/uploads/2021/12/TOP-4c-EUREGIO_Grenzraumstrategie_2021_2027_SBG-BGDL-TS.pdf"
+    - "Detailinfos - Berchtesgadener Land Wirtschaftsservice GmbH, Zugriff am November 7, 2025, https://www.berchtesgadener-land.de/concorde-media-ug"
+    - "CONCORDE MEDIA | Werbeagentur in Bad Reichenhall, Zugriff am November 7, 2025, https://www.concorde.media/"
+    - "GS-Werbung, Zugriff am November 7, 2025, https://www.gswerbung.de/"
+    - "Marketing-Dienstleister im Berchtesgadener Land, Zugriff am November 7, 2025, https://www.berchtesgadener-land.de/marketing-dienstleister?show=index&page=2"
+    - "makrohaus Digital- & Printagentur Bad Reichenhall - makrohaus ..., Zugriff am November 7, 2025, https://www.makrohaus.de/"
+    - "SCHOKO communications – Eine weitere WordPress-Website, Zugriff am November 7, 2025, https://schoko-seite.com/"
+    - "Digitalagentur in Freilassing bei Salzburg – 25 Jahre Erfahrung, Zugriff am November 7, 2025, https://viucom.de/de"
+    - "Über Uns - Viucom, Zugriff am November 7, 2025, https://viucom.de/de/%25C3%259Cber-uns"
+    - "Internet, Website, Homepage, Webdesign für Handel, Handwerk, Zugriff am November 7, 2025, https://www.atimedia.de/"
+    - "Werbeagentur Salzburg - ADWERBA Marketing Service GmbH, Zugriff am November 7, 2025, https://www.adwerba.at/"
+    - "G.A. Service GmbH | Werbeagentur in Salzburg, Wien und Graz, Zugriff am November 7, 2025, https://www.ga-service.at/"
+    - "P8 Marketing - Marketing Agentur in Innsbruck, Salzburg & Wien, Zugriff am November 7, 2025, https://www.p8.eu/"
+    - "oha! digital Agentur für Social Media Marketing in Salzburg, Zugriff am November 7, 2025, https://oha.digital/"
+    - "GrenzgängerInnen / EURES-Beratung - EUREGIO Salzburg, Zugriff am November 7, 2025, https://www.euregio-salzburg.eu/service/arbeit-arbeitsmarkt/grenzgaenger"
+    - "The Top 3 Pain Points for Contractor Marketing - HFS Financial, Zugriff am November 7, 2025, https://www.hfsfinancial.net/blog/the-top-3-pain-points-for-contractor-marketing/"
+    - "10 Fehler im Digitalen Marketing, die Local Unternehmen Vermeiden Sollten - Matrixe, Zugriff am November 7, 2025, https://www.matrixe.de/blog/top-10-groessten-fehler-im-digitalen-marketing-die-local-unternehmen-vermeiden-sollten/"
+    - "Marketing für Handwerker | So gewinnst du mehr Kunden - ZODA Media, Zugriff am November 7, 2025, https://zoda-media.de/magazin/marketing-fuer-handwerker"
+    - "Online-Marketing - Handwerkskammer zu Köln, Zugriff am November 7, 2025, https://www.hwk-koeln.de/artikel/online-marketing-32,0,2230.html"
+    - "Social-Media-Marketingstrategie für Hotels: 11 Best Practices, Zugriff am November 7, 2025, https://www.canarytechnologies.com/de/post/social-media-marketing-strategies-for-hotels"
+    - "Best hotel website design examples - SiteMinder, Zugriff am November 7, 2025, https://www.siteminder.com/r/marketing/hotel-website-design/hotel-website-design-examples/"
+    - "Social Media Promotion for Hotels | Real examples - Easypromos, Zugriff am November 7, 2025, https://www.easypromosapp.com/blog/en/hotel-promotion-ideas-on-social-media/"
+    - "Marketing für Hotel & Gastronomie - purpix.de, Zugriff am November 7, 2025, https://www.purpix.de/marketing-fuer-hotels/"
+    - "Regionaler Overtourism im Alpenvorland? Regionales Changemanagement zur nachhaltigen Lösungsfindung für den Tagestourismus am Beispiel Schliersee - Bayerisches Zentrum für Tourismus, Zugriff am November 7, 2025, https://bzt.bayern/wp-content/uploads/2022/11/Projektbericht_Regionaler-Overtourism-im-Alpenvorland-Beispiel-Schliersee-Tegernsee.pdf"
+    - "Was ist B2B Marketing? Ein Leitfaden für Unternehmen - dealcode AI, Zugriff am November 7, 2025, https://www.dealcode.ai/blog/was-ist-b2b-marketing-ein-leitfaden-fur-unternehmen"
+    - "Lead Generation Services For Manufacturers | Thomas, Zugriff am November 7, 2025, https://business.thomasnet.com/lead-generation-for-manufacturers"
+    - "Lead Generation for Manufacturers: 12 Proven Strategies to Attract High-Quality B2B Leads, Zugriff am November 7, 2025, https://www.sevenatoms.com/blog/lead-generation-for-manufacturers"
+    - "B2B Content Marketing Examples To Take Inspiration From, Zugriff am November 7, 2025, https://content-whale.com/blog/b2b-content-marketing-examples/"
+    - "10 Inspiring B2B Content Marketing Examples - PathFactory, Zugriff am November 7, 2025, https://www.pathfactory.com/blog/b2b-content-marketing-examples/"
+    - "Tourism Marketing Challenges and Solutions Guide - Hearst Bay Area, Zugriff am November 7, 2025, https://marketing.sfgate.com/blog/tourism-marketing-challenges"
+    - "7 Tipps für Marketing im Einzelhandel und weitere Branchen - FarbFaible, Zugriff am November 7, 2025, https://www.farb-faible.de/blog/7-tipps-fuer-marketing-im-einzelhandel-konzepte-und-ideen-die-kundenherzen-hoeher-schlagen-lassen/"
+    - "Lokales Marketing für nationale Brands - Think with Google, Zugriff am November 7, 2025, https://www.thinkwithgoogle.com/intl/de-de/insights/customer-journey/lokales-marketing-nationale-unternehmen/"
+    - "Kommunikation für die öffentliche Hand - Agentur Gromann Partner, Zugriff am November 7, 2025, https://gromann.ch/kommunikation/"
+    - "Kommunale Websites für Städte und Gemeinden - contixmedia, Zugriff am November 7, 2025, https://contixmedia.de/webdesign-kommunale-websites/"
+    - "5 Tipps für Social Media zur Mitgliedergewinnung - erzähl davon, Zugriff am November 7, 2025, https://erzaehldavon.de/185-social-media-mitgliedergewinnung/"
+    - "Marketing für Kommunen - so geht erfolgreiches Stadtmarketing - ZODA Media, Zugriff am November 7, 2025, https://zoda-media.de/magazin/marketing-fuer-kommunen"
+    - "Hospitality-Marketing: 19 Trends, die Sie bis 2025 kennen müssen - Revfine.com, Zugriff am November 7, 2025, https://www.revfine.com/de/hospitality-marketing/"
+    - "Social Media für Vereine: Tipps für Internetpräsenz - Vereinswelt, Zugriff am November 7, 2025, https://www.vereinswelt.de/gruendung/oeffentlichkeitsarbeit/den-internetauftritt-eines-vereins-via-social-media-planen/"
+    - "What are your pain points when it comes to marketing your business? - Reddit, Zugriff am November 7, 2025, https://www.reddit.com/r/Entrepreneurs/comments/157skr9/what_are_your_pain_points_when_it_comes_to/"
+    - "Social Recruiting im Handwerk - Erfolgreiches Beispiel aus der Praxis: Fallstudie Timo Wendler - Ihr Installationsspezialist - Traffic, Funnel und Conversion: wir lösen das für dich - Optinize, Zugriff am November 7, 2025, https://optinize-im.com/fallstudie/social-recruiting-im-handwerk-erfolgreiches-beispiel-aus-der-praxis-fallstudie-timo-wendler-ihr-installationsspezialist/"
+    - "Marketingstrategien für Handwerker: So bringst du deinen Betrieb an die Spitze, Zugriff am November 7, 2025, https://handwerkconnected.de/magazin/betrieb/marketing-fuer-handwerker/"
+    - "17 Tipps für Marketing im Handwerk: So gewinnen und binden Sie Kunden, Zugriff am November 7, 2025, https://www.raab-verlag.de/magazin/marketing-im-handwerk/"
+    - "Corporate Identity und Corporate Design im kleinen Handwerksbetrieb - Göttling Fliesentechnik GmbH, Zugriff am November 7, 2025, https://goettling-fliesentechnik.de/2021/05/23/corporate-identity-und-corporate-design-im-kleinen-handwerksbetrieb/"
+    - "Projektbeispiele Corporate Design - Satzwerke, Zugriff am November 7, 2025, https://www.satzwerke.de/projekte_corporate_design"
+    - "Website für Handwerker: Ihr Schlüssel zu neuen Kunden (2025) - Con Radius Design, Zugriff am November 7, 2025, https://www.conradiusdesign.com/blog-post/webseiten-fuer-handwerksbetriebe"
+    - "Local Business - Website Templates - Astra WordPress Theme, Zugriff am November 7, 2025, https://wpastra.com/templates/local-business-02/"
+    - "Beispiele Webdesign für Handwerker - Professionelle Umsetzung, Zugriff am November 7, 2025, https://kreatives-webdesign.de/referenzen/"
+    - "Barrierefreie Webseiten seit Juni 2025 Pflicht - Handwerkskammer Düsseldorf, Zugriff am November 7, 2025, https://www.hwk-duesseldorf.de/artikel/barrierefreie-webseiten-seit-juni-2025-pflicht-31,0,6067.html"
+    - "Local SEO: Wie du dein lokales Unternehmen online sichtbar machst - hosttech, Zugriff am November 7, 2025, https://www.hosttech.ch/blog/seo/local-seo/"
+    - "Google Business Profile: Get Listed on Google, Zugriff am November 7, 2025, https://business.google.com/en-all/business-profile/"
+    - "Guidelines for representing your business on Google - Google Business Profile Help, Zugriff am November 7, 2025, https://support.google.com/business/answer/3038177?hl=de"
+    - "Effektives Local SEO - So wird man in 2024 lokal gefunden - Marketingblatt, Zugriff am November 7, 2025, https://blog.marketingblatt.com/de/local-seo-so-wird-man-lokal-gefunden"
+    - "Erfolgreiches Social Recruiting im Handwerk – So geht's - Riedel Media Consulting, Zugriff am November 7, 2025, https://www.riedel-mediaconsulting.de/social-recruiting-fur-handwerksbetriebe"
+    - "Social Recruiting vs. klassische Stellenanzeige – was funktioniert besser im Handwerk?, Zugriff am November 7, 2025, https://viminds.de/blog/social-recruiting-handwerk"
+    - "Personalgewinnung durch Social Media Recruiting – Ist das was fürs Handwerk? - Handwerkskammer Ulm, Zugriff am November 7, 2025, https://www.hwk-ulm.de/personalgewinnung-durch-social-media-recruiting-ist-das-was-fuers-handwerk/"
+    - "Best 15 hotel social media marketing strategies in 2024 - Mews, Zugriff am November 7, 2025, https://www.mews.com/en/blog/hotel-social-media-marketing-strategies"
+    - "Social Media Marketing für Hotels: Definition, Tipps und Beispiele - Landingi, Zugriff am November 7, 2025, https://landingi.com/de/social-media-marketing/die-hotels/"
+    - "Hotelmarketing: Der komplette Guide - SiteMinder, Zugriff am November 7, 2025, https://www.siteminder.com/de/r/hotelmarketing/"
+    - "35 atemberaubende Beispiele für Hotel-Website-Designs im Jahr 2025, Zugriff am November 7, 2025, https://hoteltechreport.com/de/news/hotel-website-designs"
+    - "Hotel websites - 115+ Best Hotel Web Design Ideas 2025 - 99Designs, Zugriff am November 7, 2025, https://99designs.com/inspiration/websites/hotel"
+    - "Wie man eine gute Hotel-Website designt: Tipps und Beispiele - Justinmind, Zugriff am November 7, 2025, https://www.justinmind.com/de/web-design/hotel-website"
+    - "Best Bootstrap Hotel Website Templates 2025 - BootstrapMade, Zugriff am November 7, 2025, https://bootstrapmade.com/bootstrap-hotel-website-templates/"
+    - "Free Hotel Management Templates: All Formats, All Types - Smartsheet, Zugriff am November 7, 2025, https://www.smartsheet.com/content/hotel-management-templates"
+    - "Top 10 Social Media Strategies for Hotels in 2025 | By DJ Vallauri - Hospitality Net, Zugriff am November 7, 2025, https://www.hospitalitynet.org/opinion/4125647.html"
+    - "Social Media für Hotels: 9 Exzellente Strategien [2024] - Marketing Hilfe, Zugriff am November 7, 2025, https://mhilfe.de/blog/social-media-fur-hotels/"
+    - "B2B-Lead-Generierung: Wie eine B2B-Website zur Lead-Maschine wird - acquisa, Zugriff am November 7, 2025, https://www.acquisa.de/magazin/b2b-website-leadgenerierung"
+    - "Leadgenerierung im B2B: Die besten Methoden für mehr Leads - de - Dealfront, Zugriff am November 7, 2025, https://www.dealfront.com/de/blog/b2b-leads-generieren-beste-methoden-marketing/"
+    - "6 Successful Content Marketing Examples in B2B | NYTLicensing, Zugriff am November 7, 2025, https://nytlicensing.com/latest/marketing/6-successful-content-marketing-examples-b2b/"
+    - "B2B-Content-Marketing: Die Anleitung inkl. Beispiele - Evergreen Media, Zugriff am November 7, 2025, https://www.evergreen.media/ratgeber/b2b-content-marketing/"
+    - "3 Amazing Case Study Templates You Need to Steal Immediately | Testimonial Hero, Zugriff am November 7, 2025, https://www.testimonialhero.com/blog/3-amazing-case-study-templates-you-need-to-steal-immediately"
+    - "How to Write B2B Case Studies That Drive Revenue - Edify Content, Zugriff am November 7, 2025, https://edifycontent.com/blog/b2b-case-studies-that-drive-revenue"
+    - "B2B Case Study Template (+ 10 Examples & 2025 Best Practices) - The Logonaut, Zugriff am November 7, 2025, https://www.thelogonaut.com/post/b2b-case-study-template-10-examples-2025-best-practices"
+    - "B2B Case Study Template.pdf - TREW Marketing, Zugriff am November 7, 2025, https://www.trewmarketing.com/hubfs/Other%20PDFs%20and%20Resources/Templates/B2B%20Case%20Study%20Template.pdf"
+    - "How to Write a Case Study: Bookmarkable Guide & Template - HubSpot Blog, Zugriff am November 7, 2025, https://blog.hubspot.com/blog/tabid/6307/bid/33282/the-ultimate-guide-to-creating-compelling-case-studies.aspx"
+    - "B2B Marketing Strategie: Worauf kommt es an? - Chain Relations, Zugriff am November 7, 2025, https://www.chainrelations.de/b2b-marketingstrategie/"
+    - "Kund:innen im Laden – Lokales Marketing für den Einzelhandel - Werk von Morgen, Zugriff am November 7, 2025, https://www.werkvonmorgen.de/branchenloesungen/marketing-einzelhandel"
+    - "Alles, was Sie über lokales digitales Marketing wissen müssen - DeepReach, Zugriff am November 7, 2025, https://www.deepreach.com/de/local-digital-marketing"
+    - "How to Manage Google Business Profiles for Retail Chains in 2025? - EmbedSocial, Zugriff am November 7, 2025, https://embedsocial.com/blog/google-business-profile-for-retail-chains/"
+    - "lokales-marketing-shops - BREITETIEFE, Zugriff am November 7, 2025, https://breitetiefe.com/de/magazin/lokales-marketing-shops"
+    - "Das Bürgerservice-Portal die E-Government Plattform der AKDB, Zugriff am November 7, 2025, https://www.akdb.de/loesungen/digitale-verwaltung/buergerservice-portal/uebersicht/"
+    - "Kommunales Marketing – das Produkt Stadt - OMT, Zugriff am November 7, 2025, https://www.omt.de/direktmarketing/kommunales-marketing/"
+    - "Stadtmarketing - Wikipedia, Zugriff am November 7, 2025, https://de.wikipedia.org/wiki/Stadtmarketing"
+    - "7 Best Practice-Beispiele für digitales Standortmarketing - Stadtmarketing Austria, Zugriff am November 7,2025, https://www.stadtmarketing.eu/digitales-standortmarketing/"
+    - "Social Media für Vereine - vitamin B, Zugriff am November 7, 2025, https://www.vitaminb.ch/uploads/media/default/3004/Social_Media20230711.pdf"
+    - "Bürgerservice-Portal - Gemeinde Feldkirchen, Zugriff am November 7, 2025, https://www.feldkirchen.de/rathaus/buergerservice/buergerservice-portal"
+    - "Bürgerservice - Gemeinde Bischweier, Zugriff am November 7, 2Examples, https://www.bischweier.de/startseite/service/buergerservice.html"
+    - "Standortmarketing - Stadt Oldenburg, Zugriff am November 7, 2025, https://www.oldenburg.de/startseite/wirtschaft/wirtschaftsfoerderung/wir-ueber-uns/standortmarketing.html"
+    - "Social Media – Soziale Netzwerke für Vereine - ehrenamt24, Zugriff am November 7, 2025, https://www.ehrenamt24.de/blog/social-media/"
