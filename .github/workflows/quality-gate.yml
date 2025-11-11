@@ -1,0 +1,164 @@
+name: Monorepo Quality Gate
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
+
+jobs:
+  quality-gate:
+    name: Quality Metrics & Gate Enforcement
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install quality tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install radon bandit pylint pytest pytest-cov tomli
+
+      - name: Install component dependencies
+        run: |
+          # Install agency-toolkit
+          if [ -f "agency-toolkit/pyproject.toml" ]; then
+            pip install -e "agency-toolkit/[dev]" || pip install -e "agency-toolkit/" || true
+          fi
+          
+          # Install meta-audit
+          if [ -f "meta-audit/pyproject.toml" ]; then
+            pip install -e "meta-audit/" || true
+          fi
+          
+          # Install explore_agent
+          if [ -f "explore_agent/setup.py" ]; then
+            pip install -e "explore_agent/" || true
+          fi
+
+      - name: Run Quality Gate - Agency Toolkit
+        continue-on-error: ${{ github.event_name == 'pull_request' }}
+        run: |
+          python quality_gate.py agency-toolkit --ci --output quality_reports
+
+      - name: Run Quality Gate - Meta Audit
+        continue-on-error: ${{ github.event_name == 'pull_request' }}
+        run: |
+          python quality_gate.py meta-audit --ci --output quality_reports
+
+      - name: Run Quality Gate - Explore Agent
+        continue-on-error: true  # New component, allow to pass for now
+        run: |
+          python quality_gate.py explore_agent --ci --output quality_reports
+
+      - name: Generate combined report
+        if: always()
+        run: |
+          echo "# Quality Gate Report" > quality_summary.md
+          echo "" >> quality_summary.md
+          echo "## Monorepo-wide Quality Metrics" >> quality_summary.md
+          echo "" >> quality_summary.md
+          
+          for report in quality_reports/quality_report_*.json; do
+            if [ -f "$report" ]; then
+              echo "Processing $report"
+              component=$(basename "$report" | sed 's/quality_report_//' | sed 's/.json//')
+              score=$(jq -r '.total_score' "$report")
+              passed=$(jq -r '.passed' "$report")
+              
+              if [ "$passed" = "true" ]; then
+                status="✅"
+              else
+                status="❌"
+              fi
+              
+              echo "- $status **$component**: Score $score/100" >> quality_summary.md
+            fi
+          done
+          
+          echo "" >> quality_summary.md
+          echo "See individual report artifacts for details." >> quality_summary.md
+          
+          cat quality_summary.md
+
+      - name: Upload quality reports
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: quality-reports
+          path: |
+            quality_reports/
+            quality_summary.md
+
+      - name: Comment PR with quality summary
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            
+            try {
+              const summary = fs.readFileSync('quality_summary.md', 'utf8');
+              
+              const comment = `## 📊 Quality Gate Report
+              
+              ${summary}
+              
+              [View detailed reports](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+              `;
+              
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            } catch (error) {
+              console.log('Could not post quality summary:', error);
+            }
+
+      - name: Check quality gate status
+        run: |
+          echo "Checking quality gate results..."
+          
+          # Check if any critical failures
+          FAILED=0
+          
+          for report in quality_reports/quality_report_*.json; do
+            if [ -f "$report" ]; then
+              component=$(basename "$report" | sed 's/quality_report_//' | sed 's/.json//')
+              passed=$(jq -r '.passed' "$report")
+              score=$(jq -r '.total_score' "$report")
+              
+              # Explore agent is allowed to fail for now
+              if [ "$component" = "explore_agent" ]; then
+                echo "⚠️  $component: Score $score (not blocking)"
+                continue
+              fi
+              
+              if [ "$passed" = "false" ]; then
+                echo "❌ $component: Quality gate failed (Score: $score)"
+                FAILED=1
+              else
+                echo "✅ $component: Quality gate passed (Score: $score)"
+              fi
+            fi
+          done
+          
+          if [ $FAILED -eq 1 ]; then
+            echo ""
+            echo "❌ Quality gate FAILED - Review the quality reports above"
+            exit 1
+          else
+            echo ""
+            echo "✅ Quality gate PASSED - All components meet quality standards"
+            exit 0
+          fi

@@ -1,0 +1,105 @@
+# Quality Standards for Vibe Coding Agency Monorepo
+# All tools must meet these minimum standards for code quality
+
+[general]
+description = "Centralized quality standards for all tools in the monorepo"
+version = "1.0.0"
+
+[thresholds]
+# Overall quality gate (0-100 score)
+minimum_quality_score = 80
+
+# Code coverage thresholds
+minimum_coverage = 75.0
+target_coverage = 85.0
+
+# Test pass rate
+minimum_pass_rate = 100.0
+
+# Complexity thresholds (Cyclomatic Complexity)
+max_function_complexity = 10
+max_module_complexity = 50
+average_complexity_threshold = 5.0
+
+# Security thresholds
+max_high_severity_issues = 0
+max_medium_severity_issues = 5
+max_low_severity_issues = 20
+
+# Code quality (linting)
+max_critical_lint_issues = 0
+max_error_lint_issues = 5
+max_warning_lint_issues = 20
+
+# Maintainability Index (0-100, higher is better)
+minimum_maintainability_index = 65.0
+
+[tools]
+# Tools used for quality metrics
+complexity_analyzer = "radon"
+security_analyzer = "bandit"
+linter = "pylint"
+formatter = "black"
+type_checker = "mypy"
+additional_linter = "ruff"
+
+[radon]
+# Radon complexity configuration
+min_grade = "B"  # A-F grading, B = good
+show_complexity = true
+total_average = true
+
+[bandit]
+# Bandit security configuration
+confidence_level = "MEDIUM"  # LOW, MEDIUM, HIGH
+severity_level = "LOW"  # LOW, MEDIUM, HIGH
+exclude_tests = true
+
+[pylint]
+# Pylint configuration
+min_rating = 7.0  # 0-10 scale
+max_line_length = 120
+disable = [
+    "C0111",  # missing-docstring (we check this separately)
+    "R0903",  # too-few-public-methods (not always applicable)
+]
+
+[components]
+# Component-specific overrides
+
+[components.agency-toolkit]
+description = "Professional report generation engine"
+path = "agency-toolkit"
+minimum_coverage = 80.0  # Higher standard for core tool
+
+[components.meta-audit]
+description = "Code analysis engine"
+path = "meta-audit"
+minimum_coverage = 75.0
+
+[components.explore-agent]
+description = "Autonomous codebase exploration"
+path = "explore_agent"
+minimum_coverage = 70.0  # New tool, slightly lower initially
+target_coverage = 80.0
+
+[components.ai-slop-agency]
+description = "KDAF Orchestrator"
+path = "ai_slop_agency"
+minimum_coverage = 70.0
+
+[ci_cd]
+# CI/CD gate configuration
+block_on_quality_failure = true
+block_on_security_critical = true
+block_on_security_high = false  # Warning only for high severity
+fail_on_complexity_threshold = true
+fail_on_coverage_threshold = true
+fail_on_lint_critical = true
+
+[reporting]
+# Report generation settings
+generate_json = true
+generate_markdown = true
+generate_html = false
+output_directory = "quality_reports"
