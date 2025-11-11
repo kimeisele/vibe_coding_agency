@@ -117,5 +117,5 @@ class PromptRegistry:
                     with open(json_file, "w") as f:
                         json.dump(prompt.to_json(), f, indent=2)
                     return
-            except:
+            except (KeyError, ValueError) as e:  # Catch specific exceptions
                 pass

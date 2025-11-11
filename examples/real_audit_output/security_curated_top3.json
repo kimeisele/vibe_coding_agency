@@ -1,0 +1,49 @@
+{
+  "analysis_type": "security",
+  "timestamp": "2025-11-11T11:15:00",
+  "total_issues": 3,
+  "issues": [
+    {
+      "id": "SEC-REAL-001",
+      "severity": "medium",
+      "category": "Exception Handling",
+      "description": "Try-except-pass detected - silently swallowing exceptions",
+      "file_path": "agency-toolkit/agency_toolkit/core/prompt_profiles.py",
+      "line_number": 53,
+      "code_snippet": "        except Exception:",
+      "suggested_fix": "        except (FileNotFoundError, json.JSONDecodeError) as e:  # Log instead of pass",
+      "rationale": "Silent exception swallowing hides errors and makes debugging impossible. Log specific exceptions instead.",
+      "references": [
+        "https://docs.python.org/3/tutorial/errors.html#handling-exceptions"
+      ]
+    },
+    {
+      "id": "SEC-REAL-002",
+      "severity": "medium",
+      "category": "Exception Handling",
+      "description": "Try-except-pass detected - silently swallowing exceptions",
+      "file_path": "agency-toolkit/gather_analysis.py",
+      "line_number": 175,
+      "code_snippet": "                        except:",
+      "suggested_fix": "                        except (subprocess.TimeoutExpired, subprocess.CalledProcessError) as e:  # Specific exception",
+      "rationale": "Bare except clause catches all exceptions including KeyboardInterrupt and SystemExit. Use specific exceptions.",
+      "references": [
+        "https://pep8.org/#programming-recommendations"
+      ]
+    },
+    {
+      "id": "SEC-REAL-003",
+      "severity": "medium",
+      "category": "Exception Handling",
+      "description": "Try-except-pass detected in prompt registry",
+      "file_path": "agency-toolkit/agency_toolkit/core/prompt_registry/registry.py",
+      "line_number": 120,
+      "code_snippet": "            except:",
+      "suggested_fix": "            except (KeyError, ValueError) as e:  # Catch specific exceptions",
+      "rationale": "Bare except clause is dangerous. Catch specific exceptions and log them for debugging.",
+      "references": [
+        "https://docs.python.org/3/tutorial/errors.html"
+      ]
+    }
+  ]
+}

@@ -132,8 +132,15 @@ def apply_fix(issue):
         print(f"{Colors.YELLOW}   File may have been modified. Re-run analysis.{Colors.RESET}")
         return False
 
-    # Apply the fix - replace on the specific line
-    lines[line_number - 1] = actual_line.replace(old_code.strip(), new_code)
+    # Apply the fix - preserve original indentation
+    # Get leading whitespace from actual line
+    leading_whitespace = actual_line[:len(actual_line) - len(actual_line.lstrip())]
+
+    # Strip the new code and re-apply the original indentation
+    new_code_indented = leading_whitespace + new_code.strip()
+
+    # Replace the entire line (preserve newline)
+    lines[line_number - 1] = new_code_indented + '\n'
 
     # Write back to file
     try:

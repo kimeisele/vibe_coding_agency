@@ -50,7 +50,7 @@ def list_profiles() -> list[dict[str, Any]]:
             with open(profile_file) as f:
                 profile = json.load(f)
                 profiles.append(profile)
-        except Exception:
+        except (FileNotFoundError, json.JSONDecodeError) as e:  # Log instead of pass
             pass  # Skip invalid files
 
     return profiles
