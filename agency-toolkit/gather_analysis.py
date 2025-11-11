@@ -172,7 +172,7 @@ def analyze_complexity_hotspots(root: Path) -> dict[str, Any]:
                                 hotspots.append(
                                     {"location": parts[0].strip(), "score": cc}
                                 )
-                        except:
+                        except (subprocess.TimeoutExpired, subprocess.CalledProcessError) as e:  # Specific exception
                             pass
 
         return {

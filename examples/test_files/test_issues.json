@@ -1,0 +1,50 @@
+{
+  "analysis_type": "security",
+  "timestamp": "2025-11-11T10:08:30",
+  "total_issues": 3,
+  "issues": [
+    {
+      "id": "SEC-001",
+      "severity": "critical",
+      "category": "Command Injection",
+      "description": "Function call with shell=True detected",
+      "file_path": "examples/test_files/core/phoenix_config/loaders.py",
+      "line_number": 25,
+      "code_snippet": "result = subprocess.run(user_command, shell=True, capture_output=True)",
+      "suggested_fix": "result = subprocess.run(shlex.split(user_command), shell=False, capture_output=True)",
+      "rationale": "Using shell=True with user input creates command injection vulnerability. Use shlex.split() and shell=False instead.",
+      "references": [
+        "https://docs.python.org/3/library/subprocess.html#security-considerations",
+        "https://owasp.org/www-community/attacks/Command_Injection"
+      ]
+    },
+    {
+      "id": "SEC-002",
+      "severity": "high",
+      "category": "Exception Handling",
+      "description": "Try-except-pass detected - silently swallowing exceptions",
+      "file_path": "examples/test_files/core/prompt_profiles.py",
+      "line_number": 28,
+      "code_snippet": "except Exception:",
+      "suggested_fix": "except (FileNotFoundError, json.JSONDecodeError) as e:",
+      "rationale": "Silent exception swallowing hides errors and makes debugging impossible. Catch specific exceptions instead of bare Exception.",
+      "references": [
+        "https://docs.python.org/3/tutorial/errors.html#handling-exceptions"
+      ]
+    },
+    {
+      "id": "SEC-003",
+      "severity": "medium",
+      "category": "Hardcoded Secrets",
+      "description": "Potential hardcoded API key detected",
+      "file_path": "examples/test_files/utils/api_client.py",
+      "line_number": 9,
+      "code_snippet": "API_KEY = 'sk-1234567890abcdef'",
+      "suggested_fix": "API_KEY = os.getenv('API_KEY')\nif not API_KEY:\n    raise ValueError('API_KEY environment variable required')",
+      "rationale": "Hardcoded secrets in source code are a security risk. Use environment variables instead.",
+      "references": [
+        "https://owasp.org/www-project-top-ten/2017/A3_2017-Sensitive_Data_Exposure"
+      ]
+    }
+  ]
+}
