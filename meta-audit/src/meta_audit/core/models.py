@@ -4,7 +4,7 @@ from datetime import datetime
 from pathlib import Path
 from uuid import UUID, uuid4
 
-from pydantic import BaseModel, Field, validator, ConfigDict
+from pydantic import BaseModel, Field, field_validator, ConfigDict
 
 
 class Severity(str, Enum):
@@ -27,14 +27,9 @@ class ContentMode(str, Enum):
 
 
 class ProjectCapsule(BaseModel):
-    class Config:
-        arbitrary_types_allowed = True
-        
-        json_encoders = {
-            Path: str,
-            datetime: lambda v: v.isoformat(),
-            UUID: str
-        }
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True,
+    )
 
     version: int = Field(default=2, description="Capsule version schema")
     created_at: datetime = Field(default_factory=datetime.now)
@@ -51,8 +46,9 @@ class CapsuleFile(BaseModel):
     size_bytes: int
     content: Optional[str] = None
 
-    @validator("path")
-    def validate_path(cls, v):  
+    @field_validator("path")
+    @classmethod
+    def validate_path(cls, v):
         return v
 
 
@@ -229,4 +225,4 @@ class EnrichedReport(BaseModel):
     )
 
 
-ProjectCapsule.update_forward_refs()
+ProjectCapsule.model_rebuild()
