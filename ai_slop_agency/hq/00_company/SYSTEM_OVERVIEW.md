@@ -161,8 +161,8 @@ E302: Expected 2 blank lines, found 1
 - `02_knowledge_base/` → Cumulative intelligence (tech, tools, case studies)
 - `00_company/` → Agency manifesto, principles
 
-### 3. Validation Tools (`/shared/`)
-- `tools_capsule_audit/` → Comprehensive Python static analysis
+### 3. Validation Tools
+- `meta-audit/` → Comprehensive Python static analysis (root level)
 - `configs/` → Standardized tool configurations
 
 ### 4. Client Projects (`/clients/`)
