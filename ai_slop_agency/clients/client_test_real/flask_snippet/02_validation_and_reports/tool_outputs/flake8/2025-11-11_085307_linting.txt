@@ -1,0 +1,5 @@
+clients/client_test_real/flask_snippet/01_development/src/app.py:5:1: F401 'os' imported but unused
+clients/client_test_real/flask_snippet/01_development/src/app.py:15:1: E302 expected 2 blank lines, found 1
+clients/client_test_real/flask_snippet/01_development/src/app.py:19:5: F841 local variable 'query' is assigned to but never used
+clients/client_test_real/flask_snippet/01_development/src/app.py:46:1: E302 expected 2 blank lines, found 1
+clients/client_test_real/flask_snippet/01_development/src/app.py:51:1: E305 expected 2 blank lines after class or function definition, found 1

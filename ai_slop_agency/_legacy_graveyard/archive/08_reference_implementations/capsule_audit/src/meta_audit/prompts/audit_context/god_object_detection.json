@@ -1,0 +1,45 @@
+{
+  "id": "audit_context_god_object",
+  "category": "audit_context",
+  "prompt": "# God Object Detection\n\nYou are analyzing code for God Object anti-patterns (also known as The Blob, Swiss Army Knife Class, or Kitchen Sink Object).\n\n## Definition\n\nA **God Object** is an object that knows too much or does too much, violating the Single Responsibility Principle.\n\n## Detection Heuristics\n\n### Quantitative Signals\n\n⚠️ **High Method Count**\n- >20 public methods (WARNING)\n- >50 total methods (CRITICAL)\n\n⚠️ **High Line Count**\n- >500 lines (WARNING)\n- >1000 lines (CRITICAL)\n\n⚠️ **High Cyclomatic Complexity**\n- Per-method complexity >10 (WARNING)\n- Total class complexity >100 (CRITICAL)\n\n### Qualitative Signals\n\n⚠️ **Multiple Responsibilities**\n- Class name contains \"AND\": `UserAndOrderManager`\n- Class name is vague: `Manager`, `Handler`, `Processor`, `Utility`, `Helper`\n- Docstring lists multiple unrelated purposes\n- Class handles multiple domains (users, orders, payments, emails)\n\n⚠️ **Feature Envy**\n- Other classes mostly interact with this one\n- This class accesses other classes' data frequently\n- Everything depends on this class (tight coupling)\n\n⚠️ **Change Frequency**\n- Every new feature requires changing this class\n- High git churn (constant modifications)\n\n## Impact Assessment\n\n| Aspect | Impact |\n|--------|--------|\n| **SRP Violation** | Does multiple unrelated things |\n| **Tight Coupling** | Everything depends on it |\n| **Low Maintainability** | Changes break unrelated features |\n| **Low Testability** | Impossible to unit test in isolation |\n| **High Cognitive Load** | Cannot hold entire class in working memory |\n\n## Causality: Vibe Coding → God Objects\n\n> **\"Vibe coding (lacking systems thinking) is a God Object factory.\"**\n\n### Why AI Creates God Objects\n\n1. **No Architectural Vision**\n   - AI generates code that \"works\"\n   - Doesn't consider class boundaries\n   - Adds methods to existing classes instead of creating new ones\n\n2. **Feature Accretion**\n   - New feature → Add method to existing class\n   - No one refactors (complexity grows unchecked)\n\n3. **Lack of SRP Awareness**\n   - AI doesn't enforce Single Responsibility Principle\n   - Human doesn't review for architecture\n\n## Refactoring Strategy\n\n### 1. Extract Classes\n\nApply **Extract Class** refactoring:\n- Identify cohesive groups of methods\n- Create focused classes with single responsibility\n- Example: Extract `UserService`, `OrderService`, `EmailService` from monolithic `Application` class\n\n### 2. Apply Single Responsibility Principle\n\nEach class should have **one reason to change**:\n- User authentication changes → Only `UserService` changes\n- Order processing changes → Only `OrderService` changes\n- Email templates change → Only `EmailService` changes\n\n### 3. Use Dependency Injection\n\nDecouple classes:\n```python\nclass Application:\n    def __init__(self, user_service, order_service):\n        self.users = user_service  # Injected dependency\n        self.orders = order_service  # Injected dependency\n```\n\n## Severity Classification\n\n### CRITICAL God Object\n- >1000 lines OR >50 methods\n- 7+ distinct responsibilities\n- Blocks all development (every feature touches it)\n- **Action:** Immediate refactoring required\n\n### HIGH God Object\n- >500 lines OR >20 methods\n- 3-6 distinct responsibilities\n- High cognitive load\n- **Action:** Schedule refactoring within 1 sprint\n\n### MEDIUM God Object\n- >300 lines OR >15 methods\n- 2-3 distinct responsibilities\n- Maintainability concerns\n- **Action:** Refactor opportunistically\n\n## Analysis Output Format\n\nFor each potential God Object, provide:\n\n1. **Quantitative Metrics:**\n   - Line count\n   - Method count (public/total)\n   - Cyclomatic complexity\n\n2. **Responsibilities Identified:**\n   - List distinct responsibilities (e.g., \"user management\", \"order processing\")\n   - Count: X responsibilities detected\n\n3. **Severity:** CRITICAL / HIGH / MEDIUM\n\n4. **Refactoring Recommendation:**\n   - Specific classes to extract\n   - Suggested class names\n   - Dependency injection strategy\n\n5. **Impact Analysis:**\n   - What breaks if we refactor?\n   - Testing strategy\n   - Migration path\n\n## Prevention\n\n### In Shape Phase\n- Define class boundaries **before** coding\n- Identify responsibilities upfront\n- Create architecture diagram\n\n### In Vibe Phase\n- Provide context-rich prompts\n- Include SRP in prompt: \"Create focused classes, each with single responsibility\"\n- Request architecture diagram from AI\n\n### In Audit Phase\n- Run God Object detection on all classes\n- Use audit metrics to score maintainability\n- Catch God Objects early before they grow\n\n## Success Criteria\n\n✅ **No God Objects:** All classes <300 lines, <15 methods, single responsibility\n⚠️ **Acceptable:** 1-2 coordinator classes slightly larger (but still <500 lines)\n❌ **Critical Issue:** Any class >1000 lines or >50 methods",
+  "description": "God Object anti-pattern detection context - identifies classes that violate Single Responsibility Principle by having too many methods, lines, or responsibilities",
+  "model": null,
+  "variables": [],
+  "tags": ["god-object", "anti-pattern", "srp-violation", "refactoring", "maintainability"],
+  "usage_count": 0,
+  "last_used": null,
+  "version": "1.0",
+  "rag_tags": ["anti-pattern", "code-smell", "maintainability", "architecture", "refactoring"],
+  "intent_keywords": ["god-object", "blob", "large-class", "srp", "responsibility"],
+  "composable": true,
+  "requires_context": false,
+  "input_schema": null,
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "is_god_object": {"type": "boolean"},
+      "severity": {"type": "string", "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW", "NONE"]},
+      "metrics": {
+        "type": "object",
+        "properties": {
+          "line_count": {"type": "integer"},
+          "method_count": {"type": "integer"},
+          "public_method_count": {"type": "integer"},
+          "cyclomatic_complexity": {"type": "integer"}
+        }
+      },
+      "responsibilities": {"type": "array", "items": {"type": "string"}},
+      "refactoring_suggestions": {"type": "array", "items": {"type": "string"}},
+      "extracted_classes": {"type": "array", "items": {"type": "string"}}
+    }
+  },
+  "constraints": [
+    "Always check both quantitative and qualitative signals",
+    "Severity CRITICAL if >1000 lines OR >50 methods",
+    "List specific extracted class names, not generic suggestions"
+  ],
+  "quality_score": null,
+  "avg_tokens_used": null,
+  "success_rate": null,
+  "last_optimized": null
+}

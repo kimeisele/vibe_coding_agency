@@ -1,0 +1,12 @@
+/Users/ss/projects/ai_slop_agency/clients/client_opensource/flask_audit/01_development/src/app.py
+    F 51:0 complex_logic - A
+    F 13:0 validate_user - A
+    F 19:0 search - A
+    F 26:0 hash_password - A
+    F 33:0 save_data - A
+    F 41:0 another_function - A
+    F 43:0 yet_another - A
+    F 47:0 process_data - A
+
+8 blocks (classes, functions, methods) analyzed.
+Average complexity: A (1.625)

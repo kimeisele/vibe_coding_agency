@@ -1,0 +1,56 @@
+{
+  "project_type": "investigation",
+  "facts": [
+    {
+      "category": "technology",
+      "statement": "Django framework",
+      "is_assumption": false
+    },
+    {
+      "category": "technology",
+      "statement": "PostgreSQL database",
+      "is_assumption": false
+    },
+    {
+      "category": "requirement",
+      "statement": "Performance issue reported",
+      "is_assumption": false
+    }
+  ],
+  "knowledge_gaps": [
+    {
+      "gap_type": "technical",
+      "description": "What is the exact technology stack and versions?",
+      "research_questions": [
+        "What versions of What is the exact technology stack and versions? are in use?",
+        "What are the current What is the exact technology stack and versions? configurations?"
+      ]
+    },
+    {
+      "gap_type": "scope",
+      "description": "What is exactly in scope and what is not?",
+      "research_questions": [
+        "What components/modules are critical?",
+        "What can be deferred or excluded?"
+      ]
+    },
+    {
+      "gap_type": "success_criteria",
+      "description": "How is success measured? What are the metrics?",
+      "research_questions": [
+        "How can we measure success quantitatively?",
+        "What are the acceptance criteria?"
+      ]
+    },
+    {
+      "gap_type": "constraints",
+      "description": "What are budget, timeline, and team size constraints?",
+      "research_questions": [
+        "What is the timeline? (Hard deadline?)",
+        "What is the budget range?"
+      ]
+    }
+  ],
+  "validation_method": "Tool outputs (flake8, bandit, radon, cProfile) + External sources",
+  "timestamp": "2025-11-11T09:56:10.131886"
+}

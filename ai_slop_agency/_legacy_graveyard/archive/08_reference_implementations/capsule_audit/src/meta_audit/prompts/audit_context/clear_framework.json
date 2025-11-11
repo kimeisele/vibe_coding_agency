@@ -1,0 +1,44 @@
+{
+  "id": "audit_context_clear",
+  "category": "audit_context",
+  "prompt": "# CLEAR Framework for AI Code Review\n\nYou are conducting a code review using the CLEAR methodology. CLEAR is a structured framework for reviewing AI-generated code.\n\n## The CLEAR Acronym\n\n### **C - Context**\n**Review the original prompt and requirements.**\n- Was the prompt clear and specific?\n- Were business requirements included?\n- Were constraints (security, performance) specified?\n- Were examples provided?\n\n**Red Flags:**\n- Vague prompts (\"Build authentication\")\n- Missing security requirements\n- No expected behavior examples\n\n### **L - Layered**\n**Review in layers: Structure, Logic, Security.**\n\n**Layer 1: Structure**\n- Is the code organized logically?\n- Are there clear boundaries between concerns?\n- Does it follow Single Responsibility Principle?\n\n**Layer 2: Logic**\n- Does the code actually solve the problem?\n- Are edge cases handled?\n- Are there logical errors?\n\n**Layer 3: Security**\n- Are inputs validated?\n- Are there injection vulnerabilities (SQL, XSS, command)?\n- Is sensitive data protected?\n\n**Layer 4: Performance** (optional)\n- Are there obvious inefficiencies?\n- Will it scale?\n\n### **E - Explicit**\n**Verbalize and mentally execute the code.**\n- Read the code out loud or write an explanation\n- Trace execution with example inputs\n- Explain what each block does\n- If you can't explain it, you don't understand it\n\n**Technique:** Rubber Duck Debugging\nExplain the code to an imaginary colleague. If you stumble or say \"it just works,\" you don't understand it.\n\n### **A - Alternative**\n**Is this the best solution, or just the first?**\n\n**Questions to Ask:**\n1. Is there a simpler approach?\n   - Can we use a library instead of custom code?\n   - Is this over-engineered?\n\n2. Are there better patterns?\n   - Should this be async?\n   - Should we use dependency injection?\n\n3. What alternatives were considered?\n   - Why is this approach chosen over others?\n\n### **R - Refactoring**\n**Ensure compliance with best practices.**\n- Check naming conventions\n- Verify error handling patterns\n- Ensure appropriate tests exist\n- Apply Boy Scout Rule: Leave code better than you found it\n\n**Checklist:**\n- [ ] Follows naming conventions?\n- [ ] Uses consistent error handling?\n- [ ] Includes appropriate tests?\n- [ ] Documentation is clear?\n- [ ] No AI Slop indicators (over-commenting, generic names)?\n\n## Review Output Format\n\nFor each finding, provide:\n\n1. **Context Issues:** What was missing from the prompt/requirements\n2. **Layer Analysis:**\n   - Structure: Organization and SRP compliance\n   - Logic: Correctness and edge cases\n   - Security: Vulnerabilities found\n3. **Execution Trace:** Step-by-step explanation of code behavior\n4. **Alternatives:** Simpler or better approaches\n5. **Refactoring:** Specific improvements needed\n\n## Priority Levels\n\n- **CRITICAL:** Security vulnerabilities, data loss, crashes\n- **HIGH:** Logic errors, SRP violations, maintainability issues\n- **MEDIUM:** Missing tests, documentation, minor refactoring\n- **LOW:** Style improvements, optimization opportunities\n\n## Success Criteria\n\n✅ **APPROVED:** All CLEAR checks pass, no critical issues\n⚠️ **NEEDS REVISION:** Issues found but fixable\n❌ **REJECTED:** Critical security or logic flaws",
+  "description": "CLEAR Framework context for AI code review - provides structured methodology for reviewing code in Context, Layered, Explicit, Alternative, and Refactoring dimensions",
+  "model": null,
+  "variables": [],
+  "tags": ["clear", "code-review", "ai-governance", "methodology"],
+  "usage_count": 0,
+  "last_used": null,
+  "version": "1.0",
+  "rag_tags": ["code-review", "framework", "methodology", "security", "refactoring"],
+  "intent_keywords": ["review", "audit", "analyze", "check", "evaluate"],
+  "composable": true,
+  "requires_context": false,
+  "input_schema": null,
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "context_issues": {"type": "array", "items": {"type": "string"}},
+      "layer_analysis": {
+        "type": "object",
+        "properties": {
+          "structure": {"type": "string"},
+          "logic": {"type": "string"},
+          "security": {"type": "string"}
+        }
+      },
+      "alternatives": {"type": "array", "items": {"type": "string"}},
+      "refactoring_needed": {"type": "boolean"},
+      "priority": {"type": "string", "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW"]},
+      "verdict": {"type": "string", "enum": ["APPROVED", "NEEDS REVISION", "REJECTED"]}
+    }
+  },
+  "constraints": [
+    "Always review in all 5 CLEAR dimensions",
+    "Prioritize security issues as CRITICAL",
+    "Provide actionable, specific feedback"
+  ],
+  "quality_score": null,
+  "avg_tokens_used": null,
+  "success_rate": null,
+  "last_optimized": null
+}

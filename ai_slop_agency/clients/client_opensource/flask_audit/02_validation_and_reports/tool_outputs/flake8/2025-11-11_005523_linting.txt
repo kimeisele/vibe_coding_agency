@@ -1,0 +1,11 @@
+/Users/ss/projects/ai_slop_agency/clients/client_opensource/flask_audit/01_development/src/app.py:5:1: F401 'tempfile' imported but unused
+/Users/ss/projects/ai_slop_agency/clients/client_opensource/flask_audit/01_development/src/app.py:13:1: E302 expected 2 blank lines, found 1
+/Users/ss/projects/ai_slop_agency/clients/client_opensource/flask_audit/01_development/src/app.py:18:1: E302 expected 2 blank lines, found 1
+/Users/ss/projects/ai_slop_agency/clients/client_opensource/flask_audit/01_development/src/app.py:25:1: E302 expected 2 blank lines, found 1
+/Users/ss/projects/ai_slop_agency/clients/client_opensource/flask_audit/01_development/src/app.py:32:1: E302 expected 2 blank lines, found 1
+/Users/ss/projects/ai_slop_agency/clients/client_opensource/flask_audit/01_development/src/app.py:41:1: E302 expected 2 blank lines, found 1
+/Users/ss/projects/ai_slop_agency/clients/client_opensource/flask_audit/01_development/src/app.py:43:1: E302 expected 2 blank lines, found 0
+/Users/ss/projects/ai_slop_agency/clients/client_opensource/flask_audit/01_development/src/app.py:47:1: E302 expected 2 blank lines, found 1
+/Users/ss/projects/ai_slop_agency/clients/client_opensource/flask_audit/01_development/src/app.py:47:80: E501 line too long (104 > 79 characters)
+/Users/ss/projects/ai_slop_agency/clients/client_opensource/flask_audit/01_development/src/app.py:51:1: E302 expected 2 blank lines, found 1
+/Users/ss/projects/ai_slop_agency/clients/client_opensource/flask_audit/01_development/src/app.py:66:1: E305 expected 2 blank lines after class or function definition, found 1

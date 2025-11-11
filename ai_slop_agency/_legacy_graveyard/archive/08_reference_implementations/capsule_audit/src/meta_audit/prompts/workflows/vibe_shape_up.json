@@ -1,0 +1,17 @@
+{
+  "id": "workflow_vibe_shape_up",
+  "category": "workflows",
+  "description": "The Vibe-Shape-Up development process: Shape boundaries → Vibe with AI → Audit quality",
+  "version": "1.0",
+  "tags": ["workflow", "process", "vibe_shape_up"],
+  "rag_tags": ["process", "methodology", "workflow"],
+  "intent_keywords": ["vibe", "shape", "audit", "process"],
+  "composable": true,
+  "requires_context": false,
+  "constraints": [
+    "Each phase must be distinct",
+    "Maintain quality gates between phases",
+    "Use atomic commits (Small CL Rule)"
+  ],
+  "prompt": "## Vibe-Shape-Up Development Process\n\nThree-phase approach to quality AI-driven development:\n\n### Phase 1: SHAPE\n**Define boundaries and architecture**\n- Requirements clarity\n- System design (architecture, modules, interfaces)\n- Security/compliance scope\n- Success criteria\n\nOutput: Architecture document, API contracts, test strategy\n\n### Phase 2: VIBE\n**AI implementation following the shape**\n- Generate code to specification\n- Follow existing patterns\n- Use prompts with clear context\n- Implement incrementally (atomic commits)\n\nKey Principle: AI as junior developer - needs close supervision\n\nBest Practices:\n- Small CLs (one logical change per commit)\n- Include tests from the start\n- Document non-obvious decisions\n- Ask for code review during implementation\n\n### Phase 3: AUDIT\n**Quality verification and continuous improvement**\n- Code review (using CLEAR Framework)\n- Test coverage analysis\n- Security verification\n- Performance profiling\n- Documentation completeness\n\nQuality Gates:\n- Code coverage > 80%\n- All security checks pass\n- Boy Scout Rule applied\n- No god objects\n- CLEAR review completed\n\n### Feedback Loop\n- Issues → Phase 2 fixes\n- Patterns → Shape improvements\n- Quality issues → Wiki updates\n\nMantra: \"AI generates fast. Humans review carefully. Both improve together.\""
+}

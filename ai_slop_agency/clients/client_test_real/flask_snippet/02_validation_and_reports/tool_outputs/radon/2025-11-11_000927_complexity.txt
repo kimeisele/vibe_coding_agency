@@ -1,0 +1,6 @@
+/home/user/vibe_code_agency/clients/client_test_real/flask_snippet/01_development/src/app.py
+    F 16:0 process_data - B
+    F 47:0 health - A
+
+2 blocks (classes, functions, methods) analyzed.
+Average complexity: A (4.0)

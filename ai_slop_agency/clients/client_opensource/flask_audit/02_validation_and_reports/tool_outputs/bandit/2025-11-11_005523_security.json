@@ -1,0 +1,174 @@
+{
+  "errors": [],
+  "generated_at": "2025-11-10T23:55:26Z",
+  "metrics": {
+    "/Users/ss/projects/ai_slop_agency/clients/client_opensource/flask_audit/01_development/src/app.py": {
+      "CONFIDENCE.HIGH": 4,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 3,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 2,
+      "SEVERITY.LOW": 3,
+      "SEVERITY.MEDIUM": 2,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 49,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "_totals": {
+      "CONFIDENCE.HIGH": 4,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 3,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 2,
+      "SEVERITY.LOW": 3,
+      "SEVERITY.MEDIUM": 2,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 49,
+      "nosec": 0,
+      "skipped_tests": 0
+    }
+  },
+  "results": [
+    {
+      "code": "3 import hashlib\n4 import subprocess\n5 import tempfile\n",
+      "col_offset": 0,
+      "end_col_offset": 17,
+      "filename": "/Users/ss/projects/ai_slop_agency/clients/client_opensource/flask_audit/01_development/src/app.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Consider possible security implications associated with the subprocess module.",
+      "line_number": 4,
+      "line_range": [
+        4
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_imports.html#b404-import-subprocess",
+      "test_id": "B404",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "10 # B303: Using MD5 (weak crypto)\n11 SECRET_KEY = \"hardcoded-secret-12345\"  # Hardcoded secret\n12 \n",
+      "col_offset": 13,
+      "end_col_offset": 37,
+      "filename": "/Users/ss/projects/ai_slop_agency/clients/client_opensource/flask_audit/01_development/src/app.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 259,
+        "link": "https://cwe.mitre.org/data/definitions/259.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Possible hardcoded password: 'hardcoded-secret-12345'",
+      "line_number": 11,
+      "line_range": [
+        11
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b105_hardcoded_password_string.html",
+      "test_id": "B105",
+      "test_name": "hardcoded_password_string"
+    },
+    {
+      "code": "14     # B101: Using assert for validation\n15     assert user_id > 0, \"Invalid user\"\n16     return True\n",
+      "col_offset": 4,
+      "end_col_offset": 38,
+      "filename": "/Users/ss/projects/ai_slop_agency/clients/client_opensource/flask_audit/01_development/src/app.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+      "line_number": 15,
+      "line_range": [
+        15
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
+      "test_id": "B101",
+      "test_name": "assert_used"
+    },
+    {
+      "code": "21     query = request.form.get('q')\n22     result = subprocess.run(f\"grep -r {query} /tmp\", shell=True)\n23     return result\n",
+      "col_offset": 13,
+      "end_col_offset": 64,
+      "filename": "/Users/ss/projects/ai_slop_agency/clients/client_opensource/flask_audit/01_development/src/app.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "HIGH",
+      "issue_text": "subprocess call with shell=True identified, security issue.",
+      "line_number": 22,
+      "line_range": [
+        22
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b602_subprocess_popen_with_shell_equals_true.html",
+      "test_id": "B602",
+      "test_name": "subprocess_popen_with_shell_equals_true"
+    },
+    {
+      "code": "28     # B303: MD5 hash (weak)\n29     hash_obj = hashlib.md5(password.encode())\n30     return {'hash': hash_obj.hexdigest()}\n",
+      "col_offset": 15,
+      "end_col_offset": 45,
+      "filename": "/Users/ss/projects/ai_slop_agency/clients/client_opensource/flask_audit/01_development/src/app.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 327,
+        "link": "https://cwe.mitre.org/data/definitions/327.html"
+      },
+      "issue_severity": "HIGH",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 29,
+      "line_range": [
+        29
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html",
+      "test_id": "B324",
+      "test_name": "hashlib"
+    },
+    {
+      "code": "35     data = request.form.get('data')\n36     with open('/tmp/data.txt', 'w') as f:\n37         f.write(data)\n",
+      "col_offset": 14,
+      "end_col_offset": 29,
+      "filename": "/Users/ss/projects/ai_slop_agency/clients/client_opensource/flask_audit/01_development/src/app.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 377,
+        "link": "https://cwe.mitre.org/data/definitions/377.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Probable insecure usage of temp file/directory.",
+      "line_number": 36,
+      "line_range": [
+        36
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b108_hardcoded_tmp_directory.html",
+      "test_id": "B108",
+      "test_name": "hardcoded_tmp_directory"
+    },
+    {
+      "code": "66 if __name__ == '__main__':\n67     app.run(host='0.0.0.0', port=5000)  # B104: Bind to all interfaces\n",
+      "col_offset": 17,
+      "end_col_offset": 26,
+      "filename": "/Users/ss/projects/ai_slop_agency/clients/client_opensource/flask_audit/01_development/src/app.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 605,
+        "link": "https://cwe.mitre.org/data/definitions/605.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Possible binding to all interfaces.",
+      "line_number": 67,
+      "line_range": [
+        67
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b104_hardcoded_bind_all_interfaces.html",
+      "test_id": "B104",
+      "test_name": "hardcoded_bind_all_interfaces"
+    }
+  ]
+}

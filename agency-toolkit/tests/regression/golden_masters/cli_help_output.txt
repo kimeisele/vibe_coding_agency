@@ -1,0 +1,30 @@
+                                                                                
+ Usage: python -m agency_toolkit.cli_app [OPTIONS] COMMAND [ARGS]...            
+                                                                                
+ Agency Toolkit - CLI tools for agency workflow automation                      
+                                                                                
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --version                           Show version                             │
+│ --verbose             -v            Enable debug logging                     │
+│ --quiet               -q            Suppress output                          │
+│ --output-dir                  PATH  Override default output directory        │
+│ --json                              Output as machine-readable JSON          │
+│ --offline                           Offline mode - block network calls       │
+│ --install-completion                Install completion for the current       │
+│                                     shell.                                   │
+│ --show-completion                   Show completion for the current shell,   │
+│                                     to copy it or customize the              │
+│                                     installation.                            │
+│ --help                              Show this message and exit.              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Commands ───────────────────────────────────────────────────────────────────╮
+│ social      Generate social media posts                                      │
+│ briefing    Generate project briefings                                       │
+│ structure   Create project folder structures                                 │
+│ ai          Interact with text AI providers                                  │
+│ image       Generate AI images                                               │
+│ info        Toolkit information and discovery                                │
+│ validate    Validate outputs against approved snapshots                      │
+│ os          GRAND AGENCY OS: Orchestrated project workflows                  │
+╰──────────────────────────────────────────────────────────────────────────────╯
+

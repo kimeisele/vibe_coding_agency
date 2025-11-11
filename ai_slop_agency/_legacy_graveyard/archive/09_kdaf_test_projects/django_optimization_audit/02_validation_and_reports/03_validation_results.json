@@ -1,0 +1,32 @@
+{
+  "validation_results": [
+    {
+      "tool_name": "flake8",
+      "tool_output_path": "[TODO: Call Meta-Audit]",
+      "findings": [
+        "Code style issues found"
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "tool_name": "bandit",
+      "tool_output_path": "[TODO: Call Meta-Audit]",
+      "findings": [
+        "Security analysis pending"
+      ],
+      "confidence": "MEDIUM"
+    }
+  ],
+  "analysis": {
+    "code_quality": "Pending tool execution",
+    "security": "Pending tool execution",
+    "performance": "Pending tool execution"
+  },
+  "recommendations": [
+    "Run Phase 3 validation tools to complete analysis",
+    "Review tool outputs in 02_validation_and_reports/tool_outputs/"
+  ],
+  "confidence": "MEDIUM",
+  "final_report_path": "[TODO: Generate final report]",
+  "timestamp": "2025-11-11T09:56:10.133562"
+}

@@ -1,0 +1,35 @@
+==================================================
+Agency Toolkit - Information & Help
+==================================================
+
+📋 Available Commands:
+  toolkit social                 Generate social media posts
+  toolkit briefing               Create project briefings
+  toolkit structure              Create folder structures
+  toolkit image                  Generate AI images
+  toolkit mistral                Query Mistral AI
+  toolkit info                   Show this information
+  toolkit ask <query>            Ask about toolkit (Mistral-powered)
+
+🎨 Social Templates:
+  - bold            High-impact, vibrant color, large heavy typography, urgent aesthetic
+  - minimal         Clean, sophisticated, generous whitespace, refined typography, no stroke
+  - modern          Clean, tech-forward, contemporary gradient with white text stroke
+
+🖼️ Image Providers:
+  - pollinations    Free AI image generation (default) ✅ Default
+  - replicate       Replicate API (optional, requires API key) 
+
+🎭 Seed Templates:
+  - moody           Dark, cinematic, introspective
+  - corporate       Clean, modern, business-appropriate
+  - playful         Colorful, energetic, fun
+  - minimal         White space, subtle, elegant
+  - nature          Earth tones, natural elements, organic
+
+💡 Get Started:
+  toolkit social --help               Detailed social post help
+  toolkit ask 'How do I...?'          Ask Mistral for help
+  toolkit info                        Show this information
+
+==================================================

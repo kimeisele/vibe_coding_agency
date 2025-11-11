@@ -1,0 +1,6 @@
+/home/user/vibe_code_agency/clients/client_demo_corp/test_django_audit/01_development/src/example.py
+    F 11:0 process_user_data - A
+    F 49:0 another_function - A
+
+2 blocks (classes, functions, methods) analyzed.
+Average complexity: A (3.0)

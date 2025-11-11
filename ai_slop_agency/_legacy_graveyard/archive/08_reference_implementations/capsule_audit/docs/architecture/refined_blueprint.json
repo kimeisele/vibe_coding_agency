@@ -1,0 +1,325 @@
+{
+  "intent": {
+    "parsed": "Ein CLI-Tool, das Python-Projekte scannt, 'Kapseln' (versionierte JSON-Snapshots) ihres Zustands erstellt und diese Kapseln mit erweiterbaren Analyzern durchsucht, um Codeprobleme ('AI Slop') wie God-Module, Magic Numbers und schwache Fehlerbehandlung zu identifizieren. Es unterstützt sowohl die Analyse einzelner Projekte als auch 'Corpus-Analysen' über mehrere Projekte hinweg mit Cross-Project-Pattern-Erkennung.",
+    "category": "cli_tool",
+    "target_users": ["ML/AI-Entwickler", "Code-Review-Automatoren", "Projekt-Auditor:innen"]
+  },
+  "assumptions": [
+    "[EXPLICIT] Python 3.11+, modular, erweiterbar.",
+    "[ASSUMPTION] Kapseln sind *versioniert* (z.B. `capsule_v2`-Felder), um Schema-Evolution zu handhaben.",
+    "[ASSUMPTION] Analyzer-Ergebnisse haben standardisierte Metadaten: Severity, Category, Auto-Remediation-Hints.",
+    "[ASSUMPTION] Corpus-Analysen erkennen auch Patterns *über* Projekte hinweg."
+  ],
+  "architecture": {
+    "type": "cli_tool",
+    "design_patterns": [
+      "CLI: typer-App mit Sub-Commands",
+      "Config: Hierarchische Config (Defaults → System → User → CLI-Flags)",
+      "Analyzers: Plugin-Pattern mit Decorator-Registration",
+      "Models: Pydantic v2 für Validierung und Serialisierung"
+    ],
+    "components": [
+      {
+        "module": "cli/main.py",
+        "responsibility": "Typer-App, Sub-Commands, globale Flags (--verbose, --config-path)"
+      },
+      {
+        "module": "cli/commands/capsule.py",
+        "responsibility": "capsule create, mit Kontrolle über Datei-Granularität (vollständig vs. Signature-only)"
+      },
+      {
+        "module": "cli/commands/analyze.py",
+        "responsibility": "analyze project, analyze corpus, analyze list; mit optionalen Filter/Sort-Flags"
+      },
+      {
+        "module": "cli/commands/report.py",
+        "responsibility": "report view, report export (--format json|yaml|html)"
+      },
+      {
+        "module": "core/config.py",
+        "responsibility": "Hierarchische Config-Auflösung: defaults.yaml → /etc/meta-audit/ → ~/.meta-audit/ → $META_AUDIT_CONFIG → --config-path CLI-Flag"
+      },
+      {
+        "module": "core/models.py",
+        "responsibility": "Pydantic-Modelle: ProjectCapsule (v2), AnalysisResult, PatternEvidence (mit Severity/Category)"
+      },
+      {
+        "module": "core/capsule.py",
+        "responsibility": "Kapselerstellung mit Versionierung, Encoding-Handling, Symlink-Skipping"
+      },
+      {
+        "module": "analyzers/base.py",
+        "responsibility": "PatternAnalyzer ABC, mit Metadaten-Feldern (name, category, severity_levels)"
+      },
+      {
+        "module": "analyzers/registry.py",
+        "responsibility": "@register_analyzer Decorator, dynamisches Laden, Enabled/Disabled-Logik"
+      },
+      {
+        "module": "analyzers/implementations/*.py",
+        "responsibility": "Konkrete Analyzer (god_modules.py, magic_numbers.py, error_handling.py, etc.)"
+      },
+      {
+        "module": "generators/report.py",
+        "responsibility": "Single-Projekt- und Corpus-Berichte, mit Cross-Project-Aggregation"
+      },
+      {
+        "module": "generators/html_exporter.py",
+        "responsibility": "Optional: HTML-Export für Berichte (zukünftig)"
+      },
+      {
+        "module": "logging/instrumentation.py",
+        "responsibility": "Strukturiertes Logging mit --verbose/--debug Flags; JSON-Output für Integration"
+      }
+    ],
+    "data_flow": "1. User: `meta-audit capsule create <PATH> [--content-mode full|signature]` → `core.capsule` liest Quellen, erstellt versionierte Kapsel 2. User: `meta-audit analyze corpus <CAPSULE_DIR> [--filter category:security] [--sort severity]` → `cli.analyze` lädt Kapseln, iteriert über @registered Analyzer, sammelt Results 3. Jeder Analyzer gibt `AnalysisResult[]` zurück mit (evidence, severity, category, remediation_hint) 4. `generators.report` aggregiert Results, erkennt Cross-Project-Patterns, exportiert Bericht (YAML/JSON/HTML)"
+  },
+  "project_structure": {
+    "root": [
+      "pyproject.toml",
+      "README.md",
+      ".gitignore",
+      "config/defaults.yaml",
+      "config/severity-matrix.yaml (optional: Mappings zwischen Pattern-Typ und Severity)"
+    ],
+    "src/meta_audit": [
+      "__init__.py (version = '0.2.0')",
+      "cli/",
+      "  main.py",
+      "  commands/",
+      "    __init__.py",
+      "    capsule.py",
+      "    analyze.py",
+      "    report.py",
+      "core/",
+      "  __init__.py",
+      "  capsule.py",
+      "  config.py (IMPROVED: Hierarchische Auflösung)",
+      "  models.py (IMPROVED: Pydantic mit Versionierung)",
+      "  exceptions.py",
+      "analyzers/",
+      "  __init__.py",
+      "  base.py (IMPROVED: Metadaten-Struktur)",
+      "  registry.py (IMPROVED: @register_analyzer Decorator)",
+      "  implementations/",
+      "    __init__.py",
+      "    god_modules.py",
+      "    magic_numbers.py",
+      "    error_handling.py",
+      "generators/",
+      "  __init__.py",
+      "  report.py (IMPROVED: Cross-Project-Aggregation)",
+      "logging/",
+      "  __init__.py",
+      "  instrumentation.py (IMPROVED: Strukturiertes Logging)"
+    ],
+    "tests": [
+      "conftest.py (IMPROVED: Fixtures für Encoding, Symlinks, Edge-Cases)",
+      "unit/",
+      "  test_config_hierarchy.py",
+      "  test_capsule_versioning.py",
+      "  test_analyzers_base.py",
+      "integration/",
+      "  test_cli_capsule.py (CliRunner)",
+      "  test_cli_analyze.py (CliRunner)",
+      "  test_corpus_cross_project.py",
+      "performance/",
+      "  test_large_capsule_performance.py (Benchmark: 100MB in <5s)"
+    ]
+  },
+  "dependencies": {
+    "stdlib": [
+      "pathlib",
+      "json",
+      "re",
+      "ast",
+      "logging",
+      "datetime",
+      "concurrent.futures (für parallele Analyzer)"
+    ],
+    "external_required": [
+      "python>=3.11",
+      "typer>=0.9.0 (CLI)",
+      "rich>=13.0 (Formatierung)",
+      "pydantic>=2.5 (Validierung + Serialisierung)",
+      "pyyaml>=6.0 (Config/Reports)"
+    ],
+    "external_optional": [
+      "pytest>=7.0",
+      "pytest-benchmark (Performance-Tests)",
+      "ruff (Linting)",
+      "mypy>=1.0 (Type-Checking)",
+      "black (Formatierung)"
+    ]
+  },
+  "improved_config_system": {
+    "hierarchy": [
+      "1. Defaults (eingebettet in Code oder config/defaults.yaml)",
+      "2. System (/etc/meta-audit/config.yaml, nur Linux/macOS)",
+      "3. User (~/.config/meta-audit/config.yaml oder ~/.meta-audit/config.yaml)",
+      "4. Project (.meta-audit.yaml im Projekt-Root)",
+      "5. Environment ($META_AUDIT_CONFIG=path/to/config.yaml)",
+      "6. CLI-Flag (--config-path, höchste Priorität)"
+    ],
+    "schema_example": {
+      "version": "2.0",
+      "capsule": {
+        "content_mode": "full",
+        "max_file_size_bytes": 1048576,
+        "max_total_size_bytes": 52428800,
+        "skip_patterns": ["*.pyc", "__pycache__", ".venv"]
+      },
+      "analyzers": {
+        "enabled": ["god-modules", "magic-numbers", "error-handling"],
+        "god-modules": {
+          "enabled": true,
+          "line_threshold": 400,
+          "function_threshold": 50
+        },
+        "magic-numbers": {
+          "enabled": true,
+          "ignore_list": [0, 1, -1, 2, 100, 200]
+        }
+      },
+      "corpus": {
+        "cross_project_pattern_min_projects": 3,
+        "cross_project_pattern_min_confidence": 0.7
+      },
+      "output": {
+        "verbose": false,
+        "debug": false,
+        "log_format": "text",
+        "report_format": "yaml"
+      }
+    }
+  },
+  "improved_analyzer_model": {
+    "base_class_enhancement": {
+      "name": "string (z.B. 'god-modules')",
+      "category": "enum ['code_structure', 'maintainability', 'security', 'performance']",
+      "severity_levels": "list[str] (z.B. ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'])",
+      "description": "string",
+      "remediation_hints": "list[str] (z.B. 'Split into smaller modules', 'Use Facade Pattern')"
+    },
+    "result_model": {
+      "analyzer_name": "string",
+      "file_path": "string",
+      "line_start": "int | None",
+      "line_end": "int | None",
+      "pattern_type": "string (z.B. 'god-module-large')",
+      "severity": "str",
+      "confidence": "float (0.0-1.0)",
+      "message": "string (beschreibender Text)",
+      "evidence": "dict (z.B. {'line_count': 500, 'method_count': 42})",
+      "remediation": "list[str] (konkrete Vorschläge)"
+    }
+  },
+  "interfaces": {
+    "cli": {
+      "capsule_commands": [
+        "meta-audit capsule create <PATH> [--output <FILE>] [--output-dir <DIR>] [--content-mode full|signature]",
+        "meta-audit capsule list [--directory <DIR>] (listet alle Kapseln auf)"
+      ],
+      "analyze_commands": [
+        "meta-audit analyze project <PATH> [--output <FILE>] [--verbose]",
+        "meta-audit analyze corpus <CAPSULE_DIR> [--output <FILE>] [--format yaml|json|html] [--filter category:security|severity:HIGH] [--sort severity|files|alphabetical]",
+        "meta-audit analyze list (zeigt alle registrierten Analyzer + Status)"
+      ],
+      "report_commands": [
+        "meta-audit report view <REPORT_FILE> [--format text|html]",
+        "meta-audit report export <REPORT_FILE> --format html --output report.html",
+        "meta-audit report compare <REPORT1> <REPORT2> (vergleicht zwei Berichte)"
+      ],
+      "global_flags": [
+        "--config-path <PATH> (Config-Datei überschreiben)",
+        "--verbose (ausführliche Ausgabe)",
+        "--debug (Debug-Logs)",
+        "--no-color (deaktiviert farbige Ausgabe)"
+      ]
+    }
+  },
+  "behavior_specifications": {
+    "capsule_versioning": {
+      "current_version": 2,
+      "schema": {
+        "meta": {"version": 2, "created_at": "ISO8601", "python_version": "3.11", "project_root": "path"},
+        "project": {"name": "str", "files_count": "int", "total_size_bytes": "int"},
+        "files": [{"path": "str", "size_bytes": "int", "content": "str | null (null if content_mode=signature)"}]
+      },
+      "migration": "Alte Kapseln (v1) werden beim Laden detektiert und mit Warnung übersprungen."
+    },
+    "error_handling": {
+      "missing_capsule": "Fehlermeldung + Exit 1",
+      "invalid_json": "Warnung (überspringe Kapsel) oder --strict-mode (Exit 1)",
+      "encoding_error": "Versuche alternative Encodings (UTF-8 → Latin-1 → ignore), logge Fehler",
+      "symlink": "Überspringe Symlinks standardmäßig (--follow-symlinks überschreibt)"
+    },
+    "progress_display": {
+      "capsule_creation": "Rich Progress: '📦 Scanning files... [████████░░]'",
+      "corpus_analysis": "Rich Progress + live Tabelle mit aktuellen Ergebnissen pro Analyzer",
+      "summary": "Abschließende Tabelle mit (Analyzer, Files, Findings, Severity-Breakdown)"
+    }
+  },
+  "testing_strategy": {
+    "unit": [
+      "test_config_hierarchy: Validiere Config-Auflösungsreihenfolge",
+      "test_capsule_versioning: Alte Kapseln werden erkannt/übersprungen",
+      "test_analyzer_base: PatternAnalyzer ABC korrekt implementiert",
+      "test_encoding: UTF-8, Latin-1, Binary-Dateien"
+    ],
+    "integration": [
+      "test_cli_capsule: CliRunner, erfolgreiche + fehlgeschlagene Szenarien",
+      "test_cli_analyze: Project + Corpus, Filter/Sort-Flags",
+      "test_corpus_cross_project: 3+ Kapseln, Pattern wird erkannt (min_projects=3, min_confidence=0.7)"
+    ],
+    "performance": [
+      "test_100mb_capsule: <5s Analyse",
+      "test_1000_files: Linearer Durchsatz"
+    ]
+  },
+  "usage_examples": [
+    {
+      "scenario": "Schnelles Audit mit benutzerdefinierter Config",
+      "command": "meta-audit analyze project ./myproject --config-path ./audit-strict.yaml --verbose"
+    },
+    {
+      "scenario": "Kapseln mit nur Signaturen (schneller, speichereffizienter)",
+      "command": "for dir in ~/projects/*/; do meta-audit capsule create \"$dir\" --content-mode signature --output-dir ./capsules; done"
+    },
+    {
+      "scenario": "Corpus-Analyse mit Filterung auf kritische Sicherheitsprobleme",
+      "command": "meta-audit analyze corpus ./capsules --filter category:security severity:HIGH --sort severity --output bericht.json --format json"
+    },
+    {
+      "scenario": "Cross-Project-Patterns erkennen",
+      "command": "meta-audit analyze corpus ./capsules --output corpus.yaml && meta-audit report view corpus.yaml | grep -A5 'Cross-Project'"
+    },
+    {
+      "scenario": "HTML-Bericht für Stakeholder exportieren",
+      "command": "meta-audit report export corpus.yaml --format html --output audit_results.html"
+    }
+  ],
+  "future_extensions": [
+    "LLMAnalyzer: Integration mit Claude/GPT für semantische Code-Smells",
+    "HTML-Export mit interaktiven Dashboards",
+    "GitHub/GitLab Integration: Automatische PR-Kommentare",
+    "Trend-Tracking: Vergleiche Berichte über Zeit",
+    "Custom Analyzer Marketplace: Community-beigetragene Analyzer"
+  ],
+  "completeness_checklist": {
+    "critical": [
+      "✓ Versionierte Kapseln (Zukunftssicher)",
+      "✓ Hierarchische Config (Flexibel)",
+      "✓ Analyzer-Metadaten standardisiert (Severity, Category, Remediation)",
+      "✓ Cross-Project-Pattern-Erkennung (Corpus-Analyse++)",
+      "✓ CLI-Befehle vollständig spezifiziert",
+      "✓ Fehlerbehandlung granular"
+    ],
+    "nice_to_have": [
+      "✓ Performance-Tests",
+      "✓ CLI-Integration-Tests (CliRunner)",
+      "✓ Export-Optionen (JSON, HTML)",
+      "✓ Vergleichs-Bericht"
+    ]
+  }
+}

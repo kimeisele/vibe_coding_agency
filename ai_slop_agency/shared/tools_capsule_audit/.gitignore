@@ -1,0 +1,96 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+.venv
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+
+# Type checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Linting
+.ruff_cache/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+reports/
+*.csv
+*.json
+!*.capsule.json
+*.yaml
+!pyproject.toml
+!config/*.yaml
+!reference/
+output/
+
+# Temporary
+*.tmp
+.temp/
+temp/
+
+# Config overrides (local)
+config/local*.yaml
+.capsule_audit_config_local
+
+# Large files
+*.log
+*.bak
+
+# Project specific folders
+.benchmarks/
+.claude/
+# Vibe Coding OS - Generated files
+docs/vibe-coding-os/_meta/index.json

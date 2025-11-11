@@ -1,0 +1,14 @@
+{
+  "project_name": "test-project",
+  "project_type": "new_project",
+  "created_at": "2025-11-10T22:58:15.953400",
+  "current_phase": null,
+  "completed_phases": [
+    "INTAKE"
+  ],
+  "artifacts": {
+    "INTAKE": {
+      "input": "y"
+    }
+  }
+}

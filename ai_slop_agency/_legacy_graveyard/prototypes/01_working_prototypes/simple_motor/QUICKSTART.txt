@@ -1,0 +1,39 @@
+================================================================================
+🔧 SIMPLE MOTOR - ULTRA EINFACH FÜR DUMME
+================================================================================
+
+DU BRAUCHST NUR 1 DING:
+
+  python3 demo.py
+
+FERTIG.
+
+================================================================================
+WAS PASSIERT WENN DU ES AUSFÜHRST:
+================================================================================
+
+1. System analysiert einen Ordner
+2. Sucht nach Python-Dateien (33 Stück gefunden)
+3. Checkt mit echtem Tool namens "bandit" auf Probleme
+4. Findet echte Probleme (z.B. "host=0.0.0.0" ist BÖSE)
+5. Macht einen Report
+
+================================================================================
+WARUM DU DAS BRAUCHST:
+================================================================================
+
+Statt: "Ich glaube der Code hat Probleme..." (Quatsch)
+Hast du: "Bandit fand Problem XYZ bei Datei ABC:123" (BEWEIS)
+
+================================================================================
+DAS IST ES.
+
+Keine API.
+Keine komplexe Konfiguration.
+Kein Scheiss.
+
+Nur: python3 demo.py
+
+Dann bekommst du einen Report mit echten Fakten.
+
+================================================================================
