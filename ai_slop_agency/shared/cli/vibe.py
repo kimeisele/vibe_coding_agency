@@ -36,7 +36,6 @@ HQ = REPO_ROOT / "hq"
 CLIENTS = REPO_ROOT / "clients"
 SHARED = REPO_ROOT / "shared"
 TEMPLATE = SHARED / "templates" / "kdaf_project"
-TOOLS = SHARED / "tools_capsule_audit"
 
 class VibeColors:
     """Anti-bullshit color coding"""

@@ -130,7 +130,7 @@ This runs:
 ### Manual Deep Dive
 For capsule audit (comprehensive analysis):
 ```bash
-cd shared/tools_capsule_audit
+cd meta-audit
 python -m meta_audit analyze --path <client_code_path>
 ```
 
