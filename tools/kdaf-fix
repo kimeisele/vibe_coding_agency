@@ -73,17 +73,79 @@ def get_user_decision():
 
 def apply_fix(issue):
     """
-    Apply the suggested fix to the file.
+    Apply the suggested fix to the file with validation.
 
-    NOTE: This is a MOCK implementation for the prototype.
-    In production, this would:
+    Safety checks:
     1. Read the file
-    2. Find the exact line/code snippet
-    3. Replace it with the suggested fix
-    4. Write the file back
-    5. Create a backup
+    2. Validate line number is in range
+    3. Validate code_snippet exists on that line
+    4. Replace with suggested_fix
+    5. Write back to file
+
+    Returns:
+        bool: True if fix was applied successfully, False otherwise
     """
-    print(f"{Colors.GREEN}✓ Fix applied (MOCK - not actually modifying files yet){Colors.RESET}")
+    file_path = issue.get('file_path')
+    line_number = issue.get('line_number')
+    old_code = issue.get('code_snippet')
+    new_code = issue.get('suggested_fix')
+
+    # Validate inputs
+    if not file_path or old_code is None or new_code is None:
+        print(f"{Colors.RED}❌ Error: Missing required fields in issue{Colors.RESET}")
+        return False
+
+    if line_number is None:
+        print(f"{Colors.RED}❌ Error: Missing line_number field{Colors.RESET}")
+        return False
+
+    # Convert to Path object and resolve relative to current directory
+    file_path = Path(file_path)
+
+    # Check if file exists
+    if not file_path.exists():
+        print(f"{Colors.RED}❌ Error: File not found: {file_path}{Colors.RESET}")
+        return False
+
+    # Read file
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+    except Exception as e:
+        print(f"{Colors.RED}❌ Error reading file: {e}{Colors.RESET}")
+        return False
+
+    # Validate line number
+    if line_number < 1 or line_number > len(lines):
+        print(f"{Colors.RED}❌ Error: Line number {line_number} out of range (file has {len(lines)} lines){Colors.RESET}")
+        return False
+
+    # Get the actual line (convert to 0-indexed)
+    actual_line = lines[line_number - 1]
+
+    # Validate code snippet exists on that line
+    # Strip for comparison but preserve original formatting
+    if old_code.strip() not in actual_line:
+        print(f"{Colors.RED}❌ Mismatch! Code has changed since analysis:{Colors.RESET}")
+        print(f"{Colors.YELLOW}   Expected: {old_code.strip()}{Colors.RESET}")
+        print(f"{Colors.YELLOW}   Actual:   {actual_line.strip()}{Colors.RESET}")
+        print(f"{Colors.YELLOW}   File may have been modified. Re-run analysis.{Colors.RESET}")
+        return False
+
+    # Apply the fix - replace on the specific line
+    lines[line_number - 1] = actual_line.replace(old_code.strip(), new_code)
+
+    # Write back to file
+    try:
+        with open(file_path, 'w', encoding='utf-8') as f:
+            f.writelines(lines)
+    except Exception as e:
+        print(f"{Colors.RED}❌ Error writing file: {e}{Colors.RESET}")
+        return False
+
+    print(f"{Colors.GREEN}✓ Fix applied successfully{Colors.RESET}")
+    print(f"{Colors.CYAN}  Run: git diff {file_path}{Colors.RESET}")
+
     return True
 
 
