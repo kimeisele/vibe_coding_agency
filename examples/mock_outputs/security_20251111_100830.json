@@ -1,0 +1,50 @@
+{
+  "analysis_type": "security",
+  "timestamp": "2025-11-11T10:08:30",
+  "total_issues": 3,
+  "issues": [
+    {
+      "id": "SEC-001",
+      "severity": "critical",
+      "category": "Command Injection",
+      "description": "Function call with shell=True detected",
+      "file_path": "core/phoenix_config/loaders.py",
+      "line_number": 42,
+      "code_snippet": "subprocess.run(user_command, shell=True, capture_output=True)",
+      "suggested_fix": "subprocess.run(shlex.split(user_command), shell=False, capture_output=True)",
+      "rationale": "Using shell=True with user input creates command injection vulnerability. Use shlex.split() and shell=False instead.",
+      "references": [
+        "https://docs.python.org/3/library/subprocess.html#security-considerations",
+        "https://owasp.org/www-community/attacks/Command_Injection"
+      ]
+    },
+    {
+      "id": "SEC-002",
+      "severity": "high",
+      "category": "Exception Handling",
+      "description": "Try-except-pass detected - silently swallowing exceptions",
+      "file_path": "core/prompt_profiles.py",
+      "line_number": 78,
+      "code_snippet": "try:\n    load_config()\nexcept Exception:\n    pass",
+      "suggested_fix": "try:\n    load_config()\nexcept ConfigError as e:\n    logger.error(f'Config load failed: {e}')\n    raise",
+      "rationale": "Silent exception swallowing hides errors and makes debugging impossible. Log and re-raise or handle specifically.",
+      "references": [
+        "https://docs.python.org/3/tutorial/errors.html#handling-exceptions"
+      ]
+    },
+    {
+      "id": "SEC-003",
+      "severity": "medium",
+      "category": "Hardcoded Secrets",
+      "description": "Potential hardcoded API key detected",
+      "file_path": "utils/api_client.py",
+      "line_number": 15,
+      "code_snippet": "API_KEY = 'sk-1234567890abcdef'",
+      "suggested_fix": "import os\nAPI_KEY = os.getenv('API_KEY', None)\nif not API_KEY:\n    raise ValueError('API_KEY environment variable required')",
+      "rationale": "Hardcoded secrets in source code are a security risk. Use environment variables instead.",
+      "references": [
+        "https://owasp.org/www-project-top-ten/2017/A3_2017-Sensitive_Data_Exposure"
+      ]
+    }
+  ]
+}
