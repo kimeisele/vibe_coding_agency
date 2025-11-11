@@ -1,0 +1,80 @@
+{
+  "analysis_type": "security",
+  "triage_category": "INFO_ONLY",
+  "timestamp": "2025-11-11T11:15:10.170817",
+  "total_issues": 6,
+  "issues": [
+    {
+      "id": "SECURITY-004",
+      "severity": "medium",
+      "category": "security_b404",
+      "description": "Consider possible security implications associated with the subprocess module.",
+      "file_path": "agency-toolkit/gather_analysis.py",
+      "line_number": 8,
+      "code_snippet": "import subprocess",
+      "suggested_fix": "# MANUAL FIX REQUIRED\n# See remediation suggestions:\n# See OWASP Top 10 for guidance on this vulnerability type\n# Use secure alternatives (e.g., use environment variables for secrets)",
+      "rationale": "See OWASP Top 10 for guidance on this vulnerability type | Use secure alternatives (e.g., use environment variables for secrets)",
+      "references": []
+    },
+    {
+      "id": "SECURITY-007",
+      "severity": "medium",
+      "category": "security_b404",
+      "description": "Consider possible security implications associated with the subprocess module.",
+      "file_path": "agency-toolkit/scripts/calculate_quality_score.py",
+      "line_number": 22,
+      "code_snippet": "import subprocess",
+      "suggested_fix": "# MANUAL FIX REQUIRED\n# See remediation suggestions:\n# See OWASP Top 10 for guidance on this vulnerability type\n# Use secure alternatives (e.g., use environment variables for secrets)",
+      "rationale": "See OWASP Top 10 for guidance on this vulnerability type | Use secure alternatives (e.g., use environment variables for secrets)",
+      "references": []
+    },
+    {
+      "id": "SECURITY-166",
+      "severity": "medium",
+      "category": "security_b404",
+      "description": "Consider possible security implications associated with the subprocess module.",
+      "file_path": "agency-toolkit/tests/integration/conftest.py",
+      "line_number": 6,
+      "code_snippet": "import subprocess",
+      "suggested_fix": "# MANUAL FIX REQUIRED\n# See remediation suggestions:\n# See OWASP Top 10 for guidance on this vulnerability type\n# Use secure alternatives (e.g., use environment variables for secrets)",
+      "rationale": "See OWASP Top 10 for guidance on this vulnerability type | Use secure alternatives (e.g., use environment variables for secrets)",
+      "references": []
+    },
+    {
+      "id": "SECURITY-552",
+      "severity": "medium",
+      "category": "security_b404",
+      "description": "Consider possible security implications associated with the subprocess module.",
+      "file_path": "agency-toolkit/tests/uat/test_cli_advanced_scenarios.py",
+      "line_number": 9,
+      "code_snippet": "import subprocess",
+      "suggested_fix": "# MANUAL FIX REQUIRED\n# See remediation suggestions:\n# See OWASP Top 10 for guidance on this vulnerability type\n# Use secure alternatives (e.g., use environment variables for secrets)",
+      "rationale": "See OWASP Top 10 for guidance on this vulnerability type | Use secure alternatives (e.g., use environment variables for secrets)",
+      "references": []
+    },
+    {
+      "id": "SECURITY-597",
+      "severity": "medium",
+      "category": "security_b404",
+      "description": "Consider possible security implications associated with the subprocess module.",
+      "file_path": "agency-toolkit/tests/uat/test_cli_batch_campaign.py",
+      "line_number": 12,
+      "code_snippet": "import subprocess",
+      "suggested_fix": "# MANUAL FIX REQUIRED\n# See remediation suggestions:\n# See OWASP Top 10 for guidance on this vulnerability type\n# Use secure alternatives (e.g., use environment variables for secrets)",
+      "rationale": "See OWASP Top 10 for guidance on this vulnerability type | Use secure alternatives (e.g., use environment variables for secrets)",
+      "references": []
+    },
+    {
+      "id": "SECURITY-626",
+      "severity": "medium",
+      "category": "security_b404",
+      "description": "Consider possible security implications associated with the subprocess module.",
+      "file_path": "agency-toolkit/tests/uat/test_cli_onboarding.py",
+      "line_number": 14,
+      "code_snippet": "import subprocess",
+      "suggested_fix": "# MANUAL FIX REQUIRED\n# See remediation suggestions:\n# See OWASP Top 10 for guidance on this vulnerability type\n# Use secure alternatives (e.g., use environment variables for secrets)",
+      "rationale": "See OWASP Top 10 for guidance on this vulnerability type | Use secure alternatives (e.g., use environment variables for secrets)",
+      "references": []
+    }
+  ]
+}
