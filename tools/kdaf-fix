@@ -1,0 +1,150 @@
+#!/usr/bin/env python3
+"""
+KDAF Fix - Interactive Issue Resolution Tool
+
+Usage:
+    kdaf-fix <issues.json>
+
+Example:
+    kdaf-fix security_20251111_100830.json
+"""
+
+import json
+import sys
+from pathlib import Path
+
+
+class Colors:
+    """ANSI color codes for terminal output"""
+    RED = '\033[91m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    BLUE = '\033[94m'
+    MAGENTA = '\033[95m'
+    CYAN = '\033[96m'
+    BOLD = '\033[1m'
+    RESET = '\033[0m'
+
+
+def print_header(text):
+    """Print colored header"""
+    print(f"\n{Colors.CYAN}{Colors.BOLD}{'=' * 80}{Colors.RESET}")
+    print(f"{Colors.CYAN}{Colors.BOLD}{text}{Colors.RESET}")
+    print(f"{Colors.CYAN}{Colors.BOLD}{'=' * 80}{Colors.RESET}\n")
+
+
+def print_issue(issue, index, total):
+    """Display a single issue with all details"""
+    severity_colors = {
+        'critical': Colors.RED,
+        'high': Colors.YELLOW,
+        'medium': Colors.BLUE,
+        'low': Colors.GREEN
+    }
+
+    severity = issue.get('severity', 'unknown')
+    color = severity_colors.get(severity, Colors.RESET)
+
+    print(f"{Colors.BOLD}Issue {index}/{total}: {issue['id']}{Colors.RESET}")
+    print(f"{color}Severity: {severity.upper()}{Colors.RESET}")
+    print(f"Category: {issue.get('category', 'N/A')}")
+    print(f"Description: {issue.get('description', 'N/A')}")
+    print(f"\n{Colors.MAGENTA}Location:{Colors.RESET} {issue.get('file_path', 'N/A')}:{issue.get('line_number', '?')}")
+
+    print(f"\n{Colors.RED}Current Code:{Colors.RESET}")
+    print(f"  {issue.get('code_snippet', 'N/A')}")
+
+    print(f"\n{Colors.GREEN}Suggested Fix:{Colors.RESET}")
+    print(f"  {issue.get('suggested_fix', 'N/A')}")
+
+    if 'rationale' in issue:
+        print(f"\n{Colors.YELLOW}Rationale:{Colors.RESET}")
+        print(f"  {issue['rationale']}")
+
+
+def get_user_decision():
+    """Get user's decision on whether to apply the fix"""
+    while True:
+        response = input(f"\n{Colors.BOLD}Apply this fix? (y/n/q): {Colors.RESET}").strip().lower()
+        if response in ['y', 'n', 'q']:
+            return response
+        print("Invalid input. Please enter 'y' (yes), 'n' (no), or 'q' (quit).")
+
+
+def apply_fix(issue):
+    """
+    Apply the suggested fix to the file.
+
+    NOTE: This is a MOCK implementation for the prototype.
+    In production, this would:
+    1. Read the file
+    2. Find the exact line/code snippet
+    3. Replace it with the suggested fix
+    4. Write the file back
+    5. Create a backup
+    """
+    print(f"{Colors.GREEN}✓ Fix applied (MOCK - not actually modifying files yet){Colors.RESET}")
+    return True
+
+
+def main():
+    if len(sys.argv) != 2:
+        print(__doc__)
+        sys.exit(1)
+
+    json_path = Path(sys.argv[1])
+
+    if not json_path.exists():
+        print(f"{Colors.RED}Error: File not found: {json_path}{Colors.RESET}")
+        sys.exit(1)
+
+    # Load issues from JSON
+    try:
+        with open(json_path, 'r') as f:
+            data = json.load(f)
+    except json.JSONDecodeError as e:
+        print(f"{Colors.RED}Error: Invalid JSON file: {e}{Colors.RESET}")
+        sys.exit(1)
+
+    issues = data.get('issues', [])
+    total_issues = len(issues)
+
+    if total_issues == 0:
+        print(f"{Colors.GREEN}No issues found in {json_path}{Colors.RESET}")
+        sys.exit(0)
+
+    print_header(f"KDAF Fix Tool - Processing {total_issues} issues from {json_path.name}")
+    print(f"Analysis Type: {data.get('analysis_type', 'unknown')}")
+    print(f"Timestamp: {data.get('timestamp', 'unknown')}")
+
+    # Statistics tracking
+    applied = 0
+    skipped = 0
+
+    # Process each issue
+    for i, issue in enumerate(issues, 1):
+        print_issue(issue, i, total_issues)
+
+        decision = get_user_decision()
+
+        if decision == 'y':
+            if apply_fix(issue):
+                applied += 1
+        elif decision == 'n':
+            print(f"{Colors.YELLOW}⊘ Skipped{Colors.RESET}")
+            skipped += 1
+        elif decision == 'q':
+            print(f"\n{Colors.YELLOW}Quitting early...{Colors.RESET}")
+            break
+
+    # Final summary
+    print_header("Summary")
+    print(f"Total issues: {total_issues}")
+    print(f"{Colors.GREEN}Applied: {applied}{Colors.RESET}")
+    print(f"{Colors.YELLOW}Skipped: {skipped}{Colors.RESET}")
+    print(f"Remaining: {total_issues - applied - skipped}")
+    print()
+
+
+if __name__ == '__main__':
+    main()

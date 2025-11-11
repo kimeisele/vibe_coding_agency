@@ -1,0 +1,62 @@
+{
+  "analysis_type": "ai_slop",
+  "timestamp": "2025-11-11T10:08:31",
+  "total_issues": 5,
+  "issues": [
+    {
+      "id": "SLOP-001",
+      "severity": "low",
+      "category": "Over-commenting",
+      "description": "Obvious comment that adds no value",
+      "file_path": "utils/helpers.py",
+      "line_number": 23,
+      "code_snippet": "# Increment counter by 1\ncounter += 1",
+      "suggested_fix": "counter += 1",
+      "rationale": "Remove obvious comments. Code should be self-documenting."
+    },
+    {
+      "id": "SLOP-002",
+      "severity": "medium",
+      "category": "Redundant Code",
+      "description": "Duplicate function implementation found",
+      "file_path": "services/validator.py",
+      "line_number": 45,
+      "code_snippet": "def validate_email(email):\n    return '@' in email and '.' in email",
+      "suggested_fix": "# Use existing validate_email_address() from utils.validation",
+      "rationale": "DRY principle - function already exists in utils.validation module."
+    },
+    {
+      "id": "SLOP-003",
+      "severity": "low",
+      "category": "Unnecessary Abstraction",
+      "description": "Single-use wrapper class with no added value",
+      "file_path": "models/data_wrapper.py",
+      "line_number": 10,
+      "code_snippet": "class DataWrapper:\n    def __init__(self, data):\n        self.data = data\n    def get_data(self):\n        return self.data",
+      "suggested_fix": "# Remove class, use dict or dataclass directly",
+      "rationale": "Wrapper adds no validation, transformation, or business logic. Pure overhead."
+    },
+    {
+      "id": "SLOP-004",
+      "severity": "medium",
+      "category": "Incomplete Implementation",
+      "description": "Function missing edge case handling",
+      "file_path": "core/processor.py",
+      "line_number": 67,
+      "code_snippet": "def divide(a, b):\n    return a / b",
+      "suggested_fix": "def divide(a, b):\n    if b == 0:\n        raise ValueError('Division by zero')\n    return a / b",
+      "rationale": "Missing zero-check causes runtime error. AI-generated code often skips edge cases."
+    },
+    {
+      "id": "SLOP-005",
+      "severity": "low",
+      "category": "Cargo Cult Pattern",
+      "description": "Unnecessary singleton pattern for stateless utility",
+      "file_path": "utils/formatter.py",
+      "line_number": 5,
+      "code_snippet": "class Formatter:\n    _instance = None\n    def __new__(cls):\n        if cls._instance is None:\n            cls._instance = super().__new__(cls)\n        return cls._instance",
+      "suggested_fix": "# Convert to simple function module - no class needed",
+      "rationale": "Formatter has no state. Singleton pattern is overkill. Use module-level functions."
+    }
+  ]
+}
