@@ -1,0 +1,44 @@
+{
+  "analysis_type": "security",
+  "triage_category": "CRITICAL",
+  "timestamp": "2025-11-11T11:15:10.170817",
+  "total_issues": 3,
+  "issues": [
+    {
+      "id": "SECURITY-001",
+      "severity": "medium",
+      "category": "security_b604",
+      "description": "Function call with shell=True parameter identified, possible security issue.",
+      "file_path": "agency-toolkit/agency_toolkit/core/phoenix_config/loaders.py",
+      "line_number": 139,
+      "code_snippet": "            shell=shell,",
+      "suggested_fix": "# MANUAL FIX REQUIRED\n# See remediation suggestions:\n# See OWASP Top 10 for guidance on this vulnerability type\n# Use secure alternatives (e.g., use environment variables for secrets)",
+      "rationale": "See OWASP Top 10 for guidance on this vulnerability type | Use secure alternatives (e.g., use environment variables for secrets)",
+      "references": []
+    },
+    {
+      "id": "SECURITY-1166",
+      "severity": "medium",
+      "category": "security_b604",
+      "description": "Function call with shell=True parameter identified, possible security issue.",
+      "file_path": "agency-toolkit/tests/unit/test_phoenix_config_unit.py",
+      "line_number": 57,
+      "code_snippet": "            UniversalConfig(shell=ShellConfig(timeout=-1))",
+      "suggested_fix": "# MANUAL FIX REQUIRED\n# See remediation suggestions:\n# See OWASP Top 10 for guidance on this vulnerability type\n# Use secure alternatives (e.g., use environment variables for secrets)",
+      "rationale": "See OWASP Top 10 for guidance on this vulnerability type | Use secure alternatives (e.g., use environment variables for secrets)",
+      "references": []
+    },
+    {
+      "id": "SECURITY-1225",
+      "severity": "medium",
+      "category": "security_b604",
+      "description": "Function call with shell=True parameter identified, possible security issue.",
+      "file_path": "agency-toolkit/tests/unit/test_phoenix_config_unit.py",
+      "line_number": 282,
+      "code_snippet": "            UniversalConfig(shell=ShellConfig(timeout=-1))",
+      "suggested_fix": "# MANUAL FIX REQUIRED\n# See remediation suggestions:\n# See OWASP Top 10 for guidance on this vulnerability type\n# Use secure alternatives (e.g., use environment variables for secrets)",
+      "rationale": "See OWASP Top 10 for guidance on this vulnerability type | Use secure alternatives (e.g., use environment variables for secrets)",
+      "references": []
+    }
+  ]
+}
