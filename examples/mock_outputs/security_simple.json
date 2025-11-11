@@ -1,0 +1,18 @@
+{
+  "analysis_type": "security",
+  "timestamp": "2025-11-11T10:08:30",
+  "total_issues": 1,
+  "issues": [
+    {
+      "id": "SEC-001",
+      "severity": "critical",
+      "category": "Command Injection",
+      "description": "Function call with shell=True detected",
+      "file_path": "examples/test_code/core/phoenix_config/loaders.py",
+      "line_number": 26,
+      "code_snippet": "subprocess.run(user_command, shell=True, capture_output=True)",
+      "suggested_fix": "subprocess.run(shlex.split(user_command), shell=False, capture_output=True)",
+      "rationale": "Using shell=True with user input creates command injection vulnerability. Use shlex.split() and shell=False instead."
+    }
+  ]
+}

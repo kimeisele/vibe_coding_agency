@@ -1,0 +1,18 @@
+{
+  "analysis_type": "ai_slop",
+  "timestamp": "2025-11-11T10:08:31",
+  "total_issues": 1,
+  "issues": [
+    {
+      "id": "SLOP-001",
+      "severity": "low",
+      "category": "Over-commenting",
+      "description": "Obvious comment that adds no value",
+      "file_path": "examples/test_code/utils/helpers.py",
+      "line_number": 10,
+      "code_snippet": "# Increment counter by 1",
+      "suggested_fix": "counter += 1",
+      "rationale": "Remove obvious comments. Code should be self-documenting."
+    }
+  ]
+}
