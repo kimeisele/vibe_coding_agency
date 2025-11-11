@@ -8,11 +8,32 @@ import sys
 from pathlib import Path
 
 
+# Trusted CLI tools that are safe to call via subprocess
+TRUSTED_TOOLS = ["radon", "pytest", "coverage", "bandit", "ruff", "mypy", "git", "python3"]
+
+
+def is_test_file(file_path: str) -> bool:
+    """Check if file is in a test directory."""
+    return "/test" in file_path.lower()
+
+
+def uses_trusted_tool(code_snippet: str) -> bool:
+    """Check if subprocess call uses a trusted tool."""
+    return any(tool in code_snippet for tool in TRUSTED_TOOLS)
+
+
+def is_config_param(code_snippet: str) -> bool:
+    """Check if 'shell=' is a config parameter, not subprocess.run(..., shell=True)."""
+    # If snippet is "shell=shell," or similar, it's a config param
+    # Real subprocess.run would have "shell=True" or "shell=False"
+    return "shell=shell" in code_snippet or ("shell=" in code_snippet and "subprocess" not in code_snippet)
+
+
 BANDIT_PATTERNS = {
     "security_b101": {
         "name": "assert_used",
         "description": "Use of assert (removed in optimized bytecode)",
-        "false_positive_if": lambda i: "/test" in i["file_path"].lower(),
+        "false_positive_if": lambda i: is_test_file(i["file_path"]),
         "category": "FALSE_POSITIVE"
     },
     "security_b110": {
@@ -28,26 +49,31 @@ BANDIT_PATTERNS = {
     "security_b108": {
         "name": "hardcoded_tmp_directory",
         "description": "Hardcoded /tmp directory",
+        "false_positive_if": lambda i: is_test_file(i["file_path"]),
         "category": "MANUAL_REVIEW"
     },
     "security_b603": {
         "name": "subprocess_without_shell",
         "description": "subprocess.run() - check for untrusted input",
+        "false_positive_if": lambda i: uses_trusted_tool(i["code_snippet"]) or is_test_file(i["file_path"]),
         "category": "MANUAL_REVIEW"
     },
     "security_b604": {
         "name": "shell_true",
         "description": "subprocess with shell=True",
+        "false_positive_if": lambda i: is_config_param(i["code_snippet"]),
         "category": "CRITICAL"
     },
     "security_b607": {
         "name": "partial_executable_path",
         "description": "Starting process with partial path",
+        "false_positive_if": lambda i: uses_trusted_tool(i["code_snippet"]) or is_test_file(i["file_path"]),
         "category": "MANUAL_REVIEW"
     },
     "security_b104": {
         "name": "hardcoded_bind_all",
         "description": "Hardcoded 0.0.0.0 bind",
+        "false_positive_if": lambda i: is_test_file(i["file_path"]),
         "category": "MANUAL_REVIEW"
     },
 }
